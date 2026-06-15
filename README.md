@@ -1,164 +1,162 @@
-# SimpleShop — Simple E-Commerce Platform
+<div align="center">
+  <img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="300" alt="Laravel Logo">
+  
+  # 🛒 SimpleShop — E-Commerce Platform
+  
+  **A Lightweight, Multi-Seller E-Commerce Platform** built with the modern TALL stack (Tailwind, Alpine, Laravel).
 
-Platform e-commerce sederhana yang dibangun dengan **Laravel 13**, **Breeze**, **Blade**, **Alpine.js**, dan **Tailwind CSS 4**. Mendukung fitur multi-seller marketplace dengan sistem autentikasi berbasis role (Buyer & Seller).
+  [![Laravel 13](https://img.shields.io/badge/Laravel-FF2D20?style=for-the-badge&logo=laravel&logoColor=white)](https://laravel.com)
+  [![PHP 8.2+](https://img.shields.io/badge/PHP_8.2+-777BB4?style=for-the-badge&logo=php&logoColor=white)](https://php.net)
+  [![Tailwind CSS 4](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com)
+  [![Alpine.js](https://img.shields.io/badge/Alpine.js-8BC0D0?style=for-the-badge&logo=alpine.js&logoColor=white)](https://alpinejs.dev)
+</div>
+
+---
+
+## 📖 Tentang Aplikasi
+
+**SimpleShop** adalah platform e-commerce yang dirancang untuk mendukung sistem **Multi-Seller Marketplace**. Aplikasi ini memungkinkan pengguna untuk mendaftar sebagai **Buyer** (Pembeli) atau **Seller** (Penjual), dengan fitur lengkap mulai dari manajemen produk, keranjang belanja (AJAX), hingga proses checkout dengan manajemen stok yang aman (Pessimistic Locking).
+
+---
 
 ## ✨ Fitur Utama
 
-### Buyer
-- 🛍️ Browse katalog produk dengan search & filter kategori
-- 🛒 Keranjang belanja dengan AJAX (tambah, update jumlah, hapus)
-- 📦 Checkout dengan pilihan metode pembayaran (Transfer Bank / COD)
-- 📋 Riwayat pesanan dan detail pesanan
-- ❌ Pembatalan pesanan (status pending)
+### 🛍️ Untuk Buyer (Pembeli)
+- **Katalog Interaktif**: Cari dan filter produk berdasarkan kategori dengan mudah.
+- **Smart Cart (AJAX)**: Tambah, kurangi, atau hapus item di keranjang tanpa reload halaman. Batasan *single-seller* dalam satu kali checkout.
+- **Checkout Fleksibel**: Mendukung metode pembayaran Transfer Bank & COD (Cash on Delivery).
+- **Manajemen Pesanan**: Lacak status pesanan, riwayat belanja, dan opsi pembatalan untuk pesanan *pending*.
 
-### Seller
-- 📊 Dashboard dengan statistik penjualan, grafik 7 hari, dan produk terlaris
-- 📦 CRUD produk lengkap dengan upload gambar
-- 📋 Manajemen pesanan masuk dengan update status (Pending → Paid → Shipped → Completed)
-- 📧 Notifikasi email otomatis saat status pesanan berubah
+### 🏬 Untuk Seller (Penjual)
+- **Seller Dashboard**: Pantau performa toko dengan statistik penjualan, grafik pendapatan 7 hari terakhir, dan daftar produk terlaris.
+- **Manajemen Produk**: Sistem CRUD lengkap dengan fitur unggah gambar yang aman (nama unik *timestamp*).
+- **Proses Pesanan Masuk**: Perbarui status pesanan dari pembeli secara bertahap: `Pending` ➔ `Paid` ➔ `Shipped` ➔ `Completed`.
+- **Notifikasi Otomatis**: Sistem mengirim email notifikasi otomatis kepada pembeli ketika status pesanan berubah.
 
-### Sistem
-- 🔐 Autentikasi berbasis role (buyer/seller)
-- 🛡️ Middleware role protection
-- 📝 Policy-based authorization
-- 🔒 Pessimistic locking pada checkout (mencegah race condition)
-- 🛒 Single-seller cart constraint
-- 📧 Queued email notifications
-- 🖼️ Upload gambar dengan nama unik (timestamp + random)
+### ⚙️ Sistem & Keamanan
+- **Role-Based Access Control (RBAC)**: Autentikasi dan otorisasi ketat memisahkan hak akses antara *Buyer* dan *Seller*.
+- **Pessimistic Locking**: Mencegah *race-condition* atau bentrok pembelian barang yang sama secara bersamaan saat *checkout*.
+- **Asynchronous Queues**: Pengiriman email menggunakan *Job Queue* agar proses belanja tetap cepat.
 
-## 🚀 Instalasi
+---
 
-### Prerequisites
-- PHP >= 8.2
-- Composer
-- Node.js >= 18
-- SQLite (default) atau MySQL
+## 🚀 Panduan Instalasi
 
-### Setup
+Ikuti langkah-langkah di bawah ini untuk menjalankan aplikasi di komputer lokal (Development Environment).
+
+> [!IMPORTANT]
+> **Prerequisites:** Pastikan Anda telah menginstal **PHP >= 8.2**, **Composer**, **Node.js >= 18**, dan **SQLite/MySQL**.
 
 ```bash
-# Clone repository
+# 1. Clone repositori ini
 git clone <repository-url>
 cd Simple-E-Commerce-Platform
 
-# Install dependencies
+# 2. Install dependensi Backend & Frontend
 composer install
 npm install
 
-# Copy environment file
+# 3. Konfigurasi Environment
 cp .env.example .env
-
-# Generate application key
 php artisan key:generate
 
-# Set database di .env (default sudah SQLite)
-# DB_CONNECTION=sqlite
-
-# Jalankan migrasi dan seeder
+# 4. Migrasi Database dan Seeder (Otomatis menggunakan SQLite sebagai default)
 php artisan migrate --seed
 
-# Buat symlink untuk storage
+# 5. Buat symbolic link untuk gambar/storage
 php artisan storage:link
 
-# Build frontend assets
+# 6. Build aset frontend (Tailwind & Alpine)
 npm run build
-
-# Jalankan queue worker (terminal terpisah, untuk email notifications)
-php artisan queue:work
-
-# Jalankan development server
-php artisan serve
 ```
 
-Akses aplikasi di **http://localhost:8000**
+> [!NOTE]  
+> **Menjalankan Aplikasi**
+> Anda perlu menjalankan dua server dan satu *queue worker* secara bersamaan. Silakan buka 3 tab terminal:
+> - Tab 1: `php artisan serve` (Server PHP)
+> - Tab 2: `npm run dev` (Vite Hot Reload)
+> - Tab 3: `php artisan queue:work` (Background process untuk Email)
+> 
+> Akses aplikasi di: **http://localhost:8000**
 
-### Development Mode (Hot Reload)
+---
 
-```bash
-# Di terminal terpisah, jalankan Vite dev server
-npm run dev
-```
+## 🔐 Akun Uji Coba (Demo)
 
-## 👤 Akun Demo
+Aplikasi sudah dilengkapi dengan *Database Seeder* untuk memudahkan pengujian. Gunakan kredensial berikut:
 
-### Seller
+### 🏪 Akun Seller
+| Toko | Email | Password |
+|---|---|---|
+| **TeknoMart** | `seller1@example.com` | `password` |
+| **Siti Style House** | `seller2@example.com` | `password` |
 
-| Email | Password | Toko |
-|-------|----------|------|
-| `seller1@example.com` | `password` | TeknoMart |
-| `seller2@example.com` | `password` | Siti Style House |
-
-### Buyer
-
+### 🛒 Akun Buyer
 | Email | Password |
-|-------|----------|
+|---|---|
 | `buyer1@example.com` | `password` |
 | `buyer2@example.com` | `password` |
-| `buyer3@example.com` | `password` |
 
-## 📁 Struktur Proyek
+---
 
-```
+## 📂 Struktur Direktori Utama
+
+Berikut adalah letak direktori kunci bagi Anda yang ingin mempelajari atau memodifikasi *source code*:
+
+```text
 app/
 ├── Http/
 │   ├── Controllers/
-│   │   ├── Auth/                    # Login, Register (role-based)
-│   │   ├── Seller/                  # Dashboard, Product CRUD, Order management
-│   │   ├── CartController.php       # Keranjang (AJAX)
-│   │   ├── CheckoutController.php   # Proses checkout
-│   │   ├── OrderController.php      # Pesanan buyer
-│   │   └── ShopController.php       # Katalog produk
-│   ├── Middleware/
-│   │   └── RoleMiddleware.php       # Role-based access control
-│   └── Requests/                    # Form validation
+│   │   ├── Auth/                  # Sistem Login & Register Breeze
+│   │   ├── Seller/                # Logika khusus Dashboard Seller & Produk
+│   │   ├── CartController.php     # Manajemen Keranjang via AJAX
+│   │   └── CheckoutController.php # Logika Checkout
+│   └── Middleware/
+│       └── RoleMiddleware.php     # Proteksi akses berdasarkan Role
 ├── Jobs/
-│   └── SendOrderConfirmation.php    # Queued email job
-├── Mail/
-│   ├── OrderConfirmation.php        # Mailable: konfirmasi pesanan
-│   └── OrderStatusUpdated.php       # Mailable: update status
-├── Models/                          # Eloquent models with relationships
+│   └── SendOrderConfirmation.php  # Pengiriman email via Queue
+├── Models/                        # Eloquent ORM (User, Product, Order, dll)
 ├── Policies/
-│   └── ProductPolicy.php           # Authorization rules
-└── Services/
-    ├── CartService.php              # Cart logic (single-seller)
-    ├── DashboardService.php         # Stats & analytics
-    ├── OrderService.php             # Checkout with DB transaction
-    └── StockService.php             # Stock validation & deduction
+│   └── ProductPolicy.php          # Otorisasi CRUD Produk Seller
+└── Services/                      # Business Logic Layer
+    ├── CartService.php            # Logika batas cart single-seller
+    ├── DashboardService.php       # Perhitungan statistik Seller
+    ├── OrderService.php           # Logika transaksi DB saat Checkout
+    └── StockService.php           # Validasi dan pengurangan stok barang
 ```
 
-## 🧪 Testing
+---
 
-```bash
-# Jalankan semua test
-php artisan test
+## 🛠️ Stack Teknologi
 
-# Jalankan test tertentu
-php artisan test --filter=RegistrationTest
-php artisan test --filter=ProductManagementTest
-php artisan test --filter=CheckoutTest
-```
-
-### Test Cases
-
-| Test | Deskripsi |
-|------|-----------|
-| **RegistrationTest** | Registrasi buyer & seller, validasi role, store_name required untuk seller |
-| **ProductManagementTest** | Seller CRUD produk, buyer tidak bisa akses, cross-seller authorization |
-| **CheckoutTest** | Checkout sukses dengan stok cukup, gagal dengan stok kurang (rollback), validasi form |
-
-## 🛠️ Tech Stack
-
-- **Backend**: Laravel 13, PHP 8.2+
-- **Frontend**: Blade, Alpine.js, Tailwind CSS 4
-- **Database**: SQLite (development), MySQL (production)
+- **Core Framework**: [Laravel 13](https://laravel.com)
+- **Frontend Stack**: [Blade Template](https://laravel.com/docs/blade), [Tailwind CSS 4](https://tailwindcss.com), [Alpine.js](https://alpinejs.dev)
 - **Build Tool**: Vite
-- **Auth**: Laravel Breeze (Blade stack)
-- **Queue**: Database driver (configurable)
-- **Mail**: Mailtrap / Log (development)
+- **Database**: SQLite (Development) / MySQL (Production Ready)
+- **Autentikasi**: Laravel Breeze
 
-## 📧 Konfigurasi Email
+---
 
-Untuk development, email disimpan di log (`storage/logs/laravel.log`). Untuk menggunakan Mailtrap:
+## 🧪 Pengujian Sistem (Testing)
+
+Proyek ini dilengkapi dengan **Feature Tests** berbasis Pest/PHPUnit untuk memastikan fitur-fitur berjalan dengan baik.
+
+> [!TIP]
+> Jalankan perintah berikut untuk menjalankan seluruh pengujian:
+> ```bash
+> php artisan test
+> ```
+
+**Skenario Utama yang Diuji:**
+1. **RegistrationTest**: Validasi registrasi pengguna dan pembagian peran (*role*).
+2. **ProductManagementTest**: Keamanan CRUD produk, pembeli tidak bisa mengubah produk penjual, dan penjual hanya bisa mengubah produknya sendiri.
+3. **CheckoutTest**: Validasi proses checkout, pencegahan order jika stok habis (DB rollback otomatis).
+
+---
+
+## 📧 Konfigurasi Email Lokal
+
+Secara default, Laravel akan mencatat log email ke dalam file `storage/logs/laravel.log`. Jika Anda ingin menggunakan layanan simulasi email seperti **Mailtrap**, ubah konfigurasi `.env` Anda:
 
 ```env
 MAIL_MAILER=smtp
@@ -171,6 +169,9 @@ MAIL_FROM_ADDRESS="noreply@simpleshop.test"
 MAIL_FROM_NAME="SimpleShop"
 ```
 
-## 📝 Lisensi
+---
 
-MIT License
+<div align="center">
+  Dilisensikan di bawah <strong>MIT License</strong>. <br>
+  Dibuat dengan ❤️ untuk pembelajaran E-Commerce dengan Laravel.
+</div>

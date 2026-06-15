@@ -27,8 +27,19 @@ class ShopController extends Controller
             $query->where('category_id', $request->category);
         }
 
-        $products = $query->latest()->paginate(12)->appends($request->query());
-        $categories = Category::all();
+        // Get all products instead of paginating
+        $products = $query->get();
+
+        // Apply recommendation sorting if no active filters
+        if (!$request->filled('search') && !$request->filled('category')) {
+            $products = $products->sortByDesc(function ($product) {
+                // Weight = number of views + a random factor (0 to 15) to keep it dynamic
+                return $product->views + rand(0, 15);
+            })->values();
+        }
+        $categories = Category::whereHas('products', function ($query) {
+            $query->where('stock', '>', 0);
+        })->get();
 
         return view('shop.index', compact('products', 'categories'));
     }
@@ -38,6 +49,7 @@ class ShopController extends Controller
      */
     public function show(Product $product): View
     {
+        $product->increment('views');
         $product->load(['category', 'seller']);
         $relatedProducts = Product::where('category_id', $product->category_id)
             ->where('id', '!=', $product->id)

@@ -17,6 +17,7 @@ Route::get('/', function () {
 // Public product catalog
 Route::get('/products', [ShopController::class, 'index'])->name('products.index');
 Route::get('/products/{product:slug}', [ShopController::class, 'show'])->name('products.show');
+Route::get('/api/products/search', \App\Http\Controllers\Api\ProductSearchController::class)->name('api.products.search');
 
 // Authenticated routes
 Route::middleware('auth')->group(function () {
