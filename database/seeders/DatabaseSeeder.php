@@ -24,7 +24,7 @@ class DatabaseSeeder extends Seeder
             [
                 'name' => 'Anda Toko',
                 'email' => 'seller1@example.com',
-                'password' => Hash::make('password'),
+                'password' => Hash::make('12345678'),
                 'role' => 'seller',
                 'store_name' => 'TeknoMart',
                 'store_description' => 'Toko elektronik dan gadget terlengkap dengan harga terjangkau.',
@@ -36,7 +36,7 @@ class DatabaseSeeder extends Seeder
             [
                 'name' => 'Kamu Fashion',
                 'email' => 'seller2@example.com',
-                'password' => Hash::make('password'),
+                'password' => Hash::make('12345678'),
                 'role' => 'seller',
                 'store_name' => 'Siti Style House',
                 'store_description' => 'Fashion trendy dan berkualitas untuk semua kalangan.',
@@ -47,9 +47,9 @@ class DatabaseSeeder extends Seeder
         User::firstOrCreate(
             ['email' => 'buyer1@example.com'],
             [
-                'name' => 'Naruto',
+                'name' => 'Naruto Uzumaki',
                 'email' => 'buyer1@example.com',
-                'password' => Hash::make('password'),
+                'password' => Hash::make('12345678'),
                 'role' => 'buyer',
                 'shipping_address' => 'Jl. Merdeka No. 45, Jakarta Pusat 10110',
             ]
@@ -58,9 +58,9 @@ class DatabaseSeeder extends Seeder
         User::firstOrCreate(
             ['email' => 'buyer2@example.com'],
             [
-                'name' => 'Sasuke',
+                'name' => 'Sasuke Uchiha',
                 'email' => 'buyer2@example.com',
-                'password' => Hash::make('password'),
+                'password' => Hash::make('12345678'),
                 'role' => 'buyer',
                 'shipping_address' => 'Jl. Sudirman No. 78, Bandung 40112',
             ]
@@ -71,7 +71,7 @@ class DatabaseSeeder extends Seeder
             [
                 'name' => 'Rudi Hermawan',
                 'email' => 'buyer3@example.com',
-                'password' => Hash::make('password'),
+                'password' => Hash::make('12345678'),
                 'role' => 'buyer',
                 'shipping_address' => 'Jl. Diponegoro No. 12, Surabaya 60241',
             ]
