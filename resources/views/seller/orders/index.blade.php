@@ -36,8 +36,8 @@
                                 @foreach($order->items as $item)
                                     <div class="flex items-center gap-3 p-3">
                                         <div class="w-10 h-10 rounded bg-gray-100 overflow-hidden shrink-0">
-                                            @if($item->product && $item->product->image)
-                                                <img src="{{ asset('storage/' . $item->product->image) }}" class="w-full h-full object-cover">
+                                            @if($item->product && $item->product->image_url)
+                                                <img src="{{ $item->product->image_url }}" class="w-full h-full object-cover">
                                             @endif
                                         </div>
                                         <div class="flex-1 min-w-0">

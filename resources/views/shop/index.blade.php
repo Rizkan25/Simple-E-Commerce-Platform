@@ -89,7 +89,7 @@
                         <div class="bg-white rounded-2xl sm:rounded-3xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group flex flex-col">
                             <a href="{{ route('products.show', $product) }}" class="block relative overflow-hidden aspect-square">
                                 <div class="absolute inset-0 bg-black/5 group-hover:bg-transparent transition-colors z-10"></div>
-                                <img src="{{ $product->image ? asset('storage/' . $product->image) : 'https://picsum.photos/seed/product' . $product->id . '/400/400' }}" alt="{{ $product->name }}"
+                                <img src="{{ $product->image_url }}" alt="{{ $product->name }}"
                                      class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
                                 @if($product->stock <= 0)
                                     <div class="absolute inset-0 bg-white/60 backdrop-blur-sm z-20 flex items-center justify-center">
@@ -109,11 +109,8 @@
                                 </p>
                                 
                                 <div class="mt-auto">
-                                    <div class="flex items-end justify-between mb-3 sm:mb-4">
-                                        <div class="flex flex-col">
-                                            <span class="text-[10px] sm:text-xs text-gray-500 mb-0.5">Harga</span>
-                                            <span class="font-heading text-base sm:text-xl font-extrabold text-gray-900 whitespace-nowrap">Rp {{ number_format($product->price, 0, ',', '.') }}</span>
-                                        </div>
+                                    <div class="flex items-center justify-center mb-3 sm:mb-4 w-full">
+                                        <span class="font-heading text-base sm:text-xl font-extrabold text-gray-900 whitespace-nowrap">Rp {{ number_format($product->price, 0, ',', '.') }}</span>
                                     </div>
 
                                     @auth

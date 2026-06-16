@@ -18,7 +18,7 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-0">
                     <!-- Product Image -->
                     <div class="aspect-square bg-gray-100">
-                        <img src="{{ $product->image ? asset('storage/' . $product->image) : 'https://picsum.photos/seed/product' . $product->id . '/600/600' }}" alt="{{ $product->name }}"
+                        <img src="{{ $product->image_url }}" alt="{{ $product->name }}"
                              class="w-full h-full object-cover">
                     </div>
 
@@ -105,7 +105,7 @@
                         @foreach($relatedProducts as $related)
                             <a href="{{ route('products.show', $related) }}" class="bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-md transition-shadow group">
                                 <div class="aspect-square bg-gray-100 overflow-hidden">
-                                    <img src="{{ $related->image ? asset('storage/' . $related->image) : 'https://picsum.photos/seed/product' . $related->id . '/400/400' }}" alt="{{ $related->name }}"
+                                    <img src="{{ $related->image_url }}" alt="{{ $related->name }}"
                                          class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
                                 </div>
                                 <div class="p-3">

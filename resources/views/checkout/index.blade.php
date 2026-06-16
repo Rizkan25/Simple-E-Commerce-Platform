@@ -62,9 +62,7 @@
                                 @foreach($cart->items as $item)
                                     <div class="flex gap-3 {{ !$loop->first ? 'pt-3' : '' }}">
                                         <div class="w-12 h-12 rounded bg-gray-100 overflow-hidden shrink-0">
-                                            @if($item->product->image)
-                                                <img src="{{ asset('storage/' . $item->product->image) }}" class="w-full h-full object-cover">
-                                            @endif
+                                            <img src="{{ $item->product->image_url }}" class="w-full h-full object-cover">
                                         </div>
                                         <div class="flex-1 min-w-0">
                                             <p class="text-sm font-medium text-gray-800 truncate">{{ $item->product->name }}</p>

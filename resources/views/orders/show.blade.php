@@ -19,9 +19,7 @@
                             @foreach($order->items as $item)
                                 <div class="flex gap-4 py-3 {{ $loop->first ? 'pt-0' : '' }}">
                                     <div class="w-16 h-16 rounded bg-gray-100 overflow-hidden shrink-0">
-                                        @if($item->product && $item->product->image)
-                                            <img src="{{ asset('storage/' . $item->product->image) }}" class="w-full h-full object-cover">
-                                        @endif
+                                        <img src="{{ $item->product->image_url }}" class="w-full h-full object-cover">
                                     </div>
                                     <div class="flex-1 min-w-0">
                                         <p class="font-medium text-gray-800 text-sm">{{ $item->product->name ?? 'Produk dihapus' }}</p>

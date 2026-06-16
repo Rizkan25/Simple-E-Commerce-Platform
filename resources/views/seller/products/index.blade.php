@@ -35,9 +35,7 @@
                                     <td class="px-6 py-4">
                                         <div class="flex items-center gap-3">
                                             <div class="w-10 h-10 rounded bg-gray-100 overflow-hidden shrink-0">
-                                                @if($product->image)
-                                                    <img src="{{ asset('storage/' . $product->image) }}" class="w-full h-full object-cover">
-                                                @endif
+                                                <img src="{{ $product->image_url }}" class="w-full h-full object-cover">
                                             </div>
                                             <span class="font-medium text-gray-800 text-sm">{{ $product->name }}</span>
                                         </div>

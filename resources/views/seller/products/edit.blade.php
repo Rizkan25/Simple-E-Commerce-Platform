@@ -64,7 +64,7 @@
                             <div>
                                 <x-input-label :value="__('Gambar Saat Ini')" />
                                 <div class="mt-1 w-32 h-32 rounded-lg overflow-hidden bg-gray-100">
-                                    <img src="{{ asset('storage/' . $product->image) }}" class="w-full h-full object-cover">
+                                    <img src="{{ $product->image_url }}" class="w-full h-full object-cover">
                                 </div>
                             </div>
                         @endif
