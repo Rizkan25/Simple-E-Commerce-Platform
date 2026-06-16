@@ -90,14 +90,15 @@ Aplikasi sudah dilengkapi dengan *Database Seeder* untuk memudahkan pengujian. G
 ### 🏪 Akun Seller
 | Toko | Email | Password |
 |---|---|---|
-| **TeknoMart** | `seller1@example.com` | `password` |
-| **Siti Style House** | `seller2@example.com` | `password` |
+| **TeknoMart** | `seller1@example.com` | `SecretShop@2026` |
+| **Siti Style House** | `seller2@example.com` | `SecretShop@2026` |
 
 ### 🛒 Akun Buyer
 | Email | Password |
 |---|---|
-| `buyer1@example.com` | `password` |
-| `buyer2@example.com` | `password` |
+| `buyer1@example.com` | `SecretShop@2026` |
+| `buyer2@example.com` | `SecretShop@2026` |
+| `buyer3@example.com` | `SecretShop@2026` |
 
 ---
 
