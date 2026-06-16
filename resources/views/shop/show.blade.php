@@ -110,7 +110,7 @@
                                 </div>
                                 <div class="p-3">
                                     <h3 class="text-sm font-medium text-gray-800 truncate">{{ $related->name }}</h3>
-                                    <p class="text-sm font-bold text-gray-900 mt-1">Rp {{ number_format($related->price, 0, ',', '.') }}</p>
+                                    <p class="text-sm font-bold text-gray-900 mt-1 whitespace-nowrap">Rp {{ number_format($related->price, 0, ',', '.') }}</p>
                                 </div>
                             </a>
                         @endforeach

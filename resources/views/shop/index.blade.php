@@ -112,7 +112,7 @@
                                     <div class="flex items-end justify-between mb-3 sm:mb-4">
                                         <div class="flex flex-col">
                                             <span class="text-[10px] sm:text-xs text-gray-500 mb-0.5">Harga</span>
-                                            <span class="font-heading text-base sm:text-xl font-extrabold text-gray-900">Rp {{ number_format($product->price, 0, ',', '.') }}</span>
+                                            <span class="font-heading text-base sm:text-xl font-extrabold text-gray-900 whitespace-nowrap">Rp {{ number_format($product->price, 0, ',', '.') }}</span>
                                         </div>
                                     </div>
 
