@@ -7,8 +7,10 @@
                 <h2 class="font-semibold text-xl text-gray-800 leading-tight">Dashboard</h2>
                 <p class="text-sm text-gray-500 mt-1">Selamat datang, {{ $seller->store_name ?? $seller->name }}!</p>
             </div>
-            <a href="{{ route('seller.products.create') }}" class="px-4 py-2 bg-indigo-600 text-white text-sm rounded-lg hover:bg-indigo-700 transition flex items-center gap-2">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+            <a href="{{ route('seller.products.create') }}" class="inline-flex items-center px-6 py-2.5 bg-gradient-to-r from-primary-600 to-secondary-500 rounded-xl font-bold text-sm text-white tracking-wide hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-all shadow-lg shadow-primary-500/25 hover:shadow-xl hover:-translate-y-0.5 duration-300">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 -ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+                </svg>
                 Tambah Produk
             </a>
         </div>

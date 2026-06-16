@@ -84,41 +84,42 @@
 
             <!-- Products Grid -->
             @if($products->count() > 0)
-                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+                <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 2xl:grid-cols-6 gap-3 sm:gap-4 md:gap-6 lg:gap-8">
                     @foreach($products as $product)
-                        <div class="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group flex flex-col">
+                        <div class="bg-white rounded-2xl sm:rounded-3xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group flex flex-col">
                             <a href="{{ route('products.show', $product) }}" class="block relative overflow-hidden aspect-square">
                                 <div class="absolute inset-0 bg-black/5 group-hover:bg-transparent transition-colors z-10"></div>
                                 <img src="{{ $product->image ? asset('storage/' . $product->image) : 'https://picsum.photos/seed/product' . $product->id . '/400/400' }}" alt="{{ $product->name }}"
                                      class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
                                 @if($product->stock <= 0)
                                     <div class="absolute inset-0 bg-white/60 backdrop-blur-sm z-20 flex items-center justify-center">
-                                        <span class="px-4 py-2 bg-gray-900 text-white font-bold rounded-full text-sm shadow-lg">Habis Terjual</span>
+                                        <span class="px-2 py-1 sm:px-4 sm:py-2 bg-gray-900 text-white font-bold rounded-full text-xs sm:text-sm shadow-lg">Habis Terjual</span>
                                     </div>
                                 @endif
                             </a>
-                            <div class="p-5 flex flex-col flex-grow">
-                                <div class="text-xs font-bold text-secondary-600 uppercase tracking-wider mb-2">{{ $product->category->name }}</div>
+                            
+                            <div class="p-3 sm:p-5 flex flex-col flex-grow">
+                                <div class="text-[10px] sm:text-xs font-bold text-secondary-600 uppercase tracking-wider mb-1 sm:mb-2">{{ $product->category->name }}</div>
                                 <a href="{{ route('products.show', $product) }}" class="block mb-1">
-                                    <h3 class="font-heading font-bold text-gray-900 text-base leading-snug hover:text-primary-600 transition-colors line-clamp-2">{{ $product->name }}</h3>
+                                    <h3 class="font-heading font-bold text-gray-900 text-sm sm:text-base leading-tight hover:text-primary-600 transition-colors line-clamp-2">{{ $product->name }}</h3>
                                 </a>
-                                <p class="text-sm text-gray-500 mb-4 flex items-center gap-1.5">
-                                    <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
-                                    {{ $product->seller->store_name ?? $product->seller->name }}
+                                <p class="text-xs sm:text-sm text-gray-500 mb-3 sm:mb-4 flex items-center gap-1 sm:gap-1.5">
+                                    <svg class="w-3 h-3 sm:w-4 sm:h-4 text-gray-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                                    <span class="truncate">{{ $product->seller->store_name ?? $product->seller->name }}</span>
                                 </p>
                                 
                                 <div class="mt-auto">
-                                    <div class="flex items-end justify-between mb-4">
+                                    <div class="flex items-end justify-between mb-3 sm:mb-4">
                                         <div class="flex flex-col">
-                                            <span class="text-xs text-gray-500 mb-0.5">Harga</span>
-                                            <span class="font-heading text-xl font-extrabold text-gray-900">Rp {{ number_format($product->price, 0, ',', '.') }}</span>
+                                            <span class="text-[10px] sm:text-xs text-gray-500 mb-0.5">Harga</span>
+                                            <span class="font-heading text-base sm:text-xl font-extrabold text-gray-900">Rp {{ number_format($product->price, 0, ',', '.') }}</span>
                                         </div>
                                     </div>
 
                                     @auth
                                         @if(auth()->user()->isBuyer() && $product->stock > 0)
-                                            <button onclick="addToCart({{ $product->id }})" class="w-full py-3 px-4 bg-primary-50 text-primary-700 font-semibold rounded-xl hover:bg-primary-600 hover:text-white transition-colors duration-300 flex items-center justify-center gap-2 group/btn">
-                                                <svg class="w-5 h-5 group-hover/btn:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <button onclick="addToCart({{ $product->id }})" class="w-full py-2 sm:py-3 px-2 sm:px-4 bg-primary-50 text-primary-700 text-xs sm:text-sm font-semibold rounded-xl hover:bg-primary-600 hover:text-white transition-colors duration-300 flex items-center justify-center gap-1 sm:gap-2 group/btn">
+                                                <svg class="w-4 h-4 sm:w-5 sm:h-5 group-hover/btn:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 100 4 2 2 0 000-4z"/>
                                                 </svg>
                                                 Tambah
@@ -126,7 +127,7 @@
                                         @endif
                                     @else
                                         @if($product->stock > 0)
-                                            <a href="{{ route('login') }}" class="w-full py-3 px-4 bg-gray-50 text-gray-600 text-sm font-semibold rounded-xl hover:bg-gray-100 transition-colors flex items-center justify-center gap-2 border border-gray-200">
+                                            <a href="{{ route('login') }}" class="w-full py-2 sm:py-3 px-2 sm:px-4 bg-gray-50 text-gray-600 text-xs sm:text-sm font-semibold rounded-xl hover:bg-gray-100 transition-colors flex items-center justify-center gap-1 sm:gap-2 border border-gray-200">
                                                 Masuk untuk membeli
                                             </a>
                                         @endif
@@ -136,8 +137,6 @@
                         </div>
                     @endforeach
                 </div>
-
-                <!-- Pagination removed for single page display -->
             @else
                 <div class="text-center py-20 bg-white rounded-3xl shadow-sm border border-gray-100">
                     <div class="w-24 h-24 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-6">
