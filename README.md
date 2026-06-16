@@ -5,11 +5,10 @@
   
   **A Lightweight, Multi-Seller E-Commerce Platform** built with the modern TALL stack (Tailwind, Alpine, Laravel).
 
-[![Laravel 13](https://img.shields.io/badge/Laravel-FF2D20?style=for-the-badge&logo=laravel&logoColor=white)](https://laravel.com)
-[![PHP 8.2+](https://img.shields.io/badge/PHP_8.2+-777BB4?style=for-the-badge&logo=php&logoColor=white)](https://php.net)
-[![Tailwind CSS 4](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com)
-[![Alpine.js](https://img.shields.io/badge/Alpine.js-8BC0D0?style=for-the-badge&logo=alpine.js&logoColor=white)](https://alpinejs.dev)
-
+  [![Laravel 13](https://img.shields.io/badge/Laravel-FF2D20?style=for-the-badge&logo=laravel&logoColor=white)](https://laravel.com)
+  [![PHP 8.2+](https://img.shields.io/badge/PHP_8.2+-777BB4?style=for-the-badge&logo=php&logoColor=white)](https://php.net)
+  [![Tailwind CSS 4](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com)
+  [![Alpine.js](https://img.shields.io/badge/Alpine.js-8BC0D0?style=for-the-badge&logo=alpine.js&logoColor=white)](https://alpinejs.dev)
 </div>
 
 ---
@@ -23,24 +22,23 @@
 ## ✨ Fitur Utama
 
 ### 🛍️ Untuk Buyer (Pembeli)
-
-- **Katalog Interaktif**: Cari dan filter produk berdasarkan kategori dengan mudah.
-- **Smart Cart (AJAX)**: Tambah, kurangi, atau hapus item di keranjang tanpa reload halaman. Batasan _single-seller_ dalam satu kali checkout.
+- **Katalog Interaktif & Live Search**: Cari dan filter produk berdasarkan kategori dengan mudah. Dilengkapi dengan pencarian *real-time* berbasis API (AJAX).
+- **Profil Pengguna & Avatar**: Pengguna dapat mengunggah dan memperbarui foto profil (avatar) mereka.
+- **Produk Populer (View Tracking)**: Sistem melacak jumlah *views* (tayangan) pada setiap produk untuk menampilkan produk yang sedang tren/populer.
+- **Smart Cart (AJAX)**: Tambah, kurangi, atau hapus item di keranjang tanpa reload halaman. Batasan *single-seller* dalam satu kali checkout.
 - **Checkout Fleksibel**: Mendukung metode pembayaran Transfer Bank & COD (Cash on Delivery).
-- **Manajemen Pesanan**: Lacak status pesanan, riwayat belanja, dan opsi pembatalan untuk pesanan _pending_.
+- **Manajemen Pesanan**: Lacak status pesanan, riwayat belanja, dan opsi pembatalan untuk pesanan *pending*.
 
 ### 🏬 Untuk Seller (Penjual)
-
-- **Seller Dashboard**: Pantau performa toko dengan statistik penjualan, grafik pendapatan 7 hari terakhir, dan daftar produk terlaris.
-- **Manajemen Produk**: Sistem CRUD lengkap dengan fitur unggah gambar yang aman (nama unik _timestamp_).
+- **Seller Dashboard**: Pantau performa toko dengan statistik penjualan, grafik pendapatan 7 hari terakhir, dan daftar produk terlaris dengan UI/UX yang telah diperbarui.
+- **Manajemen Produk (CRUD)**: Antarmuka yang rapi untuk menambah, mengubah, dan menghapus produk beserta dukungan unggah gambar yang aman (nama unik *timestamp*).
 - **Proses Pesanan Masuk**: Perbarui status pesanan dari pembeli secara bertahap: `Pending` ➔ `Paid` ➔ `Shipped` ➔ `Completed`.
 - **Notifikasi Otomatis**: Sistem mengirim email notifikasi otomatis kepada pembeli ketika status pesanan berubah.
 
 ### ⚙️ Sistem & Keamanan
-
-- **Role-Based Access Control (RBAC)**: Autentikasi dan otorisasi ketat memisahkan hak akses antara _Buyer_ dan _Seller_.
-- **Pessimistic Locking**: Mencegah _race-condition_ atau bentrok pembelian barang yang sama secara bersamaan saat _checkout_.
-- **Asynchronous Queues**: Pengiriman email menggunakan _Job Queue_ agar proses belanja tetap cepat.
+- **Role-Based Access Control (RBAC)**: Autentikasi dan otorisasi ketat memisahkan hak akses antara *Buyer* dan *Seller*.
+- **Pessimistic Locking**: Mencegah *race-condition* atau bentrok pembelian barang yang sama secara bersamaan saat *checkout*.
+- **Asynchronous Queues**: Pengiriman email menggunakan *Job Queue* agar proses belanja tetap cepat.
 
 ---
 
@@ -67,7 +65,7 @@ php artisan key:generate
 # 4. Migrasi Database dan Seeder (Otomatis menggunakan SQLite sebagai default)
 php artisan migrate --seed
 
-# 5. Buat symbolic link untuk gambar/storage
+# 5. Buat symbolic link untuk gambar/storage (Penting untuk Gambar Produk & Avatar!)
 php artisan storage:link
 
 # 6. Build aset frontend (Tailwind & Alpine)
@@ -76,31 +74,28 @@ npm run build
 
 > [!NOTE]  
 > **Menjalankan Aplikasi**
-> Anda perlu menjalankan dua server dan satu _queue worker_ secara bersamaan. Silakan buka 3 tab terminal:
->
+> Anda perlu menjalankan dua server dan satu *queue worker* secara bersamaan. Silakan buka 3 tab terminal:
 > - Tab 1: `php artisan serve` (Server PHP)
 > - Tab 2: `npm run dev` (Vite Hot Reload)
 > - Tab 3: `php artisan queue:work` (Background process untuk Email)
->
+> 
 > Akses aplikasi di: **http://localhost:8000**
 
 ---
 
 ## 🔐 Akun Uji Coba (Demo)
 
-Aplikasi sudah dilengkapi dengan _Database Seeder_ untuk memudahkan pengujian. Gunakan kredensial berikut:
+Aplikasi sudah dilengkapi dengan *Database Seeder* untuk memudahkan pengujian. Gunakan kredensial berikut:
 
 ### 🏪 Akun Seller
-
-| Toko                 | Email                 | Password   |
-| -------------------- | --------------------- | ---------- |
-| **TeknoMart**        | `seller1@example.com` | `password` |
+| Toko | Email | Password |
+|---|---|---|
+| **TeknoMart** | `seller1@example.com` | `password` |
 | **Siti Style House** | `seller2@example.com` | `password` |
 
 ### 🛒 Akun Buyer
-
-| Email                | Password   |
-| -------------------- | ---------- |
+| Email | Password |
+|---|---|
 | `buyer1@example.com` | `password` |
 | `buyer2@example.com` | `password` |
 
@@ -108,16 +103,18 @@ Aplikasi sudah dilengkapi dengan _Database Seeder_ untuk memudahkan pengujian. G
 
 ## 📂 Struktur Direktori Utama
 
-Berikut adalah letak direktori kunci bagi Anda yang ingin mempelajari atau memodifikasi _source code_:
+Berikut adalah letak direktori kunci bagi Anda yang ingin mempelajari atau memodifikasi *source code*:
 
 ```text
 app/
 ├── Http/
 │   ├── Controllers/
+│   │   ├── Api/                   # Endpoint API (Contoh: Live Product Search)
 │   │   ├── Auth/                  # Sistem Login & Register Breeze
 │   │   ├── Seller/                # Logika khusus Dashboard Seller & Produk
 │   │   ├── CartController.php     # Manajemen Keranjang via AJAX
-│   │   └── CheckoutController.php # Logika Checkout
+│   │   ├── CheckoutController.php # Logika Checkout
+│   │   └── ProfileController.php  # Update Profil & Avatar
 │   └── Middleware/
 │       └── RoleMiddleware.php     # Proteksi akses berdasarkan Role
 ├── Jobs/
@@ -150,14 +147,12 @@ Proyek ini dilengkapi dengan **Feature Tests** berbasis Pest/PHPUnit untuk memas
 
 > [!TIP]
 > Jalankan perintah berikut untuk menjalankan seluruh pengujian:
->
 > ```bash
 > php artisan test
 > ```
 
 **Skenario Utama yang Diuji:**
-
-1. **RegistrationTest**: Validasi registrasi pengguna dan pembagian peran (_role_).
+1. **RegistrationTest**: Validasi registrasi pengguna dan pembagian peran (*role*).
 2. **ProductManagementTest**: Keamanan CRUD produk, pembeli tidak bisa mengubah produk penjual, dan penjual hanya bisa mengubah produknya sendiri.
 3. **CheckoutTest**: Validasi proses checkout, pencegahan order jika stok habis (DB rollback otomatis).
 
