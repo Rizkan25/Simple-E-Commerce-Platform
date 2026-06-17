@@ -29,6 +29,7 @@ class ShopResource extends Resource
 {
     protected static ?string $model = Shop::class;
 
+    protected static ?string $recordTitleAttribute = 'name';
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
     public static function form(Schema $schema): Schema

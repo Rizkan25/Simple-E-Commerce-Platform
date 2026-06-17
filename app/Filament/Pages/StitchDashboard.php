@@ -7,6 +7,7 @@ use BackedEnum;
 use App\Models\Order;
 use App\Models\Shop;
 use App\Models\User;
+use Filament\Notifications\Notification;
 
 class StitchDashboard extends BaseDashboard
 {
@@ -159,5 +160,44 @@ class StitchDashboard extends BaseDashboard
             'maxMonthlySales' => $maxMonthlySales,
             'chartLabels' => $chartLabels,
         ];
+    }
+
+    public function exportData($format = 'xls')
+    {
+        // Ambil data untuk laporan
+        $totalGmv = \App\Models\Order::whereNotIn('status', ['cancelled'])->sum('total_amount');
+        $totalOrders = \App\Models\Order::whereNotIn('status', ['cancelled'])->count();
+        $activeMerchants = \App\Models\Shop::where('status', 'active')->count();
+        $newCustomers = \App\Models\User::where('role', 'customer')->whereMonth('created_at', now()->month)->count();
+        $recentOrders = \App\Models\Order::with('user')->latest()->limit(50)->get();
+
+        $data = compact('totalGmv', 'totalOrders', 'activeMerchants', 'newCustomers', 'recentOrders');
+        $filename = 'Laporan-Performa-Dasbor-' . date('d-m-Y');
+
+        if ($format === 'csv') {
+            return \Maatwebsite\Excel\Facades\Excel::download(
+                new \App\Exports\DashboardExport($data), 
+                $filename . '.csv',
+                \Maatwebsite\Excel\Excel::CSV
+            );
+        } elseif ($format === 'html') {
+            $html = view('exports.dashboard', $data)->render();
+            return response()->streamDownload(function() use ($html) {
+                echo $html;
+            }, $filename . '.html', [
+                "Content-type" => "text/html; charset=utf-8"
+            ]);
+        }
+
+        // Default to XLS (HTML Injection for perfect styling)
+        $html = view('exports.dashboard', $data)->render();
+        return response()->streamDownload(function() use ($html) {
+            echo $html;
+        }, $filename . '.xls', [
+            "Content-type"        => "application/vnd.ms-excel",
+            "Pragma"              => "no-cache",
+            "Cache-Control"       => "must-revalidate, post-check=0, pre-check=0",
+            "Expires"             => "0"
+        ]);
     }
 }

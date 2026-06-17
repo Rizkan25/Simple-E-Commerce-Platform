@@ -28,13 +28,7 @@
 
 <div>
 <div class="p-6 space-y-4">
-<!-- Search Bar -->
-<div class="relative w-full lg:w-1/2 mb-6">
-    <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-        <span class="material-symbols-outlined text-gray-400 text-[20px]" data-icon="search">search</span>
-    </div>
-    <input wire:model.live.debounce.500ms="searchQuery" type="text" class="w-full pl-12 pr-4 py-3 bg-gray-950 border border-white/10 rounded-lg text-sm text-gray-100 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors placeholder:text-gray-400/50" placeholder="Cari pesanan, toko, atau pelanggan...">
-</div>
+
 <!-- Page Title -->
 <div class="flex justify-between items-end mb-2">
 <div>
@@ -42,11 +36,27 @@
 <p class="text-sm text-gray-400">Selamat datang kembali, berikut performa hari ini.</p>
 </div>
 <div class="flex gap-2">
-<button class="flex items-center gap-1 px-4 py-2 border border-white/10 rounded-lg text-sm font-medium hover:bg-gray-900 transition-colors">
+<div x-data="{ open: false }" class="relative z-10">
+<button @click="open = !open" @click.away="open = false" class="flex items-center gap-1 px-4 py-2 border border-white/10 rounded-lg text-sm font-medium hover:bg-gray-900 transition-colors">
 <span class="material-symbols-outlined text-sm" data-icon="download">download</span>
                         Ekspor Data
+                        <span class="material-symbols-outlined text-sm transition-transform" :class="open ? 'rotate-180' : ''" data-icon="expand_more">expand_more</span>
                     </button>
-<button class="bg-amber-500 text-gray-900 px-4 py-2 rounded-lg text-sm font-medium hover:opacity-90 active:scale-95 transition-all">
+                    
+                    <div x-show="open" style="display: none;" x-transition class="absolute right-0 mt-2 w-48 bg-gray-950 border border-white/10 rounded-lg shadow-xl overflow-hidden py-1">
+                        <div class="px-3 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wider bg-gray-900/50">Pilih Format</div>
+                        <button wire:click="exportData('xls')" @click="open = false" class="w-full text-left px-4 py-2 text-sm text-gray-300 hover:bg-amber-500 hover:text-gray-900 transition-colors flex items-center gap-2">
+                            <span class="material-symbols-outlined text-[16px]" data-icon="table">table</span> Microsoft Excel Berwarna (.xls)
+                        </button>
+                        <button wire:click="exportData('csv')" @click="open = false" class="w-full text-left px-4 py-2 text-sm text-gray-300 hover:bg-amber-500 hover:text-gray-900 transition-colors flex items-center gap-2">
+                            <span class="material-symbols-outlined text-[16px]" data-icon="data_object">data_object</span> File CSV Mentah (.csv)
+                        </button>
+                        <button wire:click="exportData('html')" @click="open = false" class="w-full text-left px-4 py-2 text-sm text-gray-300 hover:bg-amber-500 hover:text-gray-900 transition-colors flex items-center gap-2">
+                            <span class="material-symbols-outlined text-[16px]" data-icon="html">html</span> Format Web (.html)
+                        </button>
+                    </div>
+                </div>
+<button wire:click="$refresh" class="bg-amber-500 text-gray-900 px-4 py-2 rounded-lg text-sm font-medium hover:opacity-90 active:scale-95 transition-all">
                         Segarkan Data
                     </button>
 </div>
@@ -56,8 +66,8 @@
 <!-- KPI 1 -->
 <div class="bg-gray-950 border border-white/10 p-4 rounded-xl">
 <div class="flex justify-between items-start mb-2">
-<div class="p-2 bg-amber-500 rounded-lg">
-<span class="material-symbols-outlined text-amber-500" data-icon="payments">payments</span>
+<div class="w-10 h-10 flex items-center justify-center bg-amber-500 rounded-lg">
+<span class="material-symbols-outlined text-amber-900" data-icon="payments">payments</span>
 </div>
 <span class="flex items-center gap-1 {{ $gmvTrend >= 0 ? 'text-emerald-400' : 'text-red-400' }} font-bold text-xs font-semibold">
     {{ $gmvTrend >= 0 ? '+' : '' }}{{ $gmvTrend }}%
@@ -71,7 +81,7 @@
 <!-- KPI 2 -->
 <div class="bg-gray-950 border border-white/10 p-4 rounded-xl">
 <div class="flex justify-between items-start mb-2">
-<div class="p-2 bg-emerald-900/50 rounded-lg text-emerald-300">
+<div class="w-10 h-10 flex items-center justify-center bg-emerald-900/50 rounded-lg text-emerald-300">
 <span class="material-symbols-outlined" data-icon="shopping_bag">shopping_bag</span>
 </div>
 <span class="flex items-center gap-1 {{ $ordersTrend >= 0 ? 'text-emerald-400' : 'text-red-400' }} font-bold text-xs font-semibold">
@@ -86,7 +96,7 @@
 <!-- KPI 3 -->
 <div class="bg-gray-950 border border-white/10 p-4 rounded-xl">
 <div class="flex justify-between items-start mb-2">
-<div class="p-2 bg-orange-200 rounded-lg text-orange-900">
+<div class="w-10 h-10 flex items-center justify-center bg-orange-200 rounded-lg text-orange-900">
 <span class="material-symbols-outlined" data-icon="store">store</span>
 </div>
 <span class="flex items-center gap-1 {{ $merchantsTrend >= 0 ? 'text-emerald-400' : 'text-red-400' }} font-bold text-xs font-semibold">
@@ -101,7 +111,7 @@
 <!-- KPI 4 -->
 <div class="bg-gray-950 border border-white/10 p-4 rounded-xl">
 <div class="flex justify-between items-start mb-2">
-<div class="p-2 bg-red-900/50 rounded-lg text-red-300">
+<div class="w-10 h-10 flex items-center justify-center bg-red-900/50 rounded-lg text-red-300">
 <span class="material-symbols-outlined" data-icon="person_add">person_add</span>
 </div>
 <span class="flex items-center gap-1 {{ $customersTrend >= 0 ? 'text-emerald-400' : 'text-red-400' }} font-bold text-xs font-semibold">
@@ -131,15 +141,12 @@
                 </div>
 <div class="relative flex-1 min-h-[300px] w-full flex items-end justify-between px-4">
 <!-- Chart Mockup with CSS -->
-<div class="absolute inset-0 flex items-center justify-center opacity-10 pointer-events-none">
-<span class="material-symbols-outlined text-[200px]" data-icon="insights">insights</span>
-</div>
 <!-- Horizontal grid lines -->
-<div class="absolute inset-x-0 top-0 bottom-8 flex flex-col justify-between border-b border-white/10/30">
-<div class="border-b border-white/10/10 w-full"></div>
-<div class="border-b border-white/10/10 w-full"></div>
-<div class="border-b border-white/10/10 w-full"></div>
-<div class="border-b border-white/10/10 w-full"></div>
+<div class="absolute inset-x-0 top-0 bottom-8 flex flex-col justify-between border-b border-white/10">
+<div class="border-b border-white/10 w-full"></div>
+<div class="border-b border-white/10 w-full"></div>
+<div class="border-b border-white/10 w-full"></div>
+<div class="border-b border-white/10 w-full"></div>
 </div>
 <!-- Columns/Points placeholder -->
 <div class="relative w-full h-full flex items-end justify-between pt-10">
@@ -172,41 +179,41 @@
 <!-- Order Status Donut -->
 <div class="bg-gray-950 border border-white/10 p-6 rounded-xl flex flex-col">
 <h3 class="text-lg font-semibold tracking-tight text-amber-500 mb-8">Ringkasan Status Pesanan</h3>
-<div class="flex-1 flex items-center justify-center relative py-xl">
+<div class="flex-1 flex items-center justify-center relative py-8">
 <!-- Simulated Donut Chart -->
-<div class="w-48 h-48 rounded-full border-[18px] border-surface-container relative flex items-center justify-center">
-<div class="absolute inset-0 rounded-full border-[18px] border-t-primary border-r-secondary border-b-tertiary-fixed-dim border-l-error transform rotate-45"></div>
+<div class="w-48 h-48 rounded-full border-[18px] border-gray-900 relative flex items-center justify-center">
+<div class="absolute inset-0 rounded-full border-[18px] border-t-slate-800 border-r-emerald-700 border-b-amber-400 border-l-red-700 transform rotate-45"></div>
 <div class="text-center">
 <p class="text-2xl font-semibold tracking-tight">{{ number_format($totalActiveOrders, 0, ",", ".") }}</p>
 <p class="text-xs font-semibold text-gray-400">Total Aktif</p>
 </div>
 </div>
 </div>
-<div class="space-y-sm mt-4">
+<div class="space-y-2 mt-4">
 <div class="flex items-center justify-between">
 <div class="flex items-center gap-2">
-<span class="w-3 h-3 rounded-full bg-primary"></span>
+<span class="w-3 h-3 rounded-full bg-slate-800"></span>
 <span class="text-xs">Diproses</span>
 </div>
 <span class="text-xs font-bold">{{ $processingPct }}%</span>
 </div>
 <div class="flex items-center justify-between">
 <div class="flex items-center gap-2">
-<span class="w-3 h-3 rounded-full bg-secondary"></span>
+<span class="w-3 h-3 rounded-full bg-emerald-700"></span>
 <span class="text-xs">Dikirim</span>
 </div>
 <span class="text-xs font-bold">{{ $shippedPct }}%</span>
 </div>
 <div class="flex items-center justify-between">
 <div class="flex items-center gap-2">
-<span class="w-3 h-3 rounded-full bg-orange-200-dim"></span>
+<span class="w-3 h-3 rounded-full bg-amber-400"></span>
 <span class="text-xs">Diterima</span>
 </div>
 <span class="text-xs font-bold">{{ $deliveredPct }}%</span>
 </div>
 <div class="flex items-center justify-between">
 <div class="flex items-center gap-2">
-<span class="w-3 h-3 rounded-full bg-error"></span>
+<span class="w-3 h-3 rounded-full bg-red-700"></span>
 <span class="text-xs">Dibatalkan</span>
 </div>
 <span class="text-xs font-bold">{{ $cancelledPct }}%</span>
