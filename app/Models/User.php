@@ -15,10 +15,12 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\Permission\Traits\HasRoles;
 use Bavix\Wallet\Traits\HasWallet;
 use Bavix\Wallet\Interfaces\Wallet;
+use Filament\Models\Contracts\FilamentUser;
+use Filament\Panel;
 
 #[Fillable(['name', 'email', 'password', 'role', 'store_name', 'store_description', 'shipping_address', 'avatar'])]
 #[Hidden(['password', 'remember_token'])]
-class User extends Authenticatable implements Wallet
+class User extends Authenticatable implements Wallet, FilamentUser
 {
     use HasFactory, Notifiable, SoftDeletes, HasRoles, HasWallet;
 
@@ -36,7 +38,10 @@ class User extends Authenticatable implements Wallet
         ];
     }
 
-
+    public function canAccessPanel(Panel $panel): bool
+    {
+        return $this->isAdmin();
+    }
 
     public function isBuyer(): bool
     {
