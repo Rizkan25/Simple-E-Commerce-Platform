@@ -13,6 +13,8 @@ class StitchDashboard extends BaseDashboard
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-home';
     protected string $view = 'filament.pages.stitch-dashboard';
     protected static ?string $title = 'Admin Console';
+    public string $salesFilter = 'month';
+    public string $searchQuery = '';
 
     protected function getViewData(): array
     {
@@ -58,8 +60,13 @@ class StitchDashboard extends BaseDashboard
         $deliveredPct = round(($deliveredCount / $totalOrdersCount) * 100);
         $cancelledPct = round(($cancelledCount / $totalOrdersCount) * 100);
 
-        $topShops = Shop::withoutGlobalScopes()
-            ->where('status', 'ACTIVE')
+        $topShopsQuery = Shop::withoutGlobalScopes()->where('status', 'ACTIVE');
+        
+        if (!empty($this->searchQuery)) {
+            $topShopsQuery->where('name', 'like', '%' . $this->searchQuery . '%');
+        }
+
+        $topShops = $topShopsQuery
             ->get()
             ->map(function ($shop) {
                 $totalSales = \App\Models\OrderItem::where('seller_id', $shop->user_id)
@@ -77,21 +84,53 @@ class StitchDashboard extends BaseDashboard
             ->sortByDesc('total_sales')
             ->take(4);
             
-        $recentOrders = Order::with('user')->latest()->take(4)->get();
+        $recentOrdersQuery = Order::with('user')->latest();
+        
+        if (!empty($this->searchQuery)) {
+            $recentOrdersQuery->where(function ($q) {
+                $q->where('order_number', 'like', '%' . $this->searchQuery . '%')
+                  ->orWhereHas('user', function ($uq) {
+                      $uq->where('name', 'like', '%' . $this->searchQuery . '%');
+                  });
+            });
+        }
+            
+        $recentOrders = $recentOrdersQuery->take(4)->get();
 
         $currentYear = now()->year;
         $monthlySales = [];
         $maxMonthlySales = 0;
+        $chartLabels = [];
         
-        for ($month = 1; $month <= 12; $month++) {
-            $sum = (float) Order::whereNotIn('status', ['cancelled'])
-                ->whereYear('created_at', $currentYear)
-                ->whereMonth('created_at', $month)
-                ->sum('total_amount');
-                
-            $monthlySales[$month] = $sum;
-            if ($sum > $maxMonthlySales) {
-                $maxMonthlySales = $sum;
+        if ($this->salesFilter === 'week') {
+            $chartLabels = ['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Min'];
+            for ($i = 0; $i < 7; $i++) {
+                $date = now()->startOfWeek()->addDays($i);
+                $sum = (float) Order::whereNotIn('status', ['cancelled'])
+                    ->whereDate('created_at', $date)
+                    ->sum('total_amount');
+                $monthlySales[] = $sum;
+                if ($sum > $maxMonthlySales) $maxMonthlySales = $sum;
+            }
+        } elseif ($this->salesFilter === 'year') {
+            for ($i = 4; $i >= 0; $i--) {
+                $year = $currentYear - $i;
+                $chartLabels[] = (string) $year;
+                $sum = (float) Order::whereNotIn('status', ['cancelled'])
+                    ->whereYear('created_at', $year)
+                    ->sum('total_amount');
+                $monthlySales[] = $sum;
+                if ($sum > $maxMonthlySales) $maxMonthlySales = $sum;
+            }
+        } else {
+            $chartLabels = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
+            for ($month = 1; $month <= 12; $month++) {
+                $sum = (float) Order::whereNotIn('status', ['cancelled'])
+                    ->whereYear('created_at', $currentYear)
+                    ->whereMonth('created_at', $month)
+                    ->sum('total_amount');
+                $monthlySales[] = $sum;
+                if ($sum > $maxMonthlySales) $maxMonthlySales = $sum;
             }
         }
 
@@ -118,6 +157,7 @@ class StitchDashboard extends BaseDashboard
             'currentYear' => $currentYear,
             'monthlySales' => $monthlySales,
             'maxMonthlySales' => $maxMonthlySales,
+            'chartLabels' => $chartLabels,
         ];
     }
 }
