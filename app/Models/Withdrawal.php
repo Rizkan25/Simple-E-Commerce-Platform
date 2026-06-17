@@ -1,0 +1,28 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+
+class Withdrawal extends Model
+{
+    use SoftDeletes;
+
+    protected $fillable = [
+        'shop_id',
+        'amount',
+        'status',
+        'bank_account',
+    ];
+
+    protected $casts = [
+        'amount' => 'decimal:2',
+    ];
+
+    public function shop(): BelongsTo
+    {
+        return $this->belongsTo(Shop::class);
+    }
+}

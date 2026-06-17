@@ -41,6 +41,7 @@ Route::middleware(['auth', 'role:buyer'])->group(function () {
     Route::patch('/orders/{order}/cancel', [OrderController::class, 'cancel'])->name('orders.cancel');
 });
 
+
 // Seller routes
 Route::middleware(['auth', 'role:seller'])->prefix('seller')->name('seller.')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
@@ -53,6 +54,9 @@ Route::middleware(['auth', 'role:seller'])->prefix('seller')->name('seller.')->g
 
 // Keep old dashboard route as redirect
 Route::get('/dashboard', function () {
+    if (auth()->user()->hasRole('Super Admin')) {
+        return redirect('/admin');
+    }
     if (auth()->user()->isSeller()) {
         return redirect()->route('seller.dashboard');
     }

@@ -6,8 +6,12 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Str;
 
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Builder;
+
 class Product extends Model
 {
+    use SoftDeletes;
     protected $fillable = [
         'seller_id',
         'category_id',
@@ -18,6 +22,7 @@ class Product extends Model
         'stock',
         'image',
         'views',
+        'status',
     ];
 
     protected $casts = [
@@ -25,8 +30,13 @@ class Product extends Model
         'stock' => 'integer',
     ];
 
+
     protected static function booted(): void
     {
+        static::addGlobalScope('active', function (Builder $builder) {
+            $builder->where('status', 'ACTIVE');
+        });
+
         static::creating(function (Product $product) {
             if (empty($product->slug)) {
                 $product->slug = static::generateUniqueSlug($product->name);

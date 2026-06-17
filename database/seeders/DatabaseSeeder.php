@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\Category;
 use App\Models\Product;
 use App\Models\User;
+use App\Models\Shop;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 
@@ -16,7 +17,22 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         // Seed categories
+        $this->call(RolesAndPermissionsSeeder::class);
+        
+        // Seed categories
         $this->call(CategorySeeder::class);
+
+        // Create 1 admin
+        $admin = User::firstOrCreate(
+            ['email' => 'admin@example.com'],
+            [
+                'name' => 'Super Admin',
+                'email' => 'admin@example.com',
+                'password' => Hash::make('SecretShop@2026'),
+                'role' => 'admin',
+            ]
+        );
+        $admin->assignRole('Super Admin');
 
         // Create 2 sellers
         $seller1 = User::firstOrCreate(
@@ -30,6 +46,11 @@ class DatabaseSeeder extends Seeder
                 'store_description' => 'Toko elektronik dan gadget terlengkap dengan harga terjangkau.',
             ]
         );
+        $seller1->assignRole('Seller');
+        Shop::firstOrCreate(
+            ['user_id' => $seller1->id],
+            ['name' => 'TeknoMart', 'description' => 'Toko elektronik dan gadget terlengkap dengan harga terjangkau.']
+        );
 
         $seller2 = User::firstOrCreate(
             ['email' => 'seller2@example.com'],
@@ -41,6 +62,11 @@ class DatabaseSeeder extends Seeder
                 'store_name' => 'Siti Style House',
                 'store_description' => 'Fashion trendy dan berkualitas untuk semua kalangan.',
             ]
+        );
+        $seller2->assignRole('Seller');
+        Shop::firstOrCreate(
+            ['user_id' => $seller2->id],
+            ['name' => 'Siti Style House', 'description' => 'Fashion trendy dan berkualitas untuk semua kalangan.']
         );
 
         // Create 3 buyers

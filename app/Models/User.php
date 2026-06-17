@@ -11,13 +11,16 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Spatie\Permission\Traits\HasRoles;
+use Bavix\Wallet\Traits\HasWallet;
+use Bavix\Wallet\Interfaces\Wallet;
 
 #[Fillable(['name', 'email', 'password', 'role', 'store_name', 'store_description', 'shipping_address', 'avatar'])]
 #[Hidden(['password', 'remember_token'])]
-class User extends Authenticatable
+class User extends Authenticatable implements Wallet
 {
-    /** @use HasFactory<UserFactory> */
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, SoftDeletes, HasRoles, HasWallet;
 
     /**
      * Get the attributes that should be cast.
@@ -33,6 +36,8 @@ class User extends Authenticatable
         ];
     }
 
+
+
     public function isBuyer(): bool
     {
         return $this->role === 'buyer';
@@ -41,6 +46,11 @@ class User extends Authenticatable
     public function isSeller(): bool
     {
         return $this->role === 'seller';
+    }
+
+    public function isAdmin(): bool
+    {
+        return $this->role === 'admin';
     }
 
     public function products(): HasMany
