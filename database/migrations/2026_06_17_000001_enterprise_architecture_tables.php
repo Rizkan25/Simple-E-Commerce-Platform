@@ -33,7 +33,7 @@ return new class extends Migration
 
         Schema::create('withdrawals', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('shop_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->decimal('amount', 15, 2);
             $table->enum('status', ['PENDING', 'APPROVED', 'REJECTED', 'COMPLETED'])->default('PENDING');
             $table->string('bank_account');

@@ -11,7 +11,7 @@ class Withdrawal extends Model
     use SoftDeletes;
 
     protected $fillable = [
-        'shop_id',
+        'user_id',
         'amount',
         'status',
         'bank_account',
@@ -21,8 +21,8 @@ class Withdrawal extends Model
         'amount' => 'decimal:2',
     ];
 
-    public function shop(): BelongsTo
+    public function user(): BelongsTo
     {
-        return $this->belongsTo(Shop::class);
+        return $this->belongsTo(User::class);
     }
 }

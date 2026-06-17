@@ -50,6 +50,9 @@ Route::middleware(['auth', 'role:seller'])->prefix('seller')->name('seller.')->g
 
     Route::get('/orders', [SellerOrderController::class, 'index'])->name('orders.index');
     Route::patch('/orders/{order}/status', [SellerOrderController::class, 'updateStatus'])->name('orders.updateStatus');
+
+    Route::get('/withdrawals', [\App\Http\Controllers\Seller\WithdrawalController::class, 'index'])->name('withdrawals.index');
+    Route::post('/withdrawals', [\App\Http\Controllers\Seller\WithdrawalController::class, 'store'])->name('withdrawals.store');
 });
 
 // Keep old dashboard route as redirect

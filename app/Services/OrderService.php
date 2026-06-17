@@ -124,7 +124,29 @@ class OrderService
             throw new Exception("Tidak dapat mengubah status dari \"{$order->status}\" ke \"{$status}\".");
         }
 
+        $originalStatus = $order->status;
         $order->update(['status' => $status]);
+
+        // Process seller deposits if the order is completed
+        if ($status === 'completed' && $originalStatus !== 'completed') {
+            DB::transaction(function () use ($order) {
+                // Group items by seller to avoid multiple deposits to the same seller if they have multiple items
+                $sellerEarnings = [];
+                foreach ($order->items as $item) {
+                    if (!isset($sellerEarnings[$item->seller_id])) {
+                        $sellerEarnings[$item->seller_id] = 0;
+                    }
+                    $sellerEarnings[$item->seller_id] += ($item->price_at_order * $item->quantity);
+                }
+
+                foreach ($sellerEarnings as $sellerId => $amount) {
+                    $seller = \App\Models\User::find($sellerId);
+                    if ($seller) {
+                        $seller->deposit($amount, ['description' => 'Pembayaran pesanan: ' . $order->order_number]);
+                    }
+                }
+            });
+        }
 
         return $order;
     }
