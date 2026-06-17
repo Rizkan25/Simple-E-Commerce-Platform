@@ -53,45 +53,47 @@ Fitur yang disediakan mencakup manajemen produk, keranjang belanja berbasis AJAX
 
 ## 🚀 Panduan Instalasi Lokal
 
-Ikuti langkah-langkah di bawah ini untuk mengonfigurasi dan menjalankan aplikasi pada lingkungan pengembangan (_development environment_).
+Untuk menjalankan aplikasi ini di komputer Anda, ikuti langkah-langkah sederhana berikut:
 
-> [!IMPORTANT]  
-> **Prasyarat:** Pastikan sistem telah terinstal **PHP >= 8.3**, **Composer**, **Node.js >= 18**, serta sistem manajemen basis data **SQLite/MySQL**.
+> [!IMPORTANT]
+> **Persiapan Awal:** Pastikan komputer Anda sudah terpasang **PHP (Minimal versi 8.3)**, **Composer**, dan **Node.js (Minimal versi 18)**. Secara bawaan, sistem akan menggunakan *database* SQLite sehingga Anda tidak perlu mengatur server MySQL/MariaDB jika hanya untuk mencoba.
 
+**Langkah 1: Unduh Kode & Masuk ke Folder**
+Buka terminal Anda, unduh (*clone*) kode sumber aplikasi, lalu pindah ke dalam folder proyek:
 ```bash
-# 1. Kloning repositori
 git clone <repository-url>
 cd Simple-E-Commerce-Platform
-
-# 2. Instalasi dependensi Backend & Frontend
-composer install
-npm install
-
-# 3. Konfigurasi file environment
-cp .env.example .env
-php artisan key:generate
-
-# 4. Migrasi basis data beserta isian awal (secara default menggunakan SQLite)
-php artisan migrate --seed
-
-# 5. Pembuatan tautan simbolik (Wajib untuk menampilkan gambar produk dan avatar)
-php artisan storage:link
-
-# 6. Kompilasi aset frontend
-npm run build
 ```
 
-> [!NOTE]  
-> **Menjalankan Aplikasi**  
-> Diperlukan beberapa terminal yang berjalan secara bersamaan:
->
-> - Terminal 1: `php artisan serve` (Menjalankan server PHP)
-> - Terminal 2: `npm run dev` (Menjalankan Vite Hot Reload)
-> - Terminal 3: `php artisan queue:work` (Menjalankan pekerja antrean latar belakang)
->
-> Sebagai alternatif, perintah `npm run dev` atau `composer dev` dapat dijalankan, karena telah terkonfigurasi dengan paket _concurrently_.
->
-> Aplikasi dapat diakses melalui peramban pada alamat: **http://localhost:8000**
+**Langkah 2: Instalasi Kebutuhan Sistem**
+Unduh semua paket pendukung (*library*) yang dibutuhkan oleh *Backend* (PHP) maupun *Frontend* (Node.js):
+```bash
+composer install
+npm install
+```
+
+**Langkah 3: Persiapkan Pengaturan Sistem**
+Buat *file* konfigurasi lokal (`.env`) dengan menyalin dari contoh yang sudah disediakan, lalu buat kunci keamanan untuk aplikasi:
+```bash
+cp .env.example .env
+php artisan key:generate
+```
+
+**Langkah 4: Siapkan Database & Foto Produk**
+Buat struktur *database* beserta akun-akun pengujian (*dummy*) secara otomatis, lalu hubungkan folder penyimpanan agar gambar produk dan avatar bisa ditampilkan di peramban:
+```bash
+php artisan migrate --seed
+php artisan storage:link
+```
+
+**Langkah 5: Nyalakan Aplikasi!**
+Aplikasi modern ini membutuhkan 3 mesin yang berjalan bersamaan. Silakan buka **3 jendela terminal yang berbeda**, lalu jalankan perintah ini satu per satu di masing-masing terminal:
+1. `php artisan serve` *(Terminal 1: Menjalankan server website utama)*
+2. `npm run dev` *(Terminal 2: Memproses desain visual CSS/JS secara instan)*
+3. `php artisan queue:work` *(Terminal 3: Memproses antrean email di latar belakang)*
+
+> [!TIP]
+> **Selamat! 🎉** Aplikasi Anda sudah menyala. Silakan buka *browser* Anda dan kunjungi alamat: **http://localhost:8000**
 
 ---
 
@@ -163,31 +165,65 @@ app/
 
 ## 🧪 Pengujian Sistem (Testing)
 
-Proyek ini dilengkapi dengan **Feature Tests** berbasis Pest/PHPUnit untuk memverifikasi bahwa fitur-fitur yang ada berfungsi sebagaimana mestinya.
+Aplikasi ini telah dibekali dengan pengujian otomatis (*Automated Tests*) menggunakan **Pest/PHPUnit** guna memastikan fitur-fitur krusial selalu berfungsi dengan baik dan bebas *bug*.
+
+Beberapa skenario utama yang diuji oleh sistem secara otomatis meliputi:
+- **Autentikasi & Hak Akses**: Memastikan Admin, Seller, dan Buyer hanya bisa mengakses halamannya masing-masing.
+- **Keranjang & Checkout**: Memastikan aturan batasan "satu toko per *checkout*" berjalan dengan benar.
+- **Keamanan Transaksi**: Menguji mekanisme *Pessimistic Locking* agar tidak ada pesanan ganda saat *traffic* sedang tinggi.
+
+**Cara Menjalankan Pengujian:**
+Anda cukup menjalankan satu baris perintah berikut di terminal:
+
+```bash
+php artisan test
+```
 
 > [!TIP]
-> Jalankan perintah berikut di terminal untuk memulai proses pengujian secara menyeluruh:
->
-> ```bash
-> php artisan test
-> ```
+> Sistem akan secara otomatis menyimulasikan seluruh skenario di atas di latar belakang, lalu menampilkan laporan centang hijau (✅) jika seluruh fitur dipastikan aman dan siap digunakan!
 
 ---
 
 ## 📧 Konfigurasi Layanan Email Lokal
 
-Secara bawaan, log pengiriman email akan dicatat di dalam berkas `storage/logs/laravel.log`. Jika pengujian ingin dilakukan dengan layanan simulasi seperti **Mailtrap**, berkas `.env` dapat disesuaikan menjadi sebagai berikut:
+Sistem pengiriman email di aplikasi ini berjalan **secara asinkronus di latar belakang** (*background queue*) untuk mencegah aplikasi menjadi lambat saat pelanggan melakukan transaksi. Berikut adalah langkah detail untuk menguji sistem email di komputer lokal:
+
+### 1. Menjalankan Pekerja Antrean (Queue Worker)
+Karena email menggunakan sistem antrean, Anda **WAJIB** menjalankan satu proses khusus di terminal agar email yang tertunda dapat diproses dan dikirimkan:
+
+```bash
+php artisan queue:work
+```
+> [!IMPORTANT]
+> Biarkan terminal yang menjalankan perintah ini tetap terbuka (*running*) di latar belakang selama Anda ingin menguji fitur-fitur notifikasi email (seperti fitur perubahan status pesanan).
+
+### 2. Metode 1: Melihat Email via Teks (Bawaan)
+Secara bawaan, Anda tidak perlu mengkonfigurasi internet atau layanan apapun. Aplikasi akan sekadar "mencatat" isi email ke dalam sebuah file teks lokal.
+
+1. Buka file `.env` di folder utama aplikasi, pastikan pengaturannya seperti ini: `MAIL_MAILER=log`
+2. Lakukan aktivitas di aplikasi yang memicu email (misal: Admin mengubah status pesanan).
+3. Buka file `storage/logs/laravel.log`. Anda bisa membaca seluruh isi pesan email dan tautannya dari file tersebut.
+
+### 3. Metode 2: Kotak Masuk Visual dengan Mailtrap
+Jika Anda ingin simulasi yang lebih nyata dan ingin melihat bentuk asli emailnya (lengkap dengan desain dan warna), Anda bisa menggunakan layanan gratis seperti **[Mailtrap](https://mailtrap.io)**.
+
+1. Buat akun gratis di Mailtrap dan akses bagian *Inboxes*.
+2. Pilih menu *SMTP Settings*, lalu salin kredensial yang diberikan.
+3. Buka file `.env` Anda, ubah bagian email menyesuaikan data dari Mailtrap:
 
 ```env
 MAIL_MAILER=smtp
 MAIL_HOST=sandbox.smtp.mailtrap.io
 MAIL_PORT=2525
-MAIL_USERNAME=nama_pengguna_disini
-MAIL_PASSWORD=kata_sandi_disini
+MAIL_USERNAME=paste_username_dari_mailtrap_disini
+MAIL_PASSWORD=paste_password_dari_mailtrap_disini
 MAIL_ENCRYPTION=tls
 MAIL_FROM_ADDRESS="noreply@simpleshop.test"
 MAIL_FROM_NAME="SimpleShop"
 ```
+
+> [!TIP]
+> Setelah Anda mengubah isi file `.env`, jangan lupa untuk **mematikan lalu menyalakan ulang** (*restart*) perintah `php artisan queue:work` dan `php artisan serve` Anda agar pengaturan baru dapat terbaca oleh sistem.
 
 ---
 
