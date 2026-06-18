@@ -7,6 +7,8 @@ use App\Models\Cart;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Product;
+use App\Models\User;
+use App\Notifications\NewOrderNotification;
 use Exception;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -31,8 +33,19 @@ class OrderService
                 throw new Exception('Keranjang belanja kosong.');
             }
 
+            // Filter cart items if payment method is COD
+            $itemsToProcess = $cart->items;
+            if ($paymentMethod === 'cod') {
+                $itemsToProcess = $cart->items->filter(function($item) {
+                    return $item->product->is_cod_enabled;
+                });
+                if ($itemsToProcess->isEmpty()) {
+                    throw new Exception('Tidak ada produk yang mendukung COD di keranjang Anda.');
+                }
+            }
+
             // Get product IDs and lock them for update (pessimistic locking)
-            $productIds = $cart->items->pluck('product_id')->toArray();
+            $productIds = $itemsToProcess->pluck('product_id')->toArray();
             $products = Product::whereIn('id', $productIds)
                 ->lockForUpdate()
                 ->get()
@@ -40,7 +53,7 @@ class OrderService
 
             // Validate stock with live product data
             $totalAmount = 0;
-            foreach ($cart->items as $item) {
+            foreach ($itemsToProcess as $item) {
                 $product = $products[$item->product_id];
                 if ($product->stock < $item->quantity) {
                     throw new Exception(
@@ -48,7 +61,7 @@ class OrderService
                         "Stok tersedia: {$product->stock}, diminta: {$item->quantity}."
                     );
                 }
-                $totalAmount += $product->price * $item->quantity;
+                $totalAmount += $product->effective_price * $item->quantity;
             }
 
             // Create order
@@ -66,10 +79,10 @@ class OrderService
             $commissionPercentage = $commissionSetting ? (float) $commissionSetting->value : 0;
 
             // Create order items with live prices and deduct stock
-            foreach ($cart->items as $item) {
+            foreach ($itemsToProcess as $item) {
                 $product = $products[$item->product_id];
 
-                $itemTotal = $product->price * $item->quantity;
+                $itemTotal = $product->effective_price * $item->quantity;
                 $platformFee = $itemTotal * ($commissionPercentage / 100);
                 $sellerEarnings = $itemTotal - $platformFee;
 
@@ -78,7 +91,7 @@ class OrderService
                     'product_id' => $item->product_id,
                     'seller_id' => $product->seller_id,
                     'quantity' => $item->quantity,
-                    'price_at_order' => $product->price,
+                    'price_at_order' => $product->effective_price,
                     'platform_fee' => $platformFee,
                     'seller_earnings' => $sellerEarnings,
                 ]);
@@ -87,9 +100,21 @@ class OrderService
                 $product->decrement('stock', $item->quantity);
             }
 
-            // Clear cart
-            $cart->items()->delete();
-            $cart->delete();
+            // Notify sellers
+            $sellerIds = $itemsToProcess->map(function($item) use ($products) {
+                return $products[$item->product_id]->seller_id;
+            })->unique();
+
+            $sellers = User::whereIn('id', $sellerIds)->get();
+            foreach ($sellers as $seller) {
+                $seller->notify(new NewOrderNotification($order));
+            }
+
+            // Clear processed cart items from cart
+            \App\Models\CartItem::whereIn('id', $itemsToProcess->pluck('id'))->delete();
+            if ($cart->items()->count() === 0) {
+                $cart->delete();
+            }
 
             // Dispatch email confirmation job
             SendOrderConfirmation::dispatch($order);

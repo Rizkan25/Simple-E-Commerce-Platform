@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Order;
+use App\Models\User;
+use App\Notifications\OrderStatusNotification;
 use App\Services\OrderService;
 use Exception;
 use Illuminate\Http\RedirectResponse;
@@ -39,7 +41,15 @@ class OrderController extends Controller
 
         $order->load(['items.product', 'items.seller']);
 
-        return view('orders.show', compact('order'));
+        $hasUnreviewedItems = false;
+        if ($order->status === 'completed') {
+            $reviewedCount = \App\Models\Review::where('order_id', $order->id)->count();
+            if ($reviewedCount < $order->items->count()) {
+                $hasUnreviewedItems = true;
+            }
+        }
+
+        return view('orders.show', compact('order', 'hasUnreviewedItems'));
     }
 
     /**
@@ -53,8 +63,43 @@ class OrderController extends Controller
 
         try {
             $this->orderService->updateOrderStatus($order->id, 'cancelled');
+            
+            // Notify sellers
+            $sellerIds = $order->items->pluck('product.seller_id')->unique();
+            $sellers = User::whereIn('id', $sellerIds)->get();
+            foreach ($sellers as $seller) {
+                $seller->notify(new OrderStatusNotification($order));
+            }
+
             return redirect()->route('orders.show', $order)
                 ->with('success', 'Pesanan berhasil dibatalkan.');
+        } catch (Exception $e) {
+            return redirect()->route('orders.show', $order)
+                ->with('error', $e->getMessage());
+        }
+    }
+
+    /**
+     * Mark order as completed by buyer.
+     */
+    public function complete(Order $order): RedirectResponse
+    {
+        if ($order->user_id !== auth()->id()) {
+            abort(403);
+        }
+
+        try {
+            $this->orderService->updateOrderStatus($order->id, 'completed');
+            
+            // Notify sellers
+            $sellerIds = $order->items->pluck('product.seller_id')->unique();
+            $sellers = User::whereIn('id', $sellerIds)->get();
+            foreach ($sellers as $seller) {
+                $seller->notify(new OrderStatusNotification($order));
+            }
+
+            return redirect()->route('reviews.create', $order)
+                ->with('success', 'Terima kasih telah mengonfirmasi penerimaan pesanan. Silakan berikan penilaian Anda.');
         } catch (Exception $e) {
             return redirect()->route('orders.show', $order)
                 ->with('error', $e->getMessage());

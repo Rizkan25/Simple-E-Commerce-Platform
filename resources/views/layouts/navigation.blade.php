@@ -1,4 +1,4 @@
-<nav x-data="{ open: false }" class="bg-white/80 backdrop-blur-md border-b border-gray-200/50 sticky top-0 z-40">
+<nav x-data="{ open: false }" class="bg-white/80 backdrop-blur-md border-b border-gray-200/50 sticky top-0 z-50">
     <!-- Primary Navigation Menu -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between h-20">
@@ -36,8 +36,11 @@
                             <x-nav-link :href="route('seller.products.index')" :active="request()->routeIs('seller.products.*')">
                                 {{ __('Produk Saya') }}
                             </x-nav-link>
-                            <x-nav-link :href="route('seller.orders.index')" :active="request()->routeIs('seller.orders.*')">
+                            <x-nav-link :href="route('seller.orders.index')" :active="request()->routeIs('seller.orders.*')" class="relative flex items-center">
                                 {{ __('Pesanan') }}
+                                @if(auth()->user()->hasActiveSellerOrders())
+                                    <span class="ml-1.5 w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
+                                @endif
                             </x-nav-link>
                             <x-nav-link :href="route('seller.withdrawals.index')" :active="request()->routeIs('seller.withdrawals.*')">
                                 {{ __('Penarikan Dana') }}
@@ -48,8 +51,11 @@
                             <x-nav-link :href="route('cart.index')" :active="request()->routeIs('cart.*')">
                                 {{ __('Keranjang') }}
                             </x-nav-link>
-                            <x-nav-link :href="route('orders.index')" :active="request()->routeIs('orders.*')">
+                            <x-nav-link :href="route('orders.index')" :active="request()->routeIs('orders.*')" class="relative flex items-center">
                                 {{ __('Pesanan Saya') }}
+                                @if(auth()->user()->hasActiveBuyerOrders())
+                                    <span class="ml-1.5 w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
+                                @endif
                             </x-nav-link>
                         @endif
                     @endauth
@@ -59,6 +65,132 @@
             <!-- Right Side -->
             <div class="hidden sm:flex sm:items-center sm:ms-6">
                 @auth
+                    <!-- Notifications Dropdown -->
+                    <div class="relative mr-3">
+                        <x-dropdown align="right" width="w-80">
+                            <x-slot name="trigger">
+                                <button class="relative p-2 text-gray-500 hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                                    </svg>
+                                    @if(auth()->user()->unreadNotifications->count() > 0)
+                                        <span id="unread-count-badge" class="absolute top-1 right-1 flex items-center justify-center w-4 h-4 text-[10px] font-bold text-white bg-red-500 rounded-full">
+                                            {{ auth()->user()->unreadNotifications->count() }}
+                                        </span>
+                                    @endif
+                                </button>
+                            </x-slot>
+
+                            <x-slot name="content">
+                                <div class="px-4 py-3 border-b flex justify-between items-center bg-gray-50 rounded-t-md">
+                                    <h3 class="text-sm font-semibold text-gray-800">Notifikasi</h3>
+                                    @if(auth()->user()->unreadNotifications->count() > 0)
+                                        <form method="POST" action="{{ route('notifications.readAll') }}"
+                                              @click.stop
+                                              @submit.prevent="
+                                                fetch($el.action, { method: 'POST', body: new FormData($el) })
+                                                .then(response => {
+                                                    if(response.ok) {
+                                                        document.querySelectorAll('.notification-item').forEach(el => {
+                                                            el.classList.add('opacity-60');
+                                                            el.classList.remove('bg-indigo-50/50');
+                                                            let checkBtn = el.querySelector('.read-btn-form');
+                                                            if(checkBtn) checkBtn.remove();
+                                                        });
+                                                        let badge = document.getElementById('unread-count-badge');
+                                                        if(badge) badge.remove();
+                                                        $el.remove();
+                                                    }
+                                                })
+                                              ">
+                                            @csrf
+                                            <button type="submit" class="text-xs text-indigo-600 hover:text-indigo-800 font-medium">Tandai semua dibaca</button>
+                                        </form>
+                                    @endif
+                                </div>
+                                <div class="max-h-80 overflow-y-auto">
+                                    @forelse(auth()->user()->notifications as $notification)
+                                        <div class="notification-item px-4 py-3 border-b hover:bg-gray-50 transition flex gap-3 relative group {{ $notification->read_at ? 'opacity-60' : 'bg-indigo-50/50' }}">
+                                            <div class="flex-1 min-w-0">
+                                                <a href="{{ route('notifications.click', $notification->id) }}" class="block">
+                                                    <p class="text-sm text-gray-800 mb-1 hover:text-indigo-600 transition-colors">
+                                                        {{ $notification->data['message'] ?? 'Ada pemberitahuan baru' }}
+                                                    </p>
+                                                    <p class="text-xs text-gray-500">{{ $notification->created_at->diffForHumans() }}</p>
+                                                </a>
+                                            </div>
+                                            <div class="flex items-start gap-1 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                @if(!$notification->read_at)
+                                                    <form method="POST" action="{{ route('notifications.read', $notification->id) }}" class="read-btn-form"
+                                                          @click.stop
+                                                          @submit.prevent="
+                                                              fetch($el.action, { method: 'POST', body: new FormData($el) })
+                                                              .then(response => {
+                                                                  if(response.ok) {
+                                                                      let container = $el.closest('.notification-item');
+                                                                      container.classList.add('opacity-60');
+                                                                      container.classList.remove('bg-indigo-50/50');
+                                                                      let badge = document.getElementById('unread-count-badge');
+                                                                      if(badge) {
+                                                                          let count = parseInt(badge.innerText) - 1;
+                                                                          if(count > 0) { badge.innerText = count; }
+                                                                          else { 
+                                                                              badge.remove(); 
+                                                                              let markAll = document.querySelector('form[action*=\'/read-all\']'); if(markAll) markAll.remove();
+                                                                          }
+                                                                      }
+                                                                      $el.remove();
+                                                                  }
+                                                              })
+                                                          ">
+                                                        @csrf
+                                                        @method('PATCH')
+                                                        <button type="submit" class="p-1 text-indigo-600 hover:text-indigo-800" title="Tandai dibaca">
+                                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                                                        </button>
+                                                    </form>
+                                                @endif
+                                                <form method="POST" action="{{ route('notifications.destroy', $notification->id) }}"
+                                                      @click.stop
+                                                      @submit.prevent="
+                                                          fetch($el.action, { method: 'POST', body: new FormData($el) })
+                                                          .then(response => {
+                                                              if(response.ok) {
+                                                                  let container = $el.closest('.notification-item');
+                                                                  let isUnread = !container.classList.contains('opacity-60');
+                                                                  container.remove();
+                                                                  if(isUnread) {
+                                                                      let badge = document.getElementById('unread-count-badge');
+                                                                      if(badge) {
+                                                                          let count = parseInt(badge.innerText) - 1;
+                                                                          if(count > 0) { badge.innerText = count; }
+                                                                          else {
+                                                                              badge.remove();
+                                                                              let markAll = document.querySelector('form[action*=\'/read-all\']'); if(markAll) markAll.remove();
+                                                                          }
+                                                                      }
+                                                                  }
+                                                              }
+                                                          })
+                                                      ">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="p-1 text-red-600 hover:text-red-800" title="Hapus">
+                                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    @empty
+                                        <div class="px-4 py-6 text-center text-sm text-gray-500">
+                                            Tidak ada notifikasi.
+                                        </div>
+                                    @endforelse
+                                </div>
+                            </x-slot>
+                        </x-dropdown>
+                    </div>
+
                     <x-dropdown align="right" width="48">
                         <x-slot name="trigger">
                             <button class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">

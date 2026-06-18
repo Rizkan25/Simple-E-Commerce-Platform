@@ -23,11 +23,16 @@ class Product extends Model
         'image',
         'views',
         'status',
+        'is_cod_enabled',
+        'discount_type',
+        'discount_amount',
     ];
 
     protected $casts = [
         'price' => 'decimal:2',
         'stock' => 'integer',
+        'is_cod_enabled' => 'boolean',
+        'discount_amount' => 'decimal:2',
     ];
 
 
@@ -116,5 +121,38 @@ class Product extends Model
     public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class);
+    }
+
+    public function reviews()
+    {
+        return $this->hasMany(Review::class);
+    }
+
+    public function getAverageRatingAttribute(): float
+    {
+        return (float) $this->reviews()->avg('rating');
+    }
+
+    public function getReviewsCountAttribute(): int
+    {
+        return $this->reviews()->count();
+    }
+
+    public function getEffectivePriceAttribute(): float
+    {
+        if ($this->discount_type === 'fixed' && $this->discount_amount > 0) {
+            return (float) $this->discount_amount;
+        }
+
+        if ($this->discount_type === 'percentage' && $this->discount_amount > 0) {
+            return (float) ($this->price * (1 - ($this->discount_amount / 100)));
+        }
+
+        return (float) $this->price;
+    }
+
+    public function getIsDiscountedAttribute(): bool
+    {
+        return $this->discount_type && $this->discount_amount > 0 && $this->effective_price < $this->price;
     }
 }

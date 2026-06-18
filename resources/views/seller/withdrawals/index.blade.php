@@ -5,8 +5,8 @@
         </h2>
     </x-slot>
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
+    <div class="py-6">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
             
             <!-- Alert Messages -->
             @if(session('success'))
@@ -46,11 +46,14 @@
                     <form action="{{ route('seller.withdrawals.store') }}" method="POST" class="space-y-4">
                         @csrf
                         
-                        <div>
-                            <x-input-label for="amount" :value="__('Jumlah Penarikan (Rp)')" />
-                            <x-text-input id="amount" name="amount" type="number" class="mt-1 block w-full" 
-                                          :value="old('amount')" required autofocus min="10000" max="{{ $user->balance }}" />
-                            <p class="text-xs text-gray-500 mt-1">Minimal penarikan Rp 10.000.</p>
+                        <div x-data="{ rawAmount: '{{ old('amount', '') }}' }">
+                            <x-input-label for="amount_display" :value="__('Jumlah Penarikan (Rp)')" />
+                            <x-text-input id="amount_display" type="text" class="mt-1 block w-full" 
+                                          value="{{ old('amount') ? number_format((int)old('amount'), 0, ',', '.') : '' }}"
+                                          x-on:input="$el.value = $el.value.replace(/\D/g, '').replace(/\B(?=(\d{3})+(?!\d))/g, '.'); rawAmount = $el.value.replace(/\D/g, '')"
+                                          required autofocus />
+                            <input type="hidden" name="amount" id="amount" x-model="rawAmount">
+                            <p class="text-xs text-gray-500 mt-1">Minimal penarikan Rp 10.000. Maksimal Rp {{ number_format($user->balance, 0, ',', '.') }}</p>
                         </div>
 
                         <div>

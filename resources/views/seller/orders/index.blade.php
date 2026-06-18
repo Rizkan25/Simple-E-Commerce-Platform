@@ -14,6 +14,12 @@
                             <div class="flex items-center justify-between mb-4">
                                 <div>
                                     <span class="font-semibold text-gray-800">#{{ $order->order_number }}</span>
+                                    @if($order->status === 'pending')
+                                        <span class="ml-2 inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold bg-red-100 text-red-700 uppercase tracking-wider">
+                                            <span class="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse"></span>
+                                            Baru!
+                                        </span>
+                                    @endif
                                     <span class="text-sm text-gray-500 ml-2">{{ $order->created_at->format('d M Y H:i') }}</span>
                                     <span class="text-sm text-gray-500 ml-2">• Pembeli: {{ $order->user->name }}</span>
                                 </div>

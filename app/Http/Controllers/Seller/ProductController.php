@@ -42,6 +42,7 @@ class ProductController extends Controller
     {
         $data = $request->validated();
         $data['seller_id'] = auth()->id();
+        $data['is_cod_enabled'] = $request->has('is_cod_enabled');
 
         if ($request->hasFile('image')) {
             $file = $request->file('image');
@@ -74,6 +75,7 @@ class ProductController extends Controller
         $this->authorize('update', $product);
 
         $data = $request->validated();
+        $data['is_cod_enabled'] = $request->has('is_cod_enabled');
 
         if ($request->hasFile('image')) {
             // Delete old image

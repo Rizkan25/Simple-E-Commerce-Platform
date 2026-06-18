@@ -67,6 +67,19 @@
                                     Batalkan Pesanan
                                 </button>
                             </form>
+                        @elseif($order->status === 'shipped')
+                            <form method="POST" action="{{ route('orders.complete', $order) }}" class="mt-4"
+                                  onsubmit="return confirm('Apakah Anda yakin pesanan telah diterima dengan baik?')">
+                                @csrf
+                                @method('PATCH')
+                                <button type="submit" class="w-full py-2 px-4 bg-green-600 text-white rounded-lg hover:bg-green-700 transition text-sm font-medium">
+                                    Pesanan Diterima
+                                </button>
+                            </form>
+                        @elseif($order->status === 'completed' && $hasUnreviewedItems)
+                            <a href="{{ route('reviews.create', $order) }}" class="mt-4 w-full py-2 px-4 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition text-sm font-medium flex items-center justify-center">
+                                Beri Nilai Produk
+                            </a>
                         @endif
                     </div>
 

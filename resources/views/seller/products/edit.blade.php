@@ -59,6 +59,37 @@
                             </div>
                         </div>
 
+                        <!-- COD Enable -->
+                        <div class="pt-2">
+                            <label for="is_cod_enabled" class="inline-flex items-center">
+                                <input id="is_cod_enabled" type="checkbox" class="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500" name="is_cod_enabled" value="1" {{ old('is_cod_enabled', $product->is_cod_enabled) ? 'checked' : '' }}>
+                                <span class="ml-2 text-sm text-gray-600 font-medium">{{ __('Aktifkan Pembayaran COD (Cash On Delivery) untuk produk ini') }}</span>
+                            </label>
+                        </div>
+
+                        <!-- Discount -->
+                        <div x-data="{ discountType: '{{ old('discount_type', $product->discount_type ?? '') }}' }" class="p-4 border rounded-lg bg-gray-50">
+                            <h4 class="text-sm font-medium text-gray-900 mb-4">Pengaturan Diskon (Opsional)</h4>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <x-input-label for="discount_type" :value="__('Jenis Diskon')" />
+                                    <select id="discount_type" name="discount_type" x-model="discountType"
+                                        class="block mt-1 w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm text-sm">
+                                        <option value="">Tidak ada diskon</option>
+                                        <option value="percentage">Persentase (%)</option>
+                                        <option value="fixed">Harga Diskon Tetap (Rp)</option>
+                                    </select>
+                                    <x-input-error :messages="$errors->get('discount_type')" class="mt-2" />
+                                </div>
+                                <div x-show="discountType !== ''" x-cloak>
+                                    <x-input-label for="discount_amount" :value="__('Nominal/Persentase')" />
+                                    <x-text-input id="discount_amount" class="block mt-1 w-full" type="number" name="discount_amount" :value="old('discount_amount', (float)$product->discount_amount)" min="0" step="0.01" />
+                                    <p class="text-xs text-gray-500 mt-1" x-text="discountType === 'percentage' ? 'Contoh: Isi 10 untuk diskon 10%' : 'Contoh: Isi 80000 jika harga setelah diskon jadi Rp 80.000'"></p>
+                                    <x-input-error :messages="$errors->get('discount_amount')" class="mt-2" />
+                                </div>
+                            </div>
+                        </div>
+
                         <!-- Current Image -->
                         @if($product->image)
                             <div>

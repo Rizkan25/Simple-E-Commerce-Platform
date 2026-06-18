@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Seller;
 
 use App\Http\Controllers\Controller;
 use App\Models\Withdrawal;
+use App\Models\User;
+use App\Notifications\WithdrawalRequestedNotification;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -47,12 +49,18 @@ class WithdrawalController extends Controller
             $user->withdraw($request->amount, ['description' => 'Penarikan dana ke rekening: ' . $request->bank_account]);
 
             // Create the withdrawal record
-            Withdrawal::create([
+            $withdrawal = Withdrawal::create([
                 'user_id' => $user->id,
                 'amount' => $request->amount,
                 'bank_account' => $request->bank_account,
                 'status' => 'PENDING',
             ]);
+
+            // Notify admins
+            $admins = User::where('role', 'admin')->get();
+            foreach ($admins as $admin) {
+                $admin->notify(new WithdrawalRequestedNotification($withdrawal));
+            }
 
             return back()->with('success', 'Permintaan penarikan berhasil diajukan dan sedang menunggu persetujuan.');
         } catch (Exception $e) {

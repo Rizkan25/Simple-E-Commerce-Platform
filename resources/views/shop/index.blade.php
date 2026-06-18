@@ -103,14 +103,29 @@
                                 <a href="{{ route('products.show', $product) }}" class="block mb-1">
                                     <h3 class="font-heading font-bold text-gray-900 text-sm sm:text-base leading-tight hover:text-primary-600 transition-colors line-clamp-2">{{ $product->name }}</h3>
                                 </a>
+                                @if($product->reviews_count > 0)
+                                    <div class="flex items-center gap-1 mb-2">
+                                        <svg class="w-3 h-3 sm:w-4 sm:h-4 text-yellow-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                                        <span class="text-xs sm:text-sm font-medium text-gray-700">{{ number_format($product->average_rating, 1) }}</span>
+                                        <span class="text-[10px] sm:text-xs text-gray-400">({{ $product->reviews_count }})</span>
+                                    </div>
+                                @endif
                                 <p class="text-xs sm:text-sm text-gray-500 mb-3 sm:mb-4 flex items-center gap-1 sm:gap-1.5">
                                     <svg class="w-3 h-3 sm:w-4 sm:h-4 text-gray-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
                                     <span class="truncate">{{ $product->seller->store_name ?? $product->seller->name }}</span>
                                 </p>
                                 
                                 <div class="mt-auto">
-                                    <div class="flex items-center justify-center mb-3 sm:mb-4 w-full">
-                                        <span class="font-heading text-base sm:text-xl font-extrabold text-gray-900 whitespace-nowrap">Rp {{ number_format($product->price, 0, ',', '.') }}</span>
+                                    <div class="flex flex-col items-center justify-center mb-3 sm:mb-4 w-full text-center">
+                                        @if($product->is_discounted)
+                                            <span class="text-xs sm:text-sm text-gray-400 line-through mb-0.5">Rp {{ number_format($product->price, 0, ',', '.') }}</span>
+                                            <span class="font-heading text-base sm:text-xl font-extrabold text-red-600 whitespace-nowrap">Rp {{ number_format($product->effective_price, 0, ',', '.') }}</span>
+                                        @else
+                                            <span class="font-heading text-base sm:text-xl font-extrabold text-gray-900 whitespace-nowrap">Rp {{ number_format($product->price, 0, ',', '.') }}</span>
+                                        @endif
+                                        @if($product->is_cod_enabled)
+                                            <span class="mt-1 px-2 py-0.5 bg-green-100 text-green-700 text-[10px] font-bold rounded">Bisa COD</span>
+                                        @endif
                                     </div>
 
                                     @auth

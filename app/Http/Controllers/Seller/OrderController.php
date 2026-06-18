@@ -7,6 +7,7 @@ use App\Mail\OrderStatusUpdated;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Services\OrderService;
+use App\Notifications\OrderStatusNotification;
 use Exception;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -56,8 +57,10 @@ class OrderController extends Controller
                 auth()->id()
             );
 
-            // Send notification email to buyer
-            Mail::to($order->user->email)->send(new OrderStatusUpdated($order->fresh()));
+            // Send notification email and system notification to buyer
+            $order = $order->fresh();
+            Mail::to($order->user->email)->send(new OrderStatusUpdated($order));
+            $order->user->notify(new OrderStatusNotification($order));
 
             return redirect()->route('seller.orders.index')
                 ->with('success', 'Status pesanan berhasil diperbarui.');

@@ -49,6 +49,17 @@
                                     </div>
                                 </label>
                             </div>
+                            <!-- COD Warning -->
+                            @if($hasNonCodItems)
+                                <div x-show="method === 'cod'" x-cloak class="mt-4 p-4 rounded-lg bg-yellow-50 border border-yellow-200">
+                                    <div class="flex items-start gap-3 text-sm text-yellow-800">
+                                        <svg class="w-5 h-5 shrink-0 mt-0.5 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                                        <div>
+                                            <span class="font-medium">Perhatian:</span> Ada beberapa produk di keranjang Anda yang tidak mendukung COD. Jika Anda melanjutkan dengan opsi COD, hanya produk yang mendukung COD yang akan diproses. Sisanya akan tetap berada di keranjang Anda.
+                                        </div>
+                                    </div>
+                                </div>
+                            @endif
                             <x-input-error :messages="$errors->get('payment_method')" class="mt-2" />
                         </div>
                     </div>
@@ -65,11 +76,11 @@
                                             <img src="{{ $item->product->image_url }}" class="w-full h-full object-cover">
                                         </div>
                                         <div class="flex-1 min-w-0">
-                                            <p class="text-sm font-medium text-gray-800 truncate">{{ $item->product->name }}</p>
-                                            <p class="text-xs text-gray-500">{{ $item->quantity }}x Rp {{ number_format($item->price_snapshot, 0, ',', '.') }}</p>
+                                            <p class="text-sm font-medium text-gray-800 truncate">{{ $item->product->name }} {!! !$item->product->is_cod_enabled ? '<span class="text-xs text-red-500 font-normal">(Tidak bisa COD)</span>' : '' !!}</p>
+                                            <p class="text-xs text-gray-500">{{ $item->quantity }}x Rp {{ number_format($item->product->effective_price, 0, ',', '.') }}</p>
                                         </div>
                                         <div class="text-sm font-medium text-gray-900 shrink-0">
-                                            Rp {{ number_format($item->price_snapshot * $item->quantity, 0, ',', '.') }}
+                                            Rp {{ number_format($item->product->effective_price * $item->quantity, 0, ',', '.') }}
                                         </div>
                                     </div>
                                 @endforeach

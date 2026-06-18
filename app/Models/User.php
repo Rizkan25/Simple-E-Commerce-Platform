@@ -58,9 +58,38 @@ class User extends Authenticatable implements Wallet, FilamentUser
         return $this->role === 'admin';
     }
 
+    public function hasActiveSellerOrders(): bool
+    {
+        return \App\Models\OrderItem::where('seller_id', $this->id)
+            ->whereHas('order', function($q) {
+                $q->whereNotIn('status', ['completed', 'cancelled']);
+            })->exists();
+    }
+
+    public function hasActiveBuyerOrders(): bool
+    {
+        return \App\Models\Order::where('user_id', $this->id)
+            ->whereNotIn('status', ['completed', 'cancelled'])->exists();
+    }
+
     public function products(): HasMany
     {
         return $this->hasMany(Product::class, 'seller_id');
+    }
+
+    public function storeReviews()
+    {
+        return $this->hasManyThrough(Review::class, Product::class, 'seller_id', 'product_id');
+    }
+
+    public function getStoreRatingAttribute(): float
+    {
+        return (float) $this->storeReviews()->avg('rating');
+    }
+
+    public function getStoreReviewsCountAttribute(): int
+    {
+        return $this->storeReviews()->count();
     }
 
     public function cart(): HasOne

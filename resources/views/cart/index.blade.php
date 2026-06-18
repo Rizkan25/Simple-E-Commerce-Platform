@@ -22,7 +22,7 @@
                                 <div class="flex-1 min-w-0">
                                     <h3 class="font-medium text-gray-800 text-sm sm:text-base truncate">{{ $item->product->name }}</h3>
                                     <p class="text-xs text-gray-500 mt-0.5">{{ $item->product->seller->store_name ?? $item->product->seller->name }}</p>
-                                    <p class="text-sm font-semibold text-gray-900 mt-1">Rp {{ number_format($item->price_snapshot, 0, ',', '.') }}</p>
+                                    <p class="text-sm font-semibold text-gray-900 mt-1">Rp {{ number_format($item->product->effective_price, 0, ',', '.') }}</p>
 
                                     <div class="flex items-center gap-3 mt-3">
                                         <!-- Quantity Controls -->
@@ -48,7 +48,7 @@
                                 <!-- Subtotal -->
                                 <div class="text-right shrink-0">
                                     <p class="font-semibold text-gray-900 text-sm sm:text-base" id="subtotal-{{ $item->id }}">
-                                        Rp <span x-text="(quantity * {{ $item->price_snapshot }}).toLocaleString('id-ID')">{{ number_format($item->price_snapshot * $item->quantity, 0, ',', '.') }}</span>
+                                        Rp <span x-text="(quantity * {{ $item->product->effective_price }}).toLocaleString('id-ID')">{{ number_format($item->product->effective_price * $item->quantity, 0, ',', '.') }}</span>
                                     </p>
                                 </div>
                             </div>
@@ -60,7 +60,7 @@
                         <div class="flex items-center justify-between mb-4">
                             <span class="text-lg font-medium text-gray-700">Total</span>
                             <span class="text-2xl font-bold text-gray-900" id="cart-total">
-                                Rp {{ number_format($cart->items->sum(fn($i) => $i->price_snapshot * $i->quantity), 0, ',', '.') }}
+                                Rp {{ number_format($cart->items->sum(fn($i) => $i->product->effective_price * $i->quantity), 0, ',', '.') }}
                             </span>
                         </div>
                         <a href="{{ route('checkout.index') }}"

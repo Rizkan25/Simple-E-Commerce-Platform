@@ -28,10 +28,11 @@ class CheckoutController extends Controller
                 ->with('error', 'Keranjang belanja kosong.');
         }
 
-        $total = $cart->items->sum(fn($item) => $item->price_snapshot * $item->quantity);
+        $total = $cart->items->sum(fn($item) => $item->product->effective_price * $item->quantity);
         $user = auth()->user();
+        $hasNonCodItems = $cart->items->contains(fn($i) => !$i->product->is_cod_enabled);
 
-        return view('checkout.index', compact('cart', 'total', 'user'));
+        return view('checkout.index', compact('cart', 'total', 'user', 'hasNonCodItems'));
     }
 
     /**

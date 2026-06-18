@@ -19,7 +19,7 @@ class DashboardService
             ->whereHas('order', function ($q) use ($validStatuses) {
                 $q->whereIn('status', $validStatuses);
             })
-            ->sum(DB::raw('price_at_order * quantity'));
+            ->sum(DB::raw('COALESCE(NULLIF(seller_earnings, 0), price_at_order * quantity)'));
 
         // Total unique orders
         $totalOrders = OrderItem::where('seller_id', $sellerId)
@@ -55,7 +55,7 @@ class DashboardService
         ->get()
         ->map(function ($order) {
             $order->seller_total = $order->items->sum(function ($item) {
-                return $item->price_at_order * $item->quantity;
+                return $item->seller_earnings > 0 ? $item->seller_earnings : ($item->price_at_order * $item->quantity);
             });
             return $order;
         });
@@ -87,7 +87,7 @@ class DashboardService
                     $q->whereIn('status', $validStatuses)
                         ->whereDate('created_at', $date->toDateString());
                 })
-                ->sum(DB::raw('price_at_order * quantity'));
+                ->sum(DB::raw('COALESCE(NULLIF(seller_earnings, 0), price_at_order * quantity)'));
 
             $data[] = (float) $dailyRevenue;
         }
@@ -107,7 +107,7 @@ class DashboardService
             ->whereHas('order', function ($q) use ($validStatuses) {
                 $q->whereIn('status', $validStatuses);
             })
-            ->select('product_id', DB::raw('SUM(quantity) as total_sold'), DB::raw('SUM(price_at_order * quantity) as total_revenue'))
+            ->select('product_id', DB::raw('SUM(quantity) as total_sold'), DB::raw('SUM(COALESCE(NULLIF(seller_earnings, 0), price_at_order * quantity)) as total_revenue'))
             ->groupBy('product_id')
             ->orderByDesc('total_sold')
             ->limit(5)

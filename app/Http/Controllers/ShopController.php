@@ -50,7 +50,7 @@ class ShopController extends Controller
     public function show(Product $product): View
     {
         $product->increment('views');
-        $product->load(['category', 'seller']);
+        $product->load(['category', 'seller', 'reviews.user']);
         $relatedProducts = Product::where('category_id', $product->category_id)
             ->where('id', '!=', $product->id)
             ->where('stock', '>', 0)

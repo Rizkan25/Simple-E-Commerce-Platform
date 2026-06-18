@@ -21,6 +21,9 @@ class ProductUpdateRequest extends FormRequest
             'price' => ['required', 'numeric', 'min:0'],
             'stock' => ['required', 'integer', 'min:0'],
             'image' => ['nullable', 'image', 'mimes:jpg,jpeg,png', 'max:2048'],
+            'is_cod_enabled' => ['boolean'],
+            'discount_type' => ['nullable', 'in:percentage,fixed'],
+            'discount_amount' => ['nullable', 'numeric', 'min:0'],
         ];
     }
 
