@@ -63,113 +63,118 @@
 </div>
 <!-- Top Section: KPI Cards -->
 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-<!-- KPI 1 -->
-<div class="bg-gray-950 border border-white/10 p-4 rounded-xl">
-<div class="flex justify-between items-start mb-2">
-<div class="w-10 h-10 flex items-center justify-center bg-amber-500 rounded-lg">
-<span class="material-symbols-outlined text-amber-900" data-icon="payments">payments</span>
-</div>
-<span class="flex items-center gap-1 {{ $gmvTrend >= 0 ? 'text-emerald-400' : 'text-red-400' }} font-bold text-xs font-semibold">
-    {{ $gmvTrend >= 0 ? '+' : '' }}{{ $gmvTrend }}%
-    <span class="material-symbols-outlined text-[14px]" data-icon="{{ $gmvTrend >= 0 ? 'trending_up' : 'trending_down' }}">{{ $gmvTrend >= 0 ? 'trending_up' : 'trending_down' }}</span>
-</span>
-</div>
-<p class="text-xs font-semibold text-gray-400">Total GMV</p>
-<p class="text-2xl font-semibold tracking-tight mt-1">Rp {{ number_format($totalGmv / 1000000, 2, ",", ".") }}M</p>
-<p class="text-[10px] text-gray-400 mt-2">Vs bulan lalu: Rp {{ number_format($lastMonthGmv / 1000000, 2, ",", ".") }}M</p>
-</div>
-<!-- KPI 2 -->
-<div class="bg-gray-950 border border-white/10 p-4 rounded-xl">
-<div class="flex justify-between items-start mb-2">
-<div class="w-10 h-10 flex items-center justify-center bg-emerald-900/50 rounded-lg text-emerald-300">
-<span class="material-symbols-outlined" data-icon="shopping_bag">shopping_bag</span>
-</div>
-<span class="flex items-center gap-1 {{ $ordersTrend >= 0 ? 'text-emerald-400' : 'text-red-400' }} font-bold text-xs font-semibold">
-    {{ $ordersTrend >= 0 ? '+' : '' }}{{ $ordersTrend }}%
-    <span class="material-symbols-outlined text-[14px]" data-icon="{{ $ordersTrend >= 0 ? 'trending_up' : 'trending_down' }}">{{ $ordersTrend >= 0 ? 'trending_up' : 'trending_down' }}</span>
-</span>
-</div>
-<p class="text-xs font-semibold text-gray-400">Total Pesanan</p>
-<p class="text-2xl font-semibold tracking-tight mt-1">{{ number_format($totalOrders, 0, ",", ".") }}</p>
-<p class="text-[10px] text-gray-400 mt-2">Vs bulan lalu: {{ number_format($lastMonthOrders, 0, ",", ".") }}</p>
-</div>
-<!-- KPI 3 -->
-<div class="bg-gray-950 border border-white/10 p-4 rounded-xl">
-<div class="flex justify-between items-start mb-2">
-<div class="w-10 h-10 flex items-center justify-center bg-orange-200 rounded-lg text-orange-900">
-<span class="material-symbols-outlined" data-icon="store">store</span>
-</div>
-<span class="flex items-center gap-1 {{ $merchantsTrend >= 0 ? 'text-emerald-400' : 'text-red-400' }} font-bold text-xs font-semibold">
-    {{ $merchantsTrend >= 0 ? '+' : '' }}{{ $merchantsTrend }}%
-    <span class="material-symbols-outlined text-[14px]" data-icon="{{ $merchantsTrend >= 0 ? 'trending_up' : 'trending_down' }}">{{ $merchantsTrend >= 0 ? 'trending_up' : 'trending_down' }}</span>
-</span>
-</div>
-<p class="text-xs font-semibold text-gray-400">Merchant Aktif</p>
-<p class="text-2xl font-semibold tracking-tight mt-1">{{ $activeMerchants }}</p>
-<p class="text-[10px] text-gray-400 mt-2">Vs bulan lalu: {{ number_format($lastMonthMerchants, 0, ",", ".") }}</p>
-</div>
-<!-- KPI 4 -->
-<div class="bg-gray-950 border border-white/10 p-4 rounded-xl">
-<div class="flex justify-between items-start mb-2">
-<div class="w-10 h-10 flex items-center justify-center bg-red-900/50 rounded-lg text-red-300">
-<span class="material-symbols-outlined" data-icon="person_add">person_add</span>
-</div>
-<span class="flex items-center gap-1 {{ $customersTrend >= 0 ? 'text-emerald-400' : 'text-red-400' }} font-bold text-xs font-semibold">
-    {{ $customersTrend >= 0 ? '+' : '' }}{{ $customersTrend }}%
-    <span class="material-symbols-outlined text-[14px]" data-icon="{{ $customersTrend >= 0 ? 'trending_up' : 'trending_down' }}">{{ $customersTrend >= 0 ? 'trending_up' : 'trending_down' }}</span>
-</span>
-</div>
-<p class="text-xs font-semibold text-gray-400">Pelanggan Baru</p>
-<p class="text-2xl font-semibold tracking-tight mt-1">{{ $newCustomers }}</p>
-<p class="text-[10px] text-gray-400 mt-2">Vs bulan lalu: {{ number_format($lastMonthCustomers, 0, ",", ".") }}</p>
-</div>
+    <!-- KPI 1 -->
+    <a href="{{ \App\Filament\Resources\Orders\OrderResource::getUrl('index') }}" class="block bg-gray-950 border border-white/10 p-4 rounded-xl hover:ring-1 hover:ring-amber-500 transition-all cursor-pointer group">
+        <div class="flex justify-between items-start mb-2">
+            <div class="w-10 h-10 flex items-center justify-center bg-amber-500 rounded-lg">
+                <span class="material-symbols-outlined text-amber-900" data-icon="payments">payments</span>
+            </div>
+            <span class="flex items-center gap-1 {{ $gmvTrend >= 0 ? 'text-emerald-400' : 'text-red-400' }} font-bold text-xs font-semibold">
+                {{ $gmvTrend >= 0 ? '+' : '' }}{{ $gmvTrend }}%
+                <span class="material-symbols-outlined text-[14px]" data-icon="{{ $gmvTrend >= 0 ? 'trending_up' : 'trending_down' }}">{{ $gmvTrend >= 0 ? 'trending_up' : 'trending_down' }}</span>
+            </span>
+        </div>
+        <p class="text-xs font-semibold text-gray-400">Total GMV</p>
+        <p class="text-2xl font-semibold tracking-tight mt-1">Rp {{ number_format($totalGmv / 1000000, 2, ",", ".") }}M</p>
+        <p class="text-[10px] text-gray-400 mt-2">Vs bulan lalu: Rp {{ number_format($lastMonthGmv / 1000000, 2, ",", ".") }}M</p>
+    </a>
+    
+    <!-- KPI 2 -->
+    <a href="{{ \App\Filament\Resources\Orders\OrderResource::getUrl('index') }}" class="block bg-gray-950 border border-white/10 p-4 rounded-xl hover:ring-1 hover:ring-amber-500 transition-all cursor-pointer group">
+        <div class="flex justify-between items-start mb-2">
+            <div class="w-10 h-10 flex items-center justify-center bg-emerald-900/50 rounded-lg text-emerald-300">
+                <span class="material-symbols-outlined" data-icon="shopping_bag">shopping_bag</span>
+            </div>
+            <span class="flex items-center gap-1 {{ $ordersTrend >= 0 ? 'text-emerald-400' : 'text-red-400' }} font-bold text-xs font-semibold">
+                {{ $ordersTrend >= 0 ? '+' : '' }}{{ $ordersTrend }}%
+                <span class="material-symbols-outlined text-[14px]" data-icon="{{ $ordersTrend >= 0 ? 'trending_up' : 'trending_down' }}">{{ $ordersTrend >= 0 ? 'trending_up' : 'trending_down' }}</span>
+            </span>
+        </div>
+        <p class="text-xs font-semibold text-gray-400">Total Pesanan</p>
+        <p class="text-2xl font-semibold tracking-tight mt-1">{{ number_format($totalOrders, 0, ",", ".") }}</p>
+        <p class="text-[10px] text-gray-400 mt-2">Vs bulan lalu: {{ number_format($lastMonthOrders, 0, ",", ".") }}</p>
+    </a>
+    
+    <!-- KPI 3 -->
+    <a href="{{ \App\Filament\Resources\Users\UserResource::getUrl('index') }}" class="block bg-gray-950 border border-white/10 p-4 rounded-xl hover:ring-1 hover:ring-amber-500 transition-all cursor-pointer group">
+        <div class="flex justify-between items-start mb-2">
+            <div class="w-10 h-10 flex items-center justify-center bg-orange-200 rounded-lg text-orange-900">
+                <span class="material-symbols-outlined" data-icon="store">store</span>
+            </div>
+            <span class="flex items-center gap-1 {{ $merchantsTrend >= 0 ? 'text-emerald-400' : 'text-red-400' }} font-bold text-xs font-semibold">
+                {{ $merchantsTrend >= 0 ? '+' : '' }}{{ $merchantsTrend }}%
+                <span class="material-symbols-outlined text-[14px]" data-icon="{{ $merchantsTrend >= 0 ? 'trending_up' : 'trending_down' }}">{{ $merchantsTrend >= 0 ? 'trending_up' : 'trending_down' }}</span>
+            </span>
+        </div>
+        <p class="text-xs font-semibold text-gray-400">Merchant Aktif</p>
+        <p class="text-2xl font-semibold tracking-tight mt-1">{{ $activeMerchants }}</p>
+        <p class="text-[10px] text-gray-400 mt-2">Vs bulan lalu: {{ number_format($lastMonthMerchants, 0, ",", ".") }}</p>
+    </a>
+    
+    <!-- KPI 4 -->
+    <a href="{{ \App\Filament\Resources\Users\UserResource::getUrl('index') }}" class="block bg-gray-950 border border-white/10 p-4 rounded-xl hover:ring-1 hover:ring-amber-500 transition-all cursor-pointer group">
+        <div class="flex justify-between items-start mb-2">
+            <div class="w-10 h-10 flex items-center justify-center bg-red-900/50 rounded-lg text-red-300">
+                <span class="material-symbols-outlined" data-icon="person_add">person_add</span>
+            </div>
+            <span class="flex items-center gap-1 {{ $customersTrend >= 0 ? 'text-emerald-400' : 'text-red-400' }} font-bold text-xs font-semibold">
+                {{ $customersTrend >= 0 ? '+' : '' }}{{ $customersTrend }}%
+                <span class="material-symbols-outlined text-[14px]" data-icon="{{ $customersTrend >= 0 ? 'trending_up' : 'trending_down' }}">{{ $customersTrend >= 0 ? 'trending_up' : 'trending_down' }}</span>
+            </span>
+        </div>
+        <p class="text-xs font-semibold text-gray-400">Pelanggan Baru</p>
+        <p class="text-2xl font-semibold tracking-tight mt-1">{{ $newCustomers }}</p>
+        <p class="text-[10px] text-gray-400 mt-2">Vs bulan lalu: {{ number_format($lastMonthCustomers, 0, ",", ".") }}</p>
+    </a>
 </div>
 <!-- Middle Section -->
 <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
 <!-- Sales Trend Chart -->
 <div class="lg:col-span-2 bg-gray-950 border border-white/10 p-6 rounded-xl flex flex-col">
-<div class="flex justify-between items-center mb-8">
-<div>
-                        <h3 class="text-lg font-semibold tracking-tight text-amber-500">Tren Penjualan Bulanan</h3>
-                        <p class="text-xs text-gray-400">Visualisasi pendapatan kotor tahun {{ $currentYear }}</p>
+                    <div class="flex justify-between items-center mb-8">
+                        <div>
+                            <h3 class="text-lg font-semibold tracking-tight text-amber-500">
+                                Tren Penjualan {{ $salesFilter === 'week' ? 'Mingguan' : ($salesFilter === 'year' ? 'Tahunan' : 'Bulanan') }}
+                            </h3>
+                            <p class="text-xs text-gray-400">Visualisasi pendapatan kotor tahun {{ $currentYear }}</p>
+                        </div>
+                        <div class="flex bg-surface-container rounded-lg p-1">
+                            <button wire:click="$set('salesFilter', 'week')" class="px-4 py-1 text-xs font-semibold rounded transition-all {{ $salesFilter === 'week' ? 'bg-[#213c5e] shadow-sm text-white font-bold' : 'hover:bg-surface-container-high' }}">Minggu</button>
+                            <button wire:click="$set('salesFilter', 'month')" class="px-4 py-1 text-xs font-semibold rounded transition-all {{ $salesFilter === 'month' ? 'bg-[#213c5e] shadow-sm text-white font-bold' : 'hover:bg-surface-container-high' }}">Bulan</button>
+                            <button wire:click="$set('salesFilter', 'year')" class="px-4 py-1 text-xs font-semibold rounded transition-all {{ $salesFilter === 'year' ? 'bg-[#213c5e] shadow-sm text-white font-bold' : 'hover:bg-surface-container-high' }}">Tahun</button>
+                        </div>
                     </div>
-                    <div class="flex bg-surface-container rounded-lg p-1">
-                        <button wire:click="$set('salesFilter', 'week')" class="px-4 py-1 text-xs font-semibold rounded transition-all {{ $salesFilter === 'week' ? 'bg-[#213c5e] shadow-sm text-white font-bold' : 'hover:bg-surface-container-high' }}">Minggu</button>
-                        <button wire:click="$set('salesFilter', 'month')" class="px-4 py-1 text-xs font-semibold rounded transition-all {{ $salesFilter === 'month' ? 'bg-[#213c5e] shadow-sm text-white font-bold' : 'hover:bg-surface-container-high' }}">Bulan</button>
-                        <button wire:click="$set('salesFilter', 'year')" class="px-4 py-1 text-xs font-semibold rounded transition-all {{ $salesFilter === 'year' ? 'bg-[#213c5e] shadow-sm text-white font-bold' : 'hover:bg-surface-container-high' }}">Tahun</button>
+                    <div class="relative flex-1 min-h-[300px] w-full flex items-end justify-between px-4">
+                        <!-- Chart Mockup with CSS -->
+                        <!-- Horizontal grid lines -->
+                        <div class="absolute inset-x-0 top-0 bottom-8 flex flex-col justify-between border-b border-white/10">
+                            <div class="border-b border-white/10 w-full"></div>
+                            <div class="border-b border-white/10 w-full"></div>
+                            <div class="border-b border-white/10 w-full"></div>
+                            <div class="border-b border-white/10 w-full"></div>
+                        </div>
+                        <!-- Columns/Points placeholder -->
+                        <div class="relative w-full h-full flex items-end justify-between pt-10">
+                            @foreach($chartLabels as $index => $label)
+                                @php
+                                    $sales = $monthlySales[$index] ?? 0;
+                                    $height = $maxMonthlySales > 0 ? max(5, round(($sales / $maxMonthlySales) * 100)) : 5;
+                                    if ($sales >= 1000000) {
+                                        $tooltip = number_format($sales / 1000000, 1, ",", ".") . "jt";
+                                    } elseif ($sales >= 1000) {
+                                        $tooltip = number_format($sales / 1000, 1, ",", ".") . "rb";
+                                    } else {
+                                        $tooltip = "Rp " . number_format($sales, 0, ",", ".");
+                                    }
+                                @endphp
+                                <div class="w-8 {{ $sales > 0 ? 'bg-amber-500 hover:bg-amber-400' : 'bg-amber-500/20' }} transition-all rounded-t-sm group relative" style="height: {{ $height }}%">
+                                    @if($sales > 0)
+                                    <div class="absolute -top-10 left-1/2 -translate-x-1/2 bg-amber-500 text-gray-900 text-[10px] px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10">{{ $tooltip }}</div>
+                                    @endif
+                                </div>
+                            @endforeach
+                        </div>
                     </div>
-                </div>
-<div class="relative flex-1 min-h-[300px] w-full flex items-end justify-between px-4">
-<!-- Chart Mockup with CSS -->
-<!-- Horizontal grid lines -->
-<div class="absolute inset-x-0 top-0 bottom-8 flex flex-col justify-between border-b border-white/10">
-<div class="border-b border-white/10 w-full"></div>
-<div class="border-b border-white/10 w-full"></div>
-<div class="border-b border-white/10 w-full"></div>
-<div class="border-b border-white/10 w-full"></div>
-</div>
-<!-- Columns/Points placeholder -->
-<div class="relative w-full h-full flex items-end justify-between pt-10">
-    @foreach($chartLabels as $index => $label)
-        @php
-            $sales = $monthlySales[$index] ?? 0;
-            $height = $maxMonthlySales > 0 ? max(5, round(($sales / $maxMonthlySales) * 100)) : 5;
-            if ($sales >= 1000000) {
-                $tooltip = number_format($sales / 1000000, 1, ",", ".") . "jt";
-            } elseif ($sales >= 1000) {
-                $tooltip = number_format($sales / 1000, 1, ",", ".") . "rb";
-            } else {
-                $tooltip = "Rp " . number_format($sales, 0, ",", ".");
-            }
-        @endphp
-        <div class="w-8 {{ $sales > 0 ? 'bg-primary/50 hover:bg-primary' : 'bg-primary/10' }} transition-all rounded-t-sm group relative" style="height: {{ $height }}%">
-            @if($sales > 0)
-            <div class="absolute -top-10 left-1/2 -translate-x-1/2 bg-amber-500 text-gray-900 text-[10px] px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">{{ $tooltip }}</div>
-            @endif
-        </div>
-    @endforeach
-</div>
-</div>
 <div class="flex justify-between mt-4 px-4 text-xs font-semibold text-gray-400 font-medium">
     @foreach($chartLabels as $label)
         <span>{{ $label }}</span>
@@ -177,7 +182,7 @@
 </div>
 </div>
 <!-- Order Status Donut -->
-<div class="bg-gray-950 border border-white/10 p-6 rounded-xl flex flex-col">
+<a href="{{ \App\Filament\Resources\Orders\OrderResource::getUrl('index') }}" class="block bg-gray-950 border border-white/10 p-6 rounded-xl flex flex-col hover:ring-1 hover:ring-amber-500 transition-all cursor-pointer">
 <h3 class="text-lg font-semibold tracking-tight text-amber-500 mb-8">Ringkasan Status Pesanan</h3>
 <div class="flex-1 flex items-center justify-center relative py-8">
 <!-- Simulated Donut Chart -->
@@ -220,6 +225,7 @@
 </div>
 </div>
 </div>
+</a>
 </div>
 <!-- Bottom Section -->
 <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
@@ -227,7 +233,7 @@
 <div class="bg-gray-950 border border-white/10 rounded-xl overflow-hidden">
 <div class="p-6 border-b border-white/10 flex justify-between items-center">
 <h3 class="text-lg font-semibold tracking-tight text-amber-500">Toko Performa Terbaik</h3>
-<button class="text-amber-500 text-xs font-semibold font-bold hover:underline">Lihat Semua</button>
+<a href="{{ \App\Filament\Resources\Users\UserResource::getUrl('index') }}" class="text-amber-500 text-xs font-semibold font-bold hover:underline">Lihat Semua</a>
 </div>
 <div class="overflow-x-auto">
 <table class="w-full text-left border-collapse">
@@ -245,7 +251,7 @@
     <tr class="hover:bg-gray-900/50 transition-colors">
         <td class="px-6 py-4">
             <div class="flex items-center gap-2">
-                <div class="w-8 h-8 bg-primary rounded flex items-center justify-center text-white text-[10px] font-bold">{{ substr($shop->name, 0, 1) }}</div>
+                <div class="w-8 h-8 bg-amber-500 rounded flex items-center justify-center text-gray-900 text-[10px] font-bold">{{ substr($shop->name, 0, 1) }}</div>
                 <span class="text-sm font-medium">{{ $shop->name }}</span>
             </div>
         </td>
