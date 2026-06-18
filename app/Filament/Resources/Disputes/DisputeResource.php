@@ -30,7 +30,9 @@ class DisputeResource extends Resource
     protected static ?string $model = Dispute::class;
 
     protected static ?string $recordTitleAttribute = 'id';
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-exclamation-triangle';
+    protected static string|\UnitEnum|null $navigationGroup = 'Layanan Pelanggan';
+    protected static ?string $navigationLabel = 'Komplain Pesanan';
 
     public static function form(Schema $schema): Schema
     {

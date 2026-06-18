@@ -13,10 +13,14 @@ class OrderItem extends Model
         'seller_id',
         'quantity',
         'price_at_order',
+        'platform_fee',
+        'seller_earnings',
     ];
 
     protected $casts = [
         'price_at_order' => 'decimal:2',
+        'platform_fee' => 'decimal:2',
+        'seller_earnings' => 'decimal:2',
         'quantity' => 'integer',
     ];
 

@@ -61,9 +61,17 @@ class OrderService
                 'payment_method' => $paymentMethod,
             ]);
 
+            // Get current commission percentage
+            $commissionSetting = \App\Models\PlatformSetting::where('key', 'commission_percentage')->first();
+            $commissionPercentage = $commissionSetting ? (float) $commissionSetting->value : 0;
+
             // Create order items with live prices and deduct stock
             foreach ($cart->items as $item) {
                 $product = $products[$item->product_id];
+
+                $itemTotal = $product->price * $item->quantity;
+                $platformFee = $itemTotal * ($commissionPercentage / 100);
+                $sellerEarnings = $itemTotal - $platformFee;
 
                 OrderItem::create([
                     'order_id' => $order->id,
@@ -71,6 +79,8 @@ class OrderService
                     'seller_id' => $product->seller_id,
                     'quantity' => $item->quantity,
                     'price_at_order' => $product->price,
+                    'platform_fee' => $platformFee,
+                    'seller_earnings' => $sellerEarnings,
                 ]);
 
                 // Deduct stock
@@ -136,7 +146,9 @@ class OrderService
                     if (!isset($sellerEarnings[$item->seller_id])) {
                         $sellerEarnings[$item->seller_id] = 0;
                     }
-                    $sellerEarnings[$item->seller_id] += ($item->price_at_order * $item->quantity);
+                    // Fallback to full price if seller_earnings is 0 (for backward compatibility with old orders)
+                    $earnings = $item->seller_earnings > 0 ? $item->seller_earnings : ($item->price_at_order * $item->quantity);
+                    $sellerEarnings[$item->seller_id] += $earnings;
                 }
 
                 foreach ($sellerEarnings as $sellerId => $amount) {

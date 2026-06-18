@@ -29,7 +29,9 @@ class OrderResource extends Resource
     protected static ?string $model = Order::class;
 
     protected static ?string $recordTitleAttribute = 'order_number';
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-shopping-bag';
+    protected static string|\UnitEnum|null $navigationGroup = 'Transaksi';
+    protected static ?string $navigationLabel = 'Semua Pesanan';
 
     public static function form(Schema $schema): Schema
     {
