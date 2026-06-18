@@ -266,10 +266,10 @@
 </table>
 </div>
 </div>
-<!-- Recent Order Activity -->
+<!-- Recent Withdrawal Activity -->
 <div class="bg-gray-950 border border-white/10 rounded-xl overflow-hidden flex flex-col">
 <div class="p-6 border-b border-white/10 flex justify-between items-center">
-<h3 class="text-lg font-semibold tracking-tight text-amber-500">Aktivitas Pesanan Terbaru</h3>
+<h3 class="text-lg font-semibold tracking-tight text-amber-500">Permintaan Withdrawal Terbaru</h3>
 <div class="flex gap-1">
 <button class="p-1 hover:bg-surface-container rounded transition-colors"><span class="material-symbols-outlined text-sm" data-icon="filter_list">filter_list</span></button>
 <button class="p-1 hover:bg-surface-container rounded transition-colors"><span class="material-symbols-outlined text-sm" data-icon="more_vert">more_vert</span></button>
@@ -278,33 +278,33 @@
 <div class="flex-1 overflow-y-auto custom-scrollbar">
 
 <div class="divide-y divide-outline-variant">
-    @forelse($recentOrders as $order)
+    @forelse($recentWithdrawals as $withdrawal)
     <div class="p-6 hover:bg-gray-900/50 transition-colors flex items-center justify-between">
         <div class="flex items-center gap-4">
             <div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-amber-500">
-                <span class="material-symbols-outlined" data-icon="shopping_cart">shopping_cart</span>
+                <span class="material-symbols-outlined" data-icon="account_balance_wallet">account_balance_wallet</span>
             </div>
             <div>
-                <p class="text-sm font-bold">{{ optional($order->user)->name ?? "Guest" }}</p>
-                <p class="text-[11px] text-gray-400">{{ $order->created_at->diffForHumans() }} • {{ $order->order_number }}</p>
+                <p class="text-sm font-bold">{{ optional($withdrawal->user)->store_name ?? optional($withdrawal->user)->name ?? "Unknown Seller" }}</p>
+                <p class="text-[11px] text-gray-400">{{ $withdrawal->created_at->diffForHumans() }} • {{ $withdrawal->bank_account }}</p>
             </div>
         </div>
         <div class="text-right">
-            <p class="text-sm font-bold">Rp {{ number_format($order->total_amount, 0, ",", ".") }}</p>
+            <p class="text-sm font-bold">Rp {{ number_format($withdrawal->amount, 0, ",", ".") }}</p>
             @php
-                $statusColor = match($order->status) {
-                    "pending" => "bg-primary-900/50 text-white",
-                    "paid" => "bg-emerald-900/50 text-emerald-300",
-                    "completed" => "bg-gray-800 text-gray-400",
-                    "cancelled" => "bg-red-900/50 text-red-300",
-                    default => "bg-primary-900/50 text-white"
+                $statusColor = match($withdrawal->status) {
+                    "PENDING" => "bg-yellow-900/50 text-yellow-300",
+                    "APPROVED" => "bg-blue-900/50 text-blue-300",
+                    "COMPLETED" => "bg-green-900/50 text-green-300",
+                    "REJECTED" => "bg-red-900/50 text-red-300",
+                    default => "bg-gray-900/50 text-white"
                 };
             @endphp
-            <span class="inline-block px-2 py-0.5 rounded-full {{ $statusColor }} text-[10px] font-bold uppercase tracking-wider">{{ $order->status }}</span>
+            <span class="inline-block px-2 py-0.5 rounded-full {{ $statusColor }} text-[10px] font-bold uppercase tracking-wider">{{ $withdrawal->status }}</span>
         </div>
     </div>
     @empty
-    <div class="p-6 text-center text-gray-400">Belum ada pesanan terbaru.</div>
+    <div class="p-6 text-center text-gray-400">Belum ada permintaan penarikan dana.</div>
     @endforelse
 </div>
 </div>

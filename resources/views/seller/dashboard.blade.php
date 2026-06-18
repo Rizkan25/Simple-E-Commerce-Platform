@@ -82,6 +82,58 @@
                         <p class="text-sm text-gray-500">Belum ada penjualan.</p>
                     @endif
                 </div>
+                <!-- Recent Orders -->
+                <div class="lg:col-span-2 bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden flex flex-col">
+                    <div class="p-6 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
+                        <h3 class="font-semibold text-gray-800">Aktivitas Pesanan Terbaru</h3>
+                    </div>
+                    
+                    <!-- Header Baris (Desktop) -->
+                    <div class="hidden sm:flex px-6 py-3 border-b border-gray-100 bg-gray-50/30 text-[11px] font-semibold text-gray-500 uppercase tracking-wider">
+                        <div class="w-1/3">Pelanggan & Pesanan</div>
+                        <div class="w-1/3 text-left">Pendapatan (Toko Anda)</div>
+                        <div class="w-1/3 text-right">Status</div>
+                    </div>
+
+                    <div class="divide-y divide-gray-100">
+                        @forelse($stats['recentOrders'] as $order)
+                        <div class="p-6 hover:bg-gray-50 transition-colors flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                            <!-- Kolom Kiri: Info Pelanggan -->
+                            <div class="flex items-center gap-4 sm:w-1/3">
+                                <div class="w-10 h-10 rounded-full bg-indigo-50 flex items-center justify-center text-indigo-600 shrink-0">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+                                </div>
+                                <div>
+                                    <p class="text-sm font-bold text-gray-900">{{ optional($order->user)->name ?? 'Guest' }}</p>
+                                    <p class="text-xs text-gray-500 mt-0.5">{{ $order->created_at->diffForHumans() }} • {{ $order->order_number }}</p>
+                                </div>
+                            </div>
+                            
+                            <!-- Kolom Tengah: Pendapatan -->
+                            <div class="flex sm:justify-start sm:w-1/3">
+                                <p class="text-sm font-bold text-green-600">Rp {{ number_format($order->seller_total, 0, ',', '.') }}</p>
+                            </div>
+
+                            <!-- Kolom Kanan: Status Badge -->
+                            <div class="flex sm:justify-end sm:w-1/3">
+                                @if($order->status === 'pending')
+                                    <span class="px-3 py-1 inline-flex text-xs font-semibold rounded-full bg-yellow-100 text-yellow-800">Menunggu</span>
+                                @elseif($order->status === 'paid')
+                                    <span class="px-3 py-1 inline-flex text-xs font-semibold rounded-full bg-blue-100 text-blue-800">Dibayar</span>
+                                @elseif($order->status === 'shipped')
+                                    <span class="px-3 py-1 inline-flex text-xs font-semibold rounded-full bg-purple-100 text-purple-800">Dikirim</span>
+                                @elseif($order->status === 'completed')
+                                    <span class="px-3 py-1 inline-flex text-xs font-semibold rounded-full bg-green-100 text-green-800">Selesai</span>
+                                @else
+                                    <span class="px-3 py-1 inline-flex text-xs font-semibold rounded-full bg-red-100 text-red-800">Dibatalkan</span>
+                                @endif
+                            </div>
+                        </div>
+                        @empty
+                        <div class="p-8 text-center text-gray-500 text-sm">Belum ada pesanan terbaru.</div>
+                        @endforelse
+                    </div>
+                </div>
             </div>
         </div>
     </div>

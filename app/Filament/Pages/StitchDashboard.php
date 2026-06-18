@@ -5,8 +5,8 @@ namespace App\Filament\Pages;
 use Filament\Pages\Dashboard as BaseDashboard;
 use BackedEnum;
 use App\Models\Order;
-use App\Models\Shop;
 use App\Models\User;
+use App\Models\Withdrawal;
 use Filament\Notifications\Notification;
 
 class StitchDashboard extends BaseDashboard
@@ -26,7 +26,7 @@ class StitchDashboard extends BaseDashboard
         $totalGmv = Order::whereNotIn('status', ['cancelled'])
             ->whereMonth('created_at', $now->month)->whereYear('created_at', $now->year)->sum('total_amount');
         $totalOrders = Order::whereMonth('created_at', $now->month)->whereYear('created_at', $now->year)->count();
-        $activeMerchants = Shop::withoutGlobalScopes()->where('status', 'ACTIVE')
+        $activeMerchants = User::where('role', 'seller')
             ->whereMonth('created_at', $now->month)->whereYear('created_at', $now->year)->count();
         $newCustomers = User::where('role', 'buyer')
             ->whereMonth('created_at', $now->month)->whereYear('created_at', $now->year)->count();
@@ -35,7 +35,7 @@ class StitchDashboard extends BaseDashboard
         $lastMonthGmv = Order::whereNotIn('status', ['cancelled'])
             ->whereMonth('created_at', $lastMonth->month)->whereYear('created_at', $lastMonth->year)->sum('total_amount');
         $lastMonthOrders = Order::whereMonth('created_at', $lastMonth->month)->whereYear('created_at', $lastMonth->year)->count();
-        $lastMonthMerchants = Shop::withoutGlobalScopes()->where('status', 'ACTIVE')
+        $lastMonthMerchants = User::where('role', 'seller')
             ->whereMonth('created_at', $lastMonth->month)->whereYear('created_at', $lastMonth->year)->count();
         $lastMonthCustomers = User::where('role', 'buyer')
             ->whereMonth('created_at', $lastMonth->month)->whereYear('created_at', $lastMonth->year)->count();
@@ -61,18 +61,21 @@ class StitchDashboard extends BaseDashboard
         $deliveredPct = round(($deliveredCount / $totalOrdersCount) * 100);
         $cancelledPct = round(($cancelledCount / $totalOrdersCount) * 100);
 
-        $topShopsQuery = Shop::withoutGlobalScopes()->where('status', 'ACTIVE');
+        $topShopsQuery = User::where('role', 'seller');
         
         if (!empty($this->searchQuery)) {
-            $topShopsQuery->where('name', 'like', '%' . $this->searchQuery . '%');
+            $topShopsQuery->where(function($q) {
+                $q->where('store_name', 'like', '%' . $this->searchQuery . '%')
+                  ->orWhere('name', 'like', '%' . $this->searchQuery . '%');
+            });
         }
 
         $topShops = $topShopsQuery
             ->get()
             ->map(function ($shop) {
-                $totalSales = \App\Models\OrderItem::where('seller_id', $shop->user_id)
+                $totalSales = \App\Models\OrderItem::where('seller_id', $shop->id)
                     ->whereHas('order', function ($query) {
-                        $query->whereNotIn('status', ['cancelled']);
+                        $query->whereNotIn('status', ['cancelled', 'pending']);
                     })
                     ->get()
                     ->sum(function ($item) {
@@ -85,18 +88,16 @@ class StitchDashboard extends BaseDashboard
             ->sortByDesc('total_sales')
             ->take(4);
             
-        $recentOrdersQuery = Order::with('user')->latest();
+        $recentWithdrawalsQuery = Withdrawal::with('user')->latest();
         
         if (!empty($this->searchQuery)) {
-            $recentOrdersQuery->where(function ($q) {
-                $q->where('order_number', 'like', '%' . $this->searchQuery . '%')
-                  ->orWhereHas('user', function ($uq) {
-                      $uq->where('name', 'like', '%' . $this->searchQuery . '%');
-                  });
+            $recentWithdrawalsQuery->whereHas('user', function ($uq) {
+                $uq->where('store_name', 'like', '%' . $this->searchQuery . '%')
+                   ->orWhere('name', 'like', '%' . $this->searchQuery . '%');
             });
         }
             
-        $recentOrders = $recentOrdersQuery->take(4)->get();
+        $recentWithdrawals = $recentWithdrawalsQuery->take(4)->get();
 
         $currentYear = now()->year;
         $monthlySales = [];
@@ -154,7 +155,7 @@ class StitchDashboard extends BaseDashboard
             'deliveredPct' => $deliveredPct,
             'cancelledPct' => $cancelledPct,
             'topShops' => $topShops,
-            'recentOrders' => $recentOrders,
+            'recentWithdrawals' => $recentWithdrawals,
             'currentYear' => $currentYear,
             'monthlySales' => $monthlySales,
             'maxMonthlySales' => $maxMonthlySales,
@@ -167,8 +168,8 @@ class StitchDashboard extends BaseDashboard
         // Ambil data untuk laporan
         $totalGmv = \App\Models\Order::whereNotIn('status', ['cancelled'])->sum('total_amount');
         $totalOrders = \App\Models\Order::whereNotIn('status', ['cancelled'])->count();
-        $activeMerchants = \App\Models\Shop::where('status', 'active')->count();
-        $newCustomers = \App\Models\User::where('role', 'customer')->whereMonth('created_at', now()->month)->count();
+        $activeMerchants = \App\Models\User::where('role', 'seller')->count();
+        $newCustomers = \App\Models\User::where('role', 'buyer')->whereMonth('created_at', now()->month)->count();
         $recentOrders = \App\Models\Order::with('user')->latest()->limit(50)->get();
 
         $data = compact('totalGmv', 'totalOrders', 'activeMerchants', 'newCustomers', 'recentOrders');

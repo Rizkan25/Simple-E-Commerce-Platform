@@ -43,12 +43,30 @@ class DashboardService
             ->distinct('order_id')
             ->count('order_id');
 
+        // Recent Orders
+        $recentOrders = \App\Models\Order::whereHas('items', function ($q) use ($sellerId) {
+            $q->where('seller_id', $sellerId);
+        })
+        ->with(['user', 'items' => function ($q) use ($sellerId) {
+            $q->where('seller_id', $sellerId);
+        }])
+        ->latest()
+        ->take(5)
+        ->get()
+        ->map(function ($order) {
+            $order->seller_total = $order->items->sum(function ($item) {
+                return $item->price_at_order * $item->quantity;
+            });
+            return $order;
+        });
+
         return [
             'totalRevenue' => $totalRevenue,
             'totalOrders' => $totalOrders,
             'pendingOrders' => $pendingOrders,
             'chartData' => $chartData,
             'topProducts' => $topProducts,
+            'recentOrders' => $recentOrders,
         ];
     }
 

@@ -7,6 +7,8 @@ use App\Models\User;
 use BackedEnum;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
+use Filament\Forms\Get;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
@@ -50,6 +52,19 @@ class UserResource extends Resource
                     ->multiple()
                     ->relationship('roles', 'name')
                     ->preload(),
+                Select::make('role')
+                    ->options([
+                        'admin' => 'Admin',
+                        'seller' => 'Seller',
+                        'buyer' => 'Buyer',
+                    ])
+                    ->required()
+                    ->live(),
+                TextInput::make('store_name')
+                    ->maxLength(255)
+                    ->hidden(fn (Get $get): bool => $get('role') !== 'seller'),
+                Textarea::make('store_description')
+                    ->hidden(fn (Get $get): bool => $get('role') !== 'seller'),
             ]);
     }
 
@@ -59,7 +74,8 @@ class UserResource extends Resource
             ->columns([
                 TextColumn::make('name')->searchable(),
                 TextColumn::make('email')->searchable(),
-                TextColumn::make('roles.name')->badge(),
+                TextColumn::make('role')->badge(),
+                TextColumn::make('store_name')->searchable(),
                 TextColumn::make('created_at')->dateTime()->sortable()->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
