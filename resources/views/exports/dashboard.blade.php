@@ -85,7 +85,7 @@
         <td colspan="2" style="border-bottom: 1px solid #e2e8f0;"></td>
     </tr>
     <tr>
-        <td class="cell bold" style="text-align: left; padding-left: 10px;">Pelanggan Baru (Bulan Ini)</td>
+        <td class="cell bold" style="text-align: left; padding-left: 10px;">Pengguna Baru (Bulan Ini)</td>
         <td class="cell" style="text-align: right; padding-right: 5px;">Orang</td>
         <td class="cell" style="text-align: left; padding-left: 5px;">{{ number_format($newCustomers, 0, ',', '.') }}</td>
         <td colspan="2" style="border-bottom: 1px solid #e2e8f0;"></td>

@@ -122,7 +122,7 @@
                 <span class="material-symbols-outlined text-[14px]" data-icon="{{ $customersTrend >= 0 ? 'trending_up' : 'trending_down' }}">{{ $customersTrend >= 0 ? 'trending_up' : 'trending_down' }}</span>
             </span>
         </div>
-        <p class="text-xs font-semibold text-gray-400">Pelanggan Baru</p>
+        <p class="text-xs font-semibold text-gray-400">Pengguna Baru</p>
         <p class="text-2xl font-semibold tracking-tight mt-1">{{ $newCustomers }}</p>
         <p class="text-[10px] text-gray-400 mt-2">Vs bulan lalu: {{ number_format($lastMonthCustomers, 0, ",", ".") }}</p>
     </a>
