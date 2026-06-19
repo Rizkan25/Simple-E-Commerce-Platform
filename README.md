@@ -3,7 +3,7 @@
   
   # 🛒 SimpleShop — E-Commerce Platform
   
-  **Platform E-Commerce Multi-Seller yang Ringan & Modern** dibangun dengan TALL stack (Tailwind, Alpine, Laravel) dan terintegrasi dengan Filament untuk kemudahan manajemen.
+  **Platform E-Commerce Multi-Seller yang Ringan & Modern** dibangun dengan arsitektur TALL stack (Tailwind CSS, Alpine.js, Laravel) dan terintegrasi secara penuh dengan ekosistem Filament PHP untuk kemudahan manajemen administratif.
   
   [![Laravel 13](https://img.shields.io/badge/Laravel-FF2D20?style=for-the-badge&logo=laravel&logoColor=white)](https://laravel.com)
   [![PHP 8.2+](https://img.shields.io/badge/PHP_8.2+-777BB4?style=for-the-badge&logo=php&logoColor=white)](https://php.net)
@@ -23,230 +23,220 @@
 
 ---
 
-## 📖 Tentang Aplikasi
+## 📖 Deskripsi Komprehensif Platform
 
-**SimpleShop** adalah platform e-commerce yang dirancang khusus untuk mendukung sistem **Multi-Seller Marketplace**. Melalui platform ini, pendaftaran pengguna difasilitasi dalam dua peran utama, yaitu sebagai **Buyer** (Pembeli) untuk melakukan transaksi pembelian atau sebagai **Seller** (Penjual) untuk membuka toko secara mandiri.
+**SimpleShop** adalah solusi platform e-commerce yang dirancang secara spesifik dan terstruktur untuk mendukung ekosistem **Multi-Seller Marketplace** (Pusat Perbelanjaan Multi-Penjual). Melalui arsitektur sistem ini, pendaftaran pengguna difasilitasi ke dalam berbagai klasifikasi peran utama:
+- **Buyer (Pembeli):** Peran yang difokuskan pada penelusuran katalog, pengelolaan keranjang belanja, hingga penyelesaian transaksi pembelian produk.
+- **Seller (Penjual):** Peran bagi pengguna yang mendaftarkan entitas toko secara mandiri untuk mengelola inventaris produk, memproses pesanan masuk, serta mengelola pencairan dana hasil penjualan.
+- **Admin:** Peran administratif dengan otoritas penuh untuk memantau keberjalanan platform, memodifikasi pengaturan sistem dasar, serta melakukan intervensi jika terdapat sengketa transaksi.
 
-Fitur yang disediakan mencakup manajemen produk, keranjang belanja berbasis AJAX, proses checkout yang didukung oleh _Pessimistic Locking_ (untuk menghindari duplikasi checkout), hingga integrasi dengan sistem dompet digital (wallet) dan mekanisme penyelesaian sengketa (dispute).
-
----
-
-## ✨ Fitur Utama
-
-### 🛍️ Modul Buyer (Pembeli)
-
-- **Katalog & Live Search**: Pencarian dan penyaringan produk berdasarkan kategori yang terintegrasi dengan fungsi pencarian _real-time_ (AJAX) tanpa memuat ulang halaman.
-- **Profil & Avatar**: Dukungan bagi pengguna untuk mengunggah dan mengubah foto profil sesuai preferensi.
-- **Produk Populer (View Tracking)**: Menampilkan produk yang sedang menjadi tren berdasarkan jumlah _views_ atau tayangan pada masing-masing produk.
-- **Smart Cart (AJAX)**: Penambahan, pengurangan, atau penghapusan produk di keranjang belanja yang berjalan secara asinkronus. Terdapat batasan _single-seller_ per proses checkout.
-- **Checkout Dinamis**: Mendukung metode pembayaran transfer bank, COD (Cash on Delivery), serta pembayaran menggunakan saldo wallet bawaan dari aplikasi.
-- **Manajemen Pesanan**: Pemantauan status pesanan, peninjauan riwayat transaksi, serta fitur pembatalan untuk pesanan yang masih bersatus _pending_.
-- **Sistem Sengketa (Dispute)**: Fasilitas bagi pembeli untuk mengajukan komplain apabila terdapat permasalahan pada pesanan.
-
-### 🏬 Modul Seller (Penjual) & Admin
-
-- **Dashboard Terintegrasi (Powered by Filament)**: Pemantauan performa toko, statistik penjualan, dan grafik pendapatan yang disajikan dengan antarmuka yang modern dan intuitif.
-- **Manajemen Produk (CRUD)**: Fasilitas lengkap untuk menambah, mengubah, serta menghapus produk, didukung dengan sistem penyimpanan gambar yang terstruktur.
-- **Pemrosesan Pesanan**: Pembaruan status pesanan yang dapat dikelola secara bertahap: `Pending` ➔ `Paid` ➔ `Shipped` ➔ `Completed`.
-- **Penarikan Saldo (Withdrawal)**: Fasilitas bagi penjual untuk mencairkan saldo yang didapatkan dari hasil penjualan produk.
-- **Notifikasi Otomatis**: Pengiriman email notifikasi secara otomatis ke pembeli setiap kali terdapat perubahan pada status pesanan.
-- **Export Data (Excel)**: Kemudahan dalam mengekspor data penjualan ke dalam format Excel untuk keperluan pembukuan dan pelaporan.
-
-### ⚙️ Sistem & Keamanan
-
-- **Role-Based Access Control (RBAC)**: Diimplementasikan menggunakan `spatie/laravel-permission` untuk menjaga batasan dan otoritas akses secara ketat antara _Buyer_, _Seller_, dan _Admin_.
-- **Pessimistic Locking**: Mekanisme pencegahan _race-condition_ untuk menjamin keamanan dan konsistensi data pada saat proses transaksi (_checkout_) berlangsung secara bersamaan.
-- **Asynchronous Queues**: Penanganan proses pengiriman email serta tugas latar belakang lainnya dikelola dengan antrean (_queue_) agar responsivitas aplikasi tetap terjaga.
-- **Sistem Wallet**: Pengelolaan saldo pengguna yang terintegrasi secara langsung menggunakan paket `bavix/laravel-wallet`.
+Platform ini telah berevolusi dengan serangkaian pembaruan fungsionalitas tingkat lanjut. Di antaranya adalah sistem manajemen produk yang mendetail (termasuk penerapan diskon khusus dan regulasi *Cash on Delivery*), keranjang belanja asinkronus berbasis integrasi AJAX, mekanisme penyelesaian transaksi (checkout) yang divalidasi oleh sistem keamanan *Pessimistic Locking* guna mencegah duplikasi pengurang stok pada waktu bersamaan, hingga integrasi dompet digital internal (*wallet*) untuk simplifikasi perputaran dana di dalam ekosistem.
 
 ---
 
-## 🚀 Panduan Instalasi Lokal
+## ✨ Rincian Fungsionalitas Utama
 
-Untuk menjalankan aplikasi ini di komputer Anda, ikuti langkah-langkah sederhana berikut:
+### 🛍️ Modul Evaluasi dan Transaksi Pembeli (Buyer)
+- **Katalog Terbuka & Pencarian Dinamis (Live Search):** Fasilitas pencarian produk yang terintegrasi dengan metode penyaringan berbasis kategori. Proses pencarian beroperasi secara *real-time* memanfaatkan antarmuka API (berbasis AJAX), yang memungkinkan pembaruan hasil pencarian secara seketika tanpa memerlukan pemuatan ulang (*reload*) pada halaman utama.
+- **Manajemen Profil & Personalisasi Avatar:** Dukungan teknis bagi entitas pengguna untuk memperbarui informasi personal serta mengunggah atau mengganti foto profil (avatar) yang disimpan menggunakan sistem penamaan berkas berbasis *timestamp* secara aman.
+- **Analitik Popularitas Produk (View Tracking):** Mekanisme penghitungan otomatis yang mencatat setiap kunjungan (tayangan) pada halaman detail produk. Kalkulasi metrik ini diimplementasikan untuk mendongkrak visibilitas produk yang masuk ke dalam kategori tren utama (*Trending Products*).
+- **Keranjang Belanja Pintar (Smart Cart via AJAX):** Antarmuka asinkronus untuk operasi penambahan, pengurangan kuantitas, maupun penghapusan entitas produk dari keranjang belanja. Sistem ini mengimplementasikan aturan ketat berupa batasan **penjual tunggal (*single-seller*)** pada satu kali sesi keranjang belanja, guna menghindari kompleksitas perhitungan ongkos kirim dan komisi.
+- **Integrasi Metode Checkout Dinamis:** Memfasilitasi fleksibilitas metode pembayaran yang mencakup Transfer Bank konvensional, layanan Bayar di Tempat (COD / *Cash on Delivery*), hingga metode mutasi saldo internal yang memanfaatkan arsitektur dompet digital (*wallet*) bawaan dari platform.
+- **Pelacakan dan Manajemen Pesanan Terpusat:** Dasbor antarmuka pembeli yang menyajikan histori transaksi lengkap, pemantauan status proses pesanan secara waktu nyata, hingga kemampuan pembatalan proaktif yang diizinkan selama pesanan tersebut masih berstatus *Pending*.
+- **Fasilitas Ulasan dan Penilaian (Product Reviews):** Modul interaktif pasca-transaksi yang memungkinkan pembeli untuk memberikan penilaian kuantitatif (skor bintang) serta ulasan kualitatif pada produk, setelah pesanan dinyatakan selesai secara sistem.
+- **Notifikasi Terintegrasi Dalam Aplikasi (In-App Notifications):** Sistem pemberitahuan *push* pada antarmuka pengguna yang segera menyajikan informasi kritis seperti transisi status pesanan, tanpa mengharuskan pengguna untuk memeriksa kotak masuk surel.
+- **Resolusi Sengketa (Dispute Mechanism):** Fasilitas formal bagi pihak pembeli untuk mengajukan eskalasi keluhan apabila terdapat indikasi ketidaksesuaian barang, kerusakan, atau kegagalan pengiriman pada pesanan yang sudah tercatat.
 
-> [!IMPORTANT]
-> **Persiapan Awal:** Pastikan komputer Anda sudah terpasang **PHP (Minimal versi 8.3)**, **Composer**, dan **Node.js (Minimal versi 18)**. Secara bawaan, sistem akan menggunakan _database_ SQLite sehingga Anda tidak perlu mengatur server MySQL/MariaDB jika hanya untuk mencoba.
+### 🏬 Modul Operasional Penjual (Seller) & Administratif
+- **Dasbor Manajemen Analitis (Powered by Filament):** Dasbor khusus bagi penjual untuk memonitor metrik performa toko. Hal ini mencakup agregasi statistik penjualan historis, visualisasi grafik pendapatan pada interval waktu tertentu, hingga identifikasi rasio penjualan produk terlaris melalui antarmuka pengguna (UI/UX) yang dirancang khusus untuk efisiensi analisis.
+- **Manajemen Inventaris Lanjutan (CRUD Produk):** Formulasi pengelolaan katalog produk yang mendalam. Penjual diizinkan untuk mengonfigurasi visibilitas produk, mengunggah dokumentasi visual (gambar), menetapkan nominal harga beserta persentase **Diskon** spesifik, hingga menonaktifkan atau mengaktifkan ketersediaan metode pengiriman **COD** pada masing-masing item produk.
+- **Tahapan Pemrosesan Transaksi Pesanan:** Kemudahan operasional bagi penjual untuk melakukan transisi status pesanan dari pihak pembeli melalui empat fase validasi: `Pending` (Menunggu Pembayaran) ➔ `Paid` (Pembayaran Terverifikasi) ➔ `Shipped` (Barang dalam Pengiriman) ➔ `Completed` (Pesanan Selesai).
+- **Sistem Pemotongan Komisi Berbasis Transaksi (Commission System):** Mekanisme algoritmik yang diimplementasikan untuk secara otomatis melakukan ekstraksi margin atau persentase komisi bagi pihak platform atas setiap transaksi penjualan yang berhasil diselesaikan, demi menjaga keberlanjutan operasional aplikasi.
+- **Pengaturan Modul Platform Dinamis (Platform Settings):** Sebuah ruang kontrol eksklusif bagi pemegang hak administratif untuk menyesuaikan konfigurasi global platform (misalnya: mengubah besaran persentase komisi secara dinamis) tanpa intervensi langsung pada kode sumber (_source code_).
+- **Mekanisme Pencairan Dana (Withdrawal):** Sistem penarikan saldo terstruktur bagi entitas penjual untuk mencairkan saldo dompet internal yang terakumulasi dari hasil penjualan produk ke rekening perbankan eksternal.
+- **Distribusi Notifikasi Otomatis (Email Automation):** Pengiriman pesan elektronik (email) yang dikendalikan oleh sistem latar belakang (berbasis antrean atau *queue worker*) guna memberi informasi terkait pembaruan transisi status pesanan secara instan kepada pihak terkait.
+- **Ekstraksi Data Transaksional (Export to Excel):** Fungsi khusus untuk mendukung rekapitulasi pembukuan dan audit finansial yang memungkinkan laporan data penjualan diunduh secara komprehensif ke dalam format *spreadsheet* Excel (.xlsx).
 
-**Langkah 1: Unduh Kode & Masuk ke Folder**
-Buka terminal Anda, unduh (_clone_) kode sumber aplikasi, lalu pindah ke dalam folder proyek:
+### ⚙️ Infrastruktur Sistem & Protokol Keamanan
+- **Role-Based Access Control (RBAC):** Modul otorisasi berlapis dan pengelolaan kontrol akses yang ditenagai oleh paket *spatie/laravel-permission*. Protokol ini memberikan kepastian bahwa batas akses data dan fungsionalitas antara peran *Buyer*, *Seller*, serta *Admin* terisolasi secara aman.
+- **Validasi Mutasi Data via Pessimistic Locking:** Pendekatan sistem basis data (tingkat relasional) yang secara aktif mengunci (*lock*) baris data produk pada saat terjadi pembacaan pada proses *checkout*. Protokol keamanan ini dihadirkan untuk mengeleminasi insiden *race-condition* (misal: dua transaksi melakukan finalisasi pemesanan pada barang dengan sisa stok 1 secara tepat bersamaan).
+- **Proses Komputasi Asinkronus (Asynchronous Queues):** Pendelegasian rutinitas berintensitas tinggi, seperti inisiasi pengiriman email transaksional serta proses komputasi notifikasi massal, menuju instrumen latar belakang (*background job*). Hal ini memastikan halaman tidak mengalami proses *loading* yang berkepanjangan pada sisi pengguna.
+- **Arsitektur Dompet Terdistribusi (Wallet System):** Modul pendataan fluktuasi keuangan (*ledger*) yang sangat akurat, menggunakan teknologi implementasi *bavix/laravel-wallet*. Seluruh mutasi dana atas pembayaran pesanan, pemotongan komisi, hingga permohonan pencairan terjamin validitasnya.
+
+---
+
+## 🚀 Panduan Instalasi dan Konfigurasi Lokal
+
+Ikuti serangkaian instruksi instalasi di bawah ini untuk mengonfigurasi dan mereplikasi lingkungan operasional aplikasi pada infrastruktur lokal spesifikasi pengembangan (*development environment*).
+
+> [!IMPORTANT]  
+> **Prasyarat Sistem Dasar:** Pastikan ketersediaan perangkat lunak standar yang mencakup **PHP >= 8.3**, dependensi manajemen paket **Composer**, pengeksekusi sisi klien **Node.js >= 18**, serta sistem manajemen basis data relasional seperti **SQLite** atau **MySQL/MariaDB**.
 
 ```bash
+# 1. Kloning repositori kode sumber ke dalam infrastruktur lokal
 git clone <repository-url>
 cd Simple-E-Commerce-Platform
-```
 
-**Langkah 2: Instalasi Kebutuhan Sistem**
-Unduh semua paket pendukung (_library_) yang dibutuhkan oleh _Backend_ (PHP) maupun _Frontend_ (Node.js):
-
-```bash
+# 2. Pengunduhan keseluruhan dependensi utilitas lapisan Backend maupun Frontend
 composer install
 npm install
-```
 
-**Langkah 3: Persiapkan Pengaturan Sistem**
-Buat _file_ konfigurasi lokal (`.env`) dengan menyalin dari contoh yang sudah disediakan, lalu buat kunci keamanan untuk aplikasi:
-
-```bash
+# 3. Penetapan formulasi kredensial lingkungan aplikasi (.env)
 cp .env.example .env
 php artisan key:generate
-```
 
-**Langkah 4: Siapkan Database & Foto Produk**
-Buat struktur _database_ beserta akun-akun pengujian (_dummy_) secara otomatis, lalu hubungkan folder penyimpanan agar gambar produk dan avatar bisa ditampilkan di peramban:
-
-```bash
+# 4. Inisiasi struktur tabel basis data beserta injeksi data uji awal (Seeder)
 php artisan migrate --seed
+
+# 5. Pembuatan tautan simbolik direktori sistem berkas (Wajib untuk visualisasi gambar/avatar)
 php artisan storage:link
+
+# 6. Kompilasi modul antarmuka komponen CSS/JS (Vite & Tailwind)
+npm run build
 ```
 
-**Langkah 5: Nyalakan Aplikasi!**
-Aplikasi modern ini membutuhkan 3 mesin yang berjalan bersamaan. Silakan buka **3 jendela terminal yang berbeda**, lalu jalankan perintah ini satu per satu di masing-masing terminal:
-
-1. `php artisan serve` _(Terminal 1: Menjalankan server website utama)_
-2. `npm run dev` _(Terminal 2: Memproses desain visual CSS/JS secara instan)_
-3. `php artisan queue:work` _(Terminal 3: Memproses antrean email di latar belakang)_
-
-> [!TIP]
-> **Selamat! 🎉** Aplikasi Anda sudah menyala. Silakan buka _browser_ Anda dan kunjungi alamat: **http://localhost:8000**
+> [!NOTE]  
+> **Menjalankan Instansi Aplikasi Terintegrasi**  
+> Infrastruktur *TALL Stack* pada proyek ini merekomendasikan layanan berganda yang direpresentasikan melalui inisiasi terminal secara jamak. Bukalah tiga jendela terminal pada lingkungan kerja yang digunakan:
+> - Terminal 1: `php artisan serve` (Inisiasi server HTTP utama PHP)
+> - Terminal 2: `npm run dev` (Inisiasi *Hot Module Replacement* oleh Vite)
+> - Terminal 3: `php artisan queue:work` (Inisiasi penanganan antrean pekerja asinkronus latar belakang)
+> 
+> Atau, sebagai alternatif praktis (dengan dukungan *concurrently*), pengeksekusian satu perintah eksklusif dapat dimungkinkan: `npm run dev` atau `composer dev`.
+> 
+> Setelah seluruh proses menyala, akses rute utama dengan menavigasikan peramban ke: **http://localhost:8000**
 
 ---
 
-## 🔐 Kredensial Pengujian (Demo)
+## 🔐 Kredensial Otentikasi Pengujian (Data Demo)
 
-Sistem telah dilengkapi dengan _Database Seeder_ untuk memudahkan proses pengujian. Silakan gunakan kredensial berikut untuk melakukan proses masuk (_login_):
+Instansi basis data awal mencakup rekam data pengujian operasional buatan (*Database Seeder*). Kredensial tersebut dapat segera digunakan pada antarmuka autentikasi (*login*) dengan spesifikasi di bawah ini:
 
-### 🛡️ Akses Admin
-
-| Jabatan         | Email               | Kata Sandi        |
-| --------------- | ------------------- | ----------------- |
+### 🛡️ Akses Peran Admin
+| Identitas | Alamat Surel (Email) | Konfigurasi Kata Sandi |
+|---|---|---|
 | **Super Admin** | `admin@example.com` | `SecretShop@2026` |
 
-### 🏪 Akses Seller
-
-| Nama Toko            | Email                 | Kata Sandi        |
-| -------------------- | --------------------- | ----------------- |
-| **TeknoMart**        | `seller1@example.com` | `SecretShop@2026` |
+### 🏪 Akses Peran Penjual (Seller)
+| Identitas Entitas Toko | Alamat Surel (Email) | Konfigurasi Kata Sandi |
+|---|---|---|
+| **TeknoMart** | `seller1@example.com` | `SecretShop@2026` |
 | **Siti Style House** | `seller2@example.com` | `SecretShop@2026` |
 
-### 🛒 Akses Buyer
-
-| Email                | Kata Sandi        |
-| -------------------- | ----------------- |
+### 🛒 Akses Peran Pembeli (Buyer)
+| Alamat Surel (Email) | Konfigurasi Kata Sandi |
+|---|---|
 | `buyer1@example.com` | `SecretShop@2026` |
 | `buyer2@example.com` | `SecretShop@2026` |
 | `buyer3@example.com` | `SecretShop@2026` |
 
 ---
 
-## 📂 Struktur Direktori Utama
+## 📂 Struktur dan Hierarki Direktori Utama
 
-Berikut adalah letak direktori penting untuk mempelajari dan memodifikasi _source code_ dari aplikasi:
+Pemisahan tanggung jawab, peranan kontrol logika, hingga rute komunikasi aplikasi divisualisasikan melalui hierarki arsitektur esensial di bawah ini:
 
 ```text
 app/
+├── Filament/                      # Pembangunan Antarmuka Panel Administratif (Admin/Seller Dashboard)
+│   └── Resources/                 # Modul Manajemen CRUD Terpusat (Products, Orders, Categories, Users, Disputes, Withdrawals)
 ├── Http/
 │   ├── Controllers/
-│   │   ├── Api/                   # Endpoint API (Contoh: Live Product Search)
-│   │   ├── Auth/                  # Sistem Login & Registrasi dengan Breeze
-│   │   ├── CartController.php     # Manajemen operasi keranjang belanja (AJAX)
-│   │   ├── CheckoutController.php # Logika transaksi checkout
-│   │   └── ProfileController.php  # Pembaruan profil dan avatar
-│   └── Middleware/                # Proteksi rute berbasis peran
-├── Jobs/                          # Pekerjaan asinkronus latar belakang
-├── Models/                        # Penghubung basis data (Product, Order, Wallet, dll)
-└── Services/                      # Lapisan Logika Bisnis
-    ├── CartService.php            # Validasi batasan keranjang untuk penjual tunggal
-    ├── DashboardService.php       # Kalkulasi statistik pada dashboard penjual
-    ├── OrderService.php           # Logika perekaman transaksi pada basis data
-    └── StockService.php           # Validasi serta pengurangan jumlah stok otomatis
+│   │   ├── Admin/                 # Pengendali Fungsionalitas Hak Akses Admin (terkait Panel non-Filament jika ada)
+│   │   ├── Api/                   # Penyuplai Transmisi Data Interaktif (End-point AJAX)
+│   │   ├── Auth/                  # Rangkaian Modul Validasi dan Autentikasi Pengguna
+│   │   ├── Seller/                # Pengendali Operasional Khusus Entitas Penjual
+│   │   ├── CartController.php     # Regulasi Penambahan dan Mutasi Keranjang Belanja
+│   │   ├── CheckoutController.php # Modul Logika Evaluasi dan Penyelesaian Transaksi
+│   │   ├── NotificationController.php # Pengelolaan Status Notifikasi Antarmuka
+│   │   ├── OrderController.php    # Modul Penanganan Riwayat dan Manajemen Pesanan Pembeli
+│   │   ├── ProfileController.php  # Fasilitasi Pembaruan Data Profil dan Avatar Pengguna
+│   │   ├── ReviewController.php   # Fasilitasi Mekanisme Penilaian dan Ulasan Produk
+│   │   └── ShopController.php     # Pengendali Presentasi Katalog dan Penelusuran Toko
+│   └── Middleware/                # Restriksi Lalu-lintas Tautan dan Verifikasi Akses Peran
+├── Jobs/                          # Penanganan Interupsi Skala Latar Belakang (Contoh: SendOrderConfirmation.php)
+├── Models/                        # Representasi Skema Entitas Relasional Basis Data (User, Shop, Product, Category, Cart, Order, Review, Dispute, Withdrawal, PlatformSetting)
+└── Services/                      # Repositori Evaluasi Eksekusi Logika Bisnis Kompleks
+    ├── CartService.php            # Validasi aturan pembatasan entitas keranjang untuk penjual tunggal
+    ├── DashboardService.php       # Komputasi kalkulatorik statistik finansial pada dasbor penjual
+    ├── OrderService.php           # Logika finalisasi pencatatan validasi rincian pesanan dan pemotongan saldo
+    └── StockService.php           # Pengelolaan presisi ketersediaan pasokan barang dengan kapabilitas penguncian data (Pessimistic Locking)
 ```
 
 ---
 
-## 🛠️ Stack Teknologi
+## 🛠️ Spesifikasi Teknologi dan Pustaka Terapan
 
-- **Kerangka Kerja Utama**: [Laravel 13](https://laravel.com)
-- **Lapisan Antarmuka**: [Blade Template](https://laravel.com/docs/blade), [Tailwind CSS 4](https://tailwindcss.com), [Alpine.js](https://alpinejs.dev)
-- **Panel Administratif**: [Filament](https://filamentphp.com)
-- **Pembangun Aset**: Vite
-- **Basis Data**: SQLite (Lingkungan Pengembangan) / MySQL (Siap Produksi)
-- **Autentikasi**: Laravel Breeze
-- **Manajemen Akses**: Spatie Laravel Permission
-- **Dompet Digital**: Laravel Wallet
-- **Ekspor Data**: Laravel Excel
+- **Kerangka Kerja Utilitas (*Core Framework*)**: [Laravel 13](https://laravel.com)
+- **Konstruksi Antarmuka (*Frontend Stack*)**: [Blade Template](https://laravel.com/docs/blade), [Tailwind CSS 4](https://tailwindcss.com), [Alpine.js](https://alpinejs.dev)
+- **Komponen Panel Dashboard Lanjutan**: [Filament PHP](https://filamentphp.com)
+- **Instrumen Pemrosesan Aset**: Vite
+- **Persistensi Basis Data Utama**: SQLite (Konfigurasi Mode Pengembangan) / MySQL (Konfigurasi Standar Produksi)
+- **Kerangka Autentikasi**: Laravel Breeze
+- **Pengontrol Regulasi Hak Akses**: Spatie Laravel Permission
+- **Manajemen Modul Dompet Transaksional**: Laravel Wallet
+- **Utilitas Ekstraksi Dokumen (*Export*)**: Laravel Excel
 
 ---
 
-## 🧪 Pengujian Sistem (Testing)
+## 🧪 Validasi Kelayakan dan Integritas Sistem
 
-Aplikasi ini telah dibekali dengan pengujian otomatis (_Automated Tests_) menggunakan **Pest/PHPUnit** guna memastikan fitur-fitur krusial selalu berfungsi dengan baik dan bebas _bug_.
+Integritas spesifikasi operasional divalidasi secara mendalam menggunakan sekumpulan instrumen uji kelayakan otomatis (_Automated Feature Tests_) berbasis Pest/PHPUnit. Hal ini dilakukan guna memastikan presisi serta stabilitas pada fungsionalitas utama aplikasi sebelum diterapkan pada skala yang lebih besar.
 
-Beberapa skenario utama yang diuji oleh sistem secara otomatis meliputi:
-
-- **Autentikasi & Hak Akses**: Memastikan Admin, Seller, dan Buyer hanya bisa mengakses halamannya masing-masing.
-- **Keranjang & Checkout**: Memastikan aturan batasan "satu toko per _checkout_" berjalan dengan benar.
-- **Keamanan Transaksi**: Menguji mekanisme _Pessimistic Locking_ agar tidak ada pesanan ganda saat _traffic_ sedang tinggi.
-
-**Cara Menjalankan Pengujian:**
-Anda cukup menjalankan satu baris perintah berikut di terminal:
-
-```bash
-php artisan test
-```
+Fokus skenario pengujian komprehensif mencakup namun tidak terbatas pada:
+- **Autentikasi & Otorisasi Kredensial**: Verifikasi isolasi hak akses berlapis yang mencegah kebocoran informasi antara instrumen *Admin*, *Seller*, dan *Buyer*.
+- **Restriksi Keranjang & Checkout**: Penegasan operasional atas implementasi aturan pembatasan penjual (*single-seller cart restriction*) pada satu waktu pesanan.
+- **Konsistensi Transaksi (Database Rollback & Locking)**: Evaluasi terhadap mekanisme pertahanan keamanan operasional, termasuk *Pessimistic Locking*, dalam menangani serta menahan eskalasi antrean permintaan pemesanan masif yang berpotensi menyebabkan ketidakakuratan saldo maupun inventaris stok.
 
 > [!TIP]
-> Sistem akan secara otomatis menyimulasikan seluruh skenario di atas di latar belakang, lalu menampilkan laporan centang hijau (✅) jika seluruh fitur dipastikan aman dan siap digunakan!
+> Evaluasi dan simulasi validasi eksekusi sistem secara menyeluruh dapat diluncurkan secara lokal dengan mendayagunakan baris komando berikut di dalam terminal kerja:
+> ```bash
+> php artisan test
+> ```
 
 ---
 
-## 📧 Konfigurasi Layanan Email Lokal
+## 📧 Modul Penanganan dan Evaluasi Email Transaksional
 
-Sistem pengiriman email di aplikasi ini berjalan **secara asinkronus di latar belakang** (_background queue_) untuk mencegah aplikasi menjadi lambat saat pelanggan melakukan transaksi. Berikut adalah langkah detail untuk menguji sistem email di komputer lokal:
+Pengiriman notifikasi surel (*email*) pada platform ini diformulasikan untuk berjalan **secara asinkronus di latar belakang** (_background queue task_). Tujuannya adalah demi menghindari latensi maupun kelambatan waktu respons pada antarmuka bagi sisi pengguna akhir. Prosedur validasi layanan komunikasi secara lokal membutuhkan adaptasi konfigurasi sebagai berikut:
 
-### 1. Menjalankan Pekerja Antrean (Queue Worker)
-
-Karena email menggunakan sistem antrean, Anda **WAJIB** menjalankan satu proses khusus di terminal agar email yang tertunda dapat diproses dan dikirimkan:
+### 1. Inisiasi Pekerja Antrean (Queue Worker)
+Semua bentuk instruksi pengiriman surel secara mendasar dialihkan menuju sistem antrean. Oleh sebab itu, ketersediaan instansi komando khusus sangat diwajibkan untuk tetap beroperasi secara mandiri di sisi terminal:
 
 ```bash
 php artisan queue:work
 ```
 
 > [!IMPORTANT]
-> Biarkan terminal yang menjalankan perintah ini tetap terbuka (_running_) di latar belakang selama Anda ingin menguji fitur-fitur notifikasi email (seperti fitur perubahan status pesanan).
+> Pastikan instansi terminal yang meluncurkan penugasan antrean latar belakang di atas tetap terbuka selama proses uji coba transaksional terus berlangsung (seperti pada simulasi penyerahan maupun pembatalan pesanan yang men-trigger modul notifikasi surel).
 
-### 2. Metode 1: Melihat Email via Teks (Bawaan)
+### 2. Evaluasi Log Email Lokal (Mekanisme Bawaan)
+Konfigurasi lingkungan standar sama sekali tidak mensyaratkan dependensi terhadap infrastruktur layanan jaringan luar (*external service*), melainkan sekadar mencetak muatan pesan ke dalam berkas perekam kejadian (*log file*) lokal.
+1. Evaluasi parameter konfigurasi pada berkas `.env` hingga tertera format instruksi: `MAIL_MAILER=log`
+2. Lakukan simulasi aktivitas pemicu surel transaksional pada platform aplikasi yang sedang beroperasi.
+3. Rincian muatan pesan serta informasi tautan spesifik dapat dievaluasi secara teks secara langsung melalui peninjauan berkas pada jalur: `storage/logs/laravel.log`.
 
-Secara bawaan, Anda tidak perlu mengkonfigurasi internet atau layanan apapun. Aplikasi akan sekadar "mencatat" isi email ke dalam sebuah file teks lokal.
-
-1. Buka file `.env` di folder utama aplikasi, pastikan pengaturannya seperti ini: `MAIL_MAILER=log`
-2. Lakukan aktivitas di aplikasi yang memicu email (misal: Admin mengubah status pesanan).
-3. Buka file `storage/logs/laravel.log`. Anda bisa membaca seluruh isi pesan email dan tautannya dari file tersebut.
-
-### 3. Metode 2: Kotak Masuk Visual dengan Mailtrap
-
-Jika Anda ingin simulasi yang lebih nyata dan ingin melihat bentuk asli emailnya (lengkap dengan desain dan warna), Anda bisa menggunakan layanan gratis seperti **[Mailtrap](https://mailtrap.io)**.
-
-1. Buat akun gratis di Mailtrap dan akses bagian _Inboxes_.
-2. Pilih menu _SMTP Settings_, lalu salin kredensial yang diberikan.
-3. Buka file `.env` Anda, ubah bagian email menyesuaikan data dari Mailtrap:
+### 3. Simulasi Kotak Masuk Visual Menggunakan Mailtrap
+Fasilitas infrastruktur pihak ketiga seperti layanan **[Mailtrap](https://mailtrap.io)** sangat direkomendasikan untuk keperluan evaluasi representasi visual struktur email secara murni (*HTML renderable*).
+1. Akses fasilitas menu parameter SMTP pada panel dasbor pengguna Mailtrap.
+2. Integrasikan penyesuaian parameter variabel SMTP terkait secara cermat pada konfigurasi variabel lingkungan `.env` aplikasi lokal:
 
 ```env
 MAIL_MAILER=smtp
 MAIL_HOST=sandbox.smtp.mailtrap.io
 MAIL_PORT=2525
-MAIL_USERNAME=paste_username_dari_mailtrap_disini
-MAIL_PASSWORD=paste_password_dari_mailtrap_disini
+MAIL_USERNAME=isikan_kredensial_nama_pengguna_secara_akurat
+MAIL_PASSWORD=isikan_kredensial_kata_sandi_secara_akurat
 MAIL_ENCRYPTION=tls
 MAIL_FROM_ADDRESS="noreply@simpleshop.test"
-MAIL_FROM_NAME="SimpleShop"
+MAIL_FROM_NAME="SimpleShop_Automated_System"
 ```
 
 > [!TIP]
-> Setelah Anda mengubah isi file `.env`, jangan lupa untuk **mematikan lalu menyalakan ulang** (_restart_) perintah `php artisan queue:work` dan `php artisan serve` Anda agar pengaturan baru dapat terbaca oleh sistem.
+> Setelah modifikasi konfigurasi paramater surel direalisasikan, eksekusi pemuatan ulang atau penghentian sesi sesaat (*restart*) mutlak diperlukan pada layanan pengerjaan latar belakang (`php artisan queue:work`) serta penyedia infrastruktur HTTP utama (`php artisan serve`). Hal ini dilakukan agar keseluruhan pembaruan variabel sistem dapat terinisiasi secara benar.
 
 ---
 
 <div align="center">
-  Disusun untuk keperluan pembelajaran pengembangan platform E-Commerce berbasis Laravel.
+  Diimplementasikan dan disusun sedemikian rupa untuk menunjang objektif pemahaman infrastruktur layanan teknologi e-commerce termutakhir berbasis kerangka pengembangan PHP Laravel.
 </div>
