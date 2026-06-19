@@ -46,7 +46,7 @@ class CheckoutController extends Controller
         ]);
 
         try {
-            $order = $this->orderService->createOrderFromCart(
+            $orders = $this->orderService->createOrderFromCart(
                 auth()->id(),
                 $request->shipping_address,
                 $request->payment_method
@@ -55,8 +55,8 @@ class CheckoutController extends Controller
             // Optionally save shipping address to user profile
             auth()->user()->update(['shipping_address' => $request->shipping_address]);
 
-            return redirect()->route('orders.show', $order)
-                ->with('success', 'Pesanan berhasil dibuat! Nomor pesanan: ' . $order->order_number);
+            return redirect()->route('orders.index')
+                ->with('success', 'Pesanan berhasil dibuat! Anda telah membuat ' . count($orders) . ' pesanan terpisah untuk setiap toko.');
         } catch (Exception $e) {
             return redirect()->route('cart.index')
                 ->with('error', $e->getMessage());

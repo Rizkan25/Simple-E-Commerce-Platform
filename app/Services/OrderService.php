@@ -20,9 +20,9 @@ class OrderService
     ) {}
 
     /**
-     * Create an order from the user's cart using database transaction and pessimistic locking.
+     * Create orders from the user's cart using database transaction and pessimistic locking.
      */
-    public function createOrderFromCart(int $userId, string $shippingAddress, string $paymentMethod): Order
+    public function createOrderFromCart(int $userId, string $shippingAddress, string $paymentMethod): array
     {
         return DB::transaction(function () use ($userId, $shippingAddress, $paymentMethod) {
             $cart = Cart::where('user_id', $userId)
@@ -51,63 +51,72 @@ class OrderService
                 ->get()
                 ->keyBy('id');
 
-            // Validate stock with live product data
-            $totalAmount = 0;
+            // Group items by seller_id
+            $itemsBySeller = [];
             foreach ($itemsToProcess as $item) {
-                $product = $products[$item->product_id];
-                if ($product->stock < $item->quantity) {
-                    throw new Exception(
-                        "Stok produk \"{$product->name}\" tidak mencukupi. " .
-                        "Stok tersedia: {$product->stock}, diminta: {$item->quantity}."
-                    );
+                $sellerId = $products[$item->product_id]->seller_id;
+                if (!isset($itemsBySeller[$sellerId])) {
+                    $itemsBySeller[$sellerId] = [];
                 }
-                $totalAmount += $product->effective_price * $item->quantity;
+                $itemsBySeller[$sellerId][] = $item;
             }
-
-            // Create order
-            $order = Order::create([
-                'user_id' => $userId,
-                'order_number' => 'ORD-' . now()->format('Ymd') . '-' . strtoupper(Str::random(6)),
-                'status' => 'pending',
-                'total_amount' => $totalAmount,
-                'shipping_address' => $shippingAddress,
-                'payment_method' => $paymentMethod,
-            ]);
 
             // Get current commission percentage
             $commissionSetting = \App\Models\PlatformSetting::where('key', 'commission_percentage')->first();
             $commissionPercentage = $commissionSetting ? (float) $commissionSetting->value : 0;
 
-            // Create order items with live prices and deduct stock
-            foreach ($itemsToProcess as $item) {
-                $product = $products[$item->product_id];
+            $createdOrders = [];
 
-                $itemTotal = $product->effective_price * $item->quantity;
-                $platformFee = $itemTotal * ($commissionPercentage / 100);
-                $sellerEarnings = $itemTotal - $platformFee;
+            foreach ($itemsBySeller as $sellerId => $sellerItems) {
+                // Calculate total for this seller's order
+                $sellerTotalAmount = 0;
+                foreach ($sellerItems as $item) {
+                    $product = $products[$item->product_id];
+                    $sellerTotalAmount += $product->effective_price * $item->quantity;
+                }
 
-                OrderItem::create([
-                    'order_id' => $order->id,
-                    'product_id' => $item->product_id,
-                    'seller_id' => $product->seller_id,
-                    'quantity' => $item->quantity,
-                    'price_at_order' => $product->effective_price,
-                    'platform_fee' => $platformFee,
-                    'seller_earnings' => $sellerEarnings,
+                // Create order for this seller
+                $order = Order::create([
+                    'user_id' => $userId,
+                    'order_number' => 'ORD-' . now()->format('Ymd') . '-' . strtoupper(Str::random(6)),
+                    'status' => 'pending',
+                    'total_amount' => $sellerTotalAmount,
+                    'shipping_address' => $shippingAddress,
+                    'payment_method' => $paymentMethod,
                 ]);
 
-                // Deduct stock
-                $product->decrement('stock', $item->quantity);
-            }
+                // Create order items with live prices and deduct stock
+                foreach ($sellerItems as $item) {
+                    $product = $products[$item->product_id];
 
-            // Notify sellers
-            $sellerIds = $itemsToProcess->map(function($item) use ($products) {
-                return $products[$item->product_id]->seller_id;
-            })->unique();
+                    $itemTotal = $product->effective_price * $item->quantity;
+                    $platformFee = $itemTotal * ($commissionPercentage / 100);
+                    $sellerEarnings = $itemTotal - $platformFee;
 
-            $sellers = User::whereIn('id', $sellerIds)->get();
-            foreach ($sellers as $seller) {
-                $seller->notify(new NewOrderNotification($order));
+                    OrderItem::create([
+                        'order_id' => $order->id,
+                        'product_id' => $item->product_id,
+                        'seller_id' => $product->seller_id,
+                        'quantity' => $item->quantity,
+                        'price_at_order' => $product->effective_price,
+                        'platform_fee' => $platformFee,
+                        'seller_earnings' => $sellerEarnings,
+                    ]);
+
+                    // Deduct stock
+                    $product->decrement('stock', $item->quantity);
+                }
+
+                // Notify this seller
+                $seller = User::find($sellerId);
+                if ($seller) {
+                    $seller->notify(new NewOrderNotification($order));
+                }
+
+                // Dispatch email confirmation job for this order
+                SendOrderConfirmation::dispatch($order);
+
+                $createdOrders[] = $order;
             }
 
             // Clear processed cart items from cart
@@ -116,10 +125,7 @@ class OrderService
                 $cart->delete();
             }
 
-            // Dispatch email confirmation job
-            SendOrderConfirmation::dispatch($order);
-
-            return $order;
+            return $createdOrders;
         });
     }
 

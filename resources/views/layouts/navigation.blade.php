@@ -110,7 +110,7 @@
                                 </div>
                                 <div class="max-h-80 overflow-y-auto">
                                     @forelse(auth()->user()->notifications as $notification)
-                                        <div class="notification-item px-4 py-3 border-b hover:bg-gray-50 transition flex gap-3 relative group {{ $notification->read_at ? 'opacity-60' : 'bg-indigo-50/50' }}">
+                                        <div class="notification-item px-4 py-3 hover:bg-gray-50 transition flex gap-3 relative group {{ $notification->read_at ? 'opacity-60' : 'bg-indigo-50/50' }}">
                                             <div class="flex-1 min-w-0">
                                                 <a href="{{ route('notifications.click', $notification->id) }}" class="block">
                                                     <p class="text-sm text-gray-800 mb-1 hover:text-indigo-600 transition-colors">

@@ -58,7 +58,7 @@ class AdminPanelProvider extends PanelProvider
             ->darkMode(true, true)
             ->renderHook(
                 PanelsRenderHook::HEAD_START,
-                fn (): string => new HtmlString('<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />')
+                fn (): string => new HtmlString('<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=block" rel="stylesheet" />')
             )
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\Filament\Pages')

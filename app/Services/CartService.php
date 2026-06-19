@@ -23,11 +23,7 @@ class CartService
 
         $cart = Cart::firstOrCreate(['user_id' => $userId]);
 
-        // Check seller consistency
-        $existingItem = $cart->items()->with('product')->first();
-        if ($existingItem && $existingItem->product->seller_id !== $product->seller_id) {
-            throw new Exception('Keranjang hanya boleh berisi produk dari satu penjual. Kosongkan keranjang terlebih dahulu untuk menambahkan produk dari penjual lain.');
-        }
+        // Seller consistency check removed to allow multi-seller cart
 
         // Add or update cart item
         $cartItem = CartItem::where('cart_id', $cart->id)
