@@ -338,6 +338,6 @@ MAIL_FROM_NAME="SimpleShop_Automated_System"
 ---
 
 <div align="center">
-  Diimplementasikan dan disusun sedemikian rupa untuk menunjang objektif pemahaman infrastruktur layanan teknologi e-commerce termutakhir berbasis kerangka pengembangan PHP Laravel.
+  Diimplementasikan dan disusun sedemikian rupa untuk menunjang objektif pemahaman infrastruktur layanan teknologi e-commerce termutakhir berbasis kerangka pengembangan PHP Laravel. 
 </div>
 <!--code-->
