@@ -165,6 +165,106 @@ app/
 
 ---
 
+## 📊 Diagram Relasi Entitas (ERD)
+
+Arsitektur basis data relasional (*Entity-Relationship Diagram*) yang mendasari ekosistem platform direpresentasikan melalui diagram *Mermaid* berikut:
+
+```mermaid
+erDiagram
+    USER ||--o| SHOP : "memiliki (Seller)"
+    USER ||--o{ ORDER : "melakukan (Buyer)"
+    USER ||--o{ CART : "memiliki"
+    USER ||--o{ REVIEW : "menulis"
+    USER ||--o{ DISPUTE : "mengajukan"
+    USER ||--o{ WITHDRAWAL : "mengajukan (Seller)"
+    
+    SHOP ||--o{ PRODUCT : "menjual"
+    SHOP ||--o{ ORDER : "menerima"
+    SHOP ||--o{ CART : "menyediakan"
+    
+    CATEGORY ||--o{ PRODUCT : "mengelompokkan"
+    
+    PRODUCT ||--o{ CART_ITEM : "termasuk dalam"
+    PRODUCT ||--o{ ORDER_ITEM : "dibeli sebagai"
+    PRODUCT ||--o{ REVIEW : "mendapatkan"
+    
+    CART ||--|{ CART_ITEM : "berisi"
+    
+    ORDER ||--|{ ORDER_ITEM : "terdiri dari"
+    ORDER ||--o| REVIEW : "diulas melalui"
+    ORDER ||--o| DISPUTE : "disengketakan"
+
+    USER {
+        bigint id PK
+        string name
+        string email
+        string role
+    }
+    SHOP {
+        bigint id PK
+        bigint user_id FK
+        string name
+    }
+    CATEGORY {
+        bigint id PK
+        string name
+    }
+    PRODUCT {
+        bigint id PK
+        bigint seller_id FK
+        bigint category_id FK
+        string name
+        decimal price
+        integer stock
+    }
+    CART {
+        bigint id PK
+        bigint user_id FK
+        bigint shop_id FK
+    }
+    CART_ITEM {
+        bigint id PK
+        bigint cart_id FK
+        bigint product_id FK
+        integer quantity
+    }
+    ORDER {
+        bigint id PK
+        bigint user_id FK
+        bigint shop_id FK
+        string status
+        decimal total_amount
+    }
+    ORDER_ITEM {
+        bigint id PK
+        bigint order_id FK
+        bigint product_id FK
+        integer quantity
+        decimal price
+    }
+    REVIEW {
+        bigint id PK
+        bigint user_id FK
+        bigint product_id FK
+        bigint order_id FK
+        integer rating
+    }
+    DISPUTE {
+        bigint id PK
+        bigint order_id FK
+        bigint user_id FK
+        string status
+    }
+    WITHDRAWAL {
+        bigint id PK
+        bigint user_id FK
+        decimal amount
+        string status
+    }
+```
+
+---
+
 ## 🛠️ Spesifikasi Teknologi dan Pustaka Terapan
 
 - **Kerangka Kerja Utilitas (*Core Framework*)**: [Laravel 13](https://laravel.com)
