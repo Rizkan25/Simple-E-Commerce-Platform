@@ -4,8 +4,10 @@ namespace App\Services;
 
 use App\Jobs\SendOrderConfirmation;
 use App\Models\Cart;
+use App\Models\CartItem;
 use App\Models\Order;
 use App\Models\OrderItem;
+use App\Models\PlatformSetting;
 use App\Models\Product;
 use App\Models\User;
 use App\Notifications\NewOrderNotification;
@@ -15,9 +17,7 @@ use Illuminate\Support\Str;
 
 class OrderService
 {
-    public function __construct(
-        protected StockService $stockService
-    ) {}
+    public function __construct() {}
 
     /**
      * Create orders from the user's cart using database transaction and pessimistic locking.
@@ -51,6 +51,17 @@ class OrderService
                 ->get()
                 ->keyBy('id');
 
+            // Validate stock with live product data (after pessimistic lock)
+            foreach ($itemsToProcess as $item) {
+                $product = $products[$item->product_id];
+                if ($product->stock < $item->quantity) {
+                    throw new Exception(
+                        "Stok produk \"{$product->name}\" tidak mencukupi. " .
+                        "Stok tersedia: {$product->stock}, diminta: {$item->quantity}."
+                    );
+                }
+            }
+
             // Group items by seller_id
             $itemsBySeller = [];
             foreach ($itemsToProcess as $item) {
@@ -62,7 +73,7 @@ class OrderService
             }
 
             // Get current commission percentage
-            $commissionSetting = \App\Models\PlatformSetting::where('key', 'commission_percentage')->first();
+            $commissionSetting = PlatformSetting::where('key', 'commission_percentage')->first();
             $commissionPercentage = $commissionSetting ? (float) $commissionSetting->value : 0;
 
             $createdOrders = [];
@@ -120,7 +131,7 @@ class OrderService
             }
 
             // Clear processed cart items from cart
-            \App\Models\CartItem::whereIn('id', $itemsToProcess->pluck('id'))->delete();
+            CartItem::whereIn('id', $itemsToProcess->pluck('id'))->delete();
             if ($cart->items()->count() === 0) {
                 $cart->delete();
             }
@@ -183,7 +194,7 @@ class OrderService
                 }
 
                 foreach ($sellerEarnings as $sellerId => $amount) {
-                    $seller = \App\Models\User::find($sellerId);
+                    $seller = User::find($sellerId);
                     if ($seller) {
                         $seller->deposit($amount, ['description' => 'Pembayaran pesanan: ' . $order->order_number]);
                     }

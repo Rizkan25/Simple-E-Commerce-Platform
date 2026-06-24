@@ -60,6 +60,21 @@
                                     </div>
                                 </div>
                             @endif
+
+                            <!-- Bank Transfer Info -->
+                            <div x-show="method === 'dummy_bank'" x-cloak class="mt-4 p-4 rounded-lg bg-blue-50 border border-blue-200">
+                                <div class="flex items-start gap-3 text-sm text-blue-800">
+                                    <svg class="w-5 h-5 shrink-0 mt-0.5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                    <div>
+                                        <span class="font-medium">Instruksi Pembayaran:</span> Setelah membuat pesanan, silakan transfer ke Rekening Resmi kami:
+                                        <div class="mt-2 p-3 bg-white border border-blue-100 rounded-md font-mono text-gray-800">
+                                            <strong>{{ $platformBank['name'] }}</strong><br>
+                                            <span class="text-lg">{{ $platformBank['account'] }}</span><br>
+                                            <span class="text-xs text-gray-500">a/n {{ $platformBank['owner'] }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                             <x-input-error :messages="$errors->get('payment_method')" class="mt-2" />
                         </div>
                     </div>

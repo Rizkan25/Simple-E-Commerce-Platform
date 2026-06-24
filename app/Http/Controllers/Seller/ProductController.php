@@ -16,14 +16,29 @@ class ProductController extends Controller
     /**
      * Display seller's products.
      */
-    public function index(): View
+    public function index(\Illuminate\Http\Request $request): View
     {
-        $products = Product::where('seller_id', auth()->id())
-            ->with('category')
-            ->latest()
-            ->paginate(10);
+        $sortBy = $request->get('sort_by', 'created_at');
+        $sortOrder = $request->get('sort_order', 'desc');
 
-        return view('seller.products.index', compact('products'));
+        $query = Product::where('seller_id', auth()->id())->with('category');
+
+        if ($sortBy === 'category') {
+            $query->join('categories', 'products.category_id', '=', 'categories.id')
+                  ->select('products.*')
+                  ->orderBy('categories.name', $sortOrder);
+        } else {
+            $allowedColumns = ['name', 'price', 'stock', 'created_at'];
+            if (in_array($sortBy, $allowedColumns)) {
+                $query->orderBy($sortBy, $sortOrder);
+            } else {
+                $query->orderBy('created_at', 'desc');
+            }
+        }
+
+        $products = $query->paginate(10)->appends($request->query());
+
+        return view('seller.products.index', compact('products', 'sortBy', 'sortOrder'));
     }
 
     /**

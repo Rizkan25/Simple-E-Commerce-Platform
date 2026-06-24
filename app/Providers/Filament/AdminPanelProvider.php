@@ -29,6 +29,7 @@ class AdminPanelProvider extends PanelProvider
             ->default()
             ->id('admin')
             ->path('admin')
+            ->spa()
             ->viteTheme('resources/css/filament/admin/theme.css')
             ->login()
             ->colors([
@@ -59,6 +60,26 @@ class AdminPanelProvider extends PanelProvider
             ->renderHook(
                 PanelsRenderHook::HEAD_START,
                 fn (): string => new HtmlString('<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=block" rel="stylesheet" />')
+            )
+            ->renderHook(
+                PanelsRenderHook::HEAD_END,
+                fn (): string => new HtmlString('
+                    <style>
+                        /* Sembunyikan ikon secara default */
+                        th.fi-ta-header-cell .fi-ta-header-cell-sort-btn svg {
+                            opacity: 0;
+                            transition: opacity 0.2s ease-in-out;
+                        }
+                        
+                        /* Tampilkan ikon saat di-hover ATAU jika sedang aktif di-sort */
+                        th.fi-ta-header-cell:hover .fi-ta-header-cell-sort-btn svg,
+                        th.fi-ta-header-cell[aria-sort="ascending"] .fi-ta-header-cell-sort-btn svg,
+                        th.fi-ta-header-cell[aria-sort="descending"] .fi-ta-header-cell-sort-btn svg,
+                        th.fi-ta-header-cell.fi-ta-header-cell-sorted .fi-ta-header-cell-sort-btn svg {
+                            opacity: 1 !important;
+                        }
+                    </style>
+                ')
             )
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\Filament\Pages')

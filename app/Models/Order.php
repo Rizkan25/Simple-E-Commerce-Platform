@@ -24,7 +24,6 @@ class Order extends Model
         'total_amount' => 'decimal:2',
     ];
 
-
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);

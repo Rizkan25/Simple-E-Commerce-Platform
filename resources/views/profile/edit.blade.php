@@ -24,6 +24,14 @@
                     @include('profile.partials.delete-user-form')
                 </div>
             </div>
+
+            @if(auth()->user()->isSeller())
+            <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
+                <div class="max-w-xl">
+                    @include('profile.partials.update-bank-account-form')
+                </div>
+            </div>
+            @endif
         </div>
     </div>
 </x-app-layout>

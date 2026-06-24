@@ -64,11 +64,11 @@ class ProductResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('name')->searchable(),
-                TextColumn::make('seller.name')->searchable(),
-                TextColumn::make('price')->money('idr', true),
-                TextColumn::make('stock')->numeric(),
-                TextColumn::make('status')->badge(),
+                TextColumn::make('name')->searchable()->sortable(),
+                TextColumn::make('seller.name')->searchable()->sortable(),
+                TextColumn::make('price')->money('idr', true)->sortable(),
+                TextColumn::make('stock')->numeric()->sortable(),
+                TextColumn::make('status')->badge()->sortable(),
             ])
             ->filters([
                 TrashedFilter::make(),

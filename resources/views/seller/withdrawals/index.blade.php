@@ -57,13 +57,27 @@
                         </div>
 
                         <div>
-                            <x-input-label for="bank_account" :value="__('Rekening Bank Tujuan')" />
-                            <x-text-input id="bank_account" name="bank_account" type="text" class="mt-1 block w-full" 
-                                          :value="old('bank_account')" required placeholder="Contoh: BCA - 123456789 - Budi Santoso" />
+                            <x-input-label :value="__('Rekening Bank Tujuan')" />
+                            @if(empty($user->bank_name) || empty($user->bank_account_number) || empty($user->bank_account_name))
+                                <div class="mt-1 bg-red-50 border-l-4 border-red-500 text-red-700 p-3 rounded-md shadow-sm text-sm">
+                                    <p class="font-medium">Rekening bank belum diatur.</p>
+                                    <p>Silakan <a href="{{ route('profile.edit') }}" class="underline font-bold text-red-800">atur rekening bank Anda di Profil</a> terlebih dahulu.</p>
+                                </div>
+                            @else
+                                <div class="mt-1 bg-gray-50 border border-gray-200 p-3 rounded-md text-sm text-gray-700">
+                                    <span class="font-semibold">{{ $user->bank_name }}</span> - {{ $user->bank_account_number }}<br>
+                                    <span class="text-xs text-gray-500">a/n {{ $user->bank_account_name }}</span>
+                                </div>
+                                <p class="text-xs text-gray-500 mt-1">Untuk mengubah rekening, silakan ke <a href="{{ route('profile.edit') }}" class="underline">halaman Profil</a>.</p>
+                            @endif
                         </div>
 
+                        @php
+                            $hasNoBank = empty($user->bank_name) || empty($user->bank_account_number) || empty($user->bank_account_name);
+                            $isButtonDisabled = $user->balance < 10000 || $hasNoBank;
+                        @endphp
                         <div class="flex items-center gap-4 pt-2">
-                            <x-primary-button :disabled="$user->balance < 10000" class="{{ $user->balance < 10000 ? 'opacity-50 cursor-not-allowed' : '' }}">
+                            <x-primary-button :disabled="$isButtonDisabled" class="{{ $isButtonDisabled ? 'opacity-50 cursor-not-allowed' : '' }}">
                                 {{ __('Ajukan Penarikan') }}
                             </x-primary-button>
                         </div>

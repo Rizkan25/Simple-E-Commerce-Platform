@@ -34,34 +34,49 @@ Platform ini telah berevolusi dengan serangkaian pembaruan fungsionalitas tingka
 
 ---
 
+## 🥞 Arsitektur TALL Stack
+
+Aplikasi ini dikembangkan di atas fondasi **TALL Stack**, sebuah ekosistem pengembangan web modern yang menawarkan keseimbangan sempurna antara produktivitas *developer*, performa sistem, dan pengalaman antarmuka (*User Experience*) yang sangat interaktif. TALL adalah akronim dari:
+
+- **[T]ailwind CSS**: Kerangka kerja (*framework*) *utility-first CSS* yang digunakan untuk merancang tata letak dan desain antarmuka secara kustom, responsif, elegan, dan konsisten secara langsung tanpa penulisan berkas CSS terpisah yang membengkak.
+- **[A]lpine.js**: Pustaka JavaScript ringan dan tangguh yang menyuntikkan interaktivitas (*reactivity*) pada sisi klien (*client-side*). Alpine dipercaya mengatur komponen antarmuka *front-end* dinamis seperti *dropdown modal*, penutupan notifikasi mandiri, hingga manipulasi antarmuka keranjang belanja asinkronus (*AJAX integration*) tanpa *overhead* dari pustaka JavaScript berukuran besar.
+- **[L]aravel**: Bertindak sebagai mesin tulang punggung infrastruktur (*Backend*). Kerangka kerja PHP kelas *enterprise* ini menangani orkestrasi seluruh logika bisnis, relasi *database* yang rumit, proteksi keamanan tingkat tinggi (*Pessimistic Locking* & otentikasi lapis ganda), hingga manajemen rutinitas asinkronus latar belakang (*Queue Workers*).
+- **[L]ivewire**: *Framework full-stack* inovatif di ekosistem Laravel. Pada aplikasi ini, kekuatan super **Livewire** dimanfaatkan secara masif melalui integrasi [Filament PHP](https://filamentphp.com). Teknologi inilah yang memungkinkan keseluruhan interaksi di dalam Dasbor Administratif (*Seller/Admin Console*) berjalan reaktif, cepat, dan mulus layaknya *Single Page Application* (SPA) tanpa perlu penulisan API sisi *client* yang rumit.
+
+Sinergi teknologi arsitektural ini memastikan pengalaman pengguna di ujung layar (*end-user*) berjalan begitu cepat dan mulus, sembari mempertahankan integritas keamanan serta stabilitas kode tingkat lanjut di belakang layar.
+
+---
+
 ## ✨ Rincian Fungsionalitas Utama
 
 ### 🛍️ Modul Evaluasi dan Transaksi Pembeli (Buyer)
 - **Katalog Terbuka & Pencarian Dinamis (Live Search):** Fasilitas pencarian produk yang terintegrasi dengan metode penyaringan berbasis kategori. Proses pencarian beroperasi secara *real-time* memanfaatkan antarmuka API (berbasis AJAX), yang memungkinkan pembaruan hasil pencarian secara seketika tanpa memerlukan pemuatan ulang (*reload*) pada halaman utama.
 - **Manajemen Profil & Personalisasi Avatar:** Dukungan teknis bagi entitas pengguna untuk memperbarui informasi personal serta mengunggah atau mengganti foto profil (avatar) yang disimpan menggunakan sistem penamaan berkas berbasis *timestamp* secara aman.
 - **Analitik Popularitas Produk (View Tracking):** Mekanisme penghitungan otomatis yang mencatat setiap kunjungan (tayangan) pada halaman detail produk. Kalkulasi metrik ini diimplementasikan untuk mendongkrak visibilitas produk yang masuk ke dalam kategori tren utama (*Trending Products*).
-- **Keranjang Belanja Pintar (Smart Cart via AJAX):** Antarmuka asinkronus untuk operasi penambahan, pengurangan kuantitas, maupun penghapusan entitas produk dari keranjang belanja. Sistem ini mengimplementasikan aturan ketat berupa batasan **penjual tunggal (*single-seller*)** pada satu kali sesi keranjang belanja, guna menghindari kompleksitas perhitungan ongkos kirim dan komisi.
-- **Integrasi Metode Checkout Dinamis:** Memfasilitasi fleksibilitas metode pembayaran yang mencakup Transfer Bank konvensional, layanan Bayar di Tempat (COD / *Cash on Delivery*), hingga metode mutasi saldo internal yang memanfaatkan arsitektur dompet digital (*wallet*) bawaan dari platform.
+- **Keranjang Belanja Pintar & Multi-Penjual (Smart Cart via AJAX):** Antarmuka asinkronus untuk operasi penambahan, pengurangan kuantitas, maupun penghapusan entitas produk dari keranjang belanja. Sistem ini kini mendayagunakan kapabilitas **Multi-Seller Cart**, memungkinkan pembeli untuk mencampur ragam produk dari berbagai penjual yang berbeda dalam satu kali sesi keranjang secara bersamaan tanpa batasan.
+- **Algoritma Checkout & Pemisahan Pesanan Otomatis:** Memfasilitasi fleksibilitas pembayaran (Transfer Bank, Saldo Wallet, hingga COD). Algoritma checkout secara otomatis akan **memecah (*split order*)** satu keranjang multi-penjual menjadi beberapa catatan pesanan terpisah berdasarkan identitas masing-masing penjual. Di samping itu, khusus untuk metode pembayaran *Cash on Delivery* (COD), algoritma akan secara selektif memfilter dan hanya memproses produk-produk yang mengizinkan dukungan COD.
 - **Pelacakan dan Manajemen Pesanan Terpusat:** Dasbor antarmuka pembeli yang menyajikan histori transaksi lengkap, pemantauan status proses pesanan secara waktu nyata, hingga kemampuan pembatalan proaktif yang diizinkan selama pesanan tersebut masih berstatus *Pending*.
 - **Fasilitas Ulasan dan Penilaian (Product Reviews):** Modul interaktif pasca-transaksi yang memungkinkan pembeli untuk memberikan penilaian kuantitatif (skor bintang) serta ulasan kualitatif pada produk, setelah pesanan dinyatakan selesai secara sistem.
 - **Notifikasi Terintegrasi Dalam Aplikasi (In-App Notifications):** Sistem pemberitahuan *push* pada antarmuka pengguna yang segera menyajikan informasi kritis seperti transisi status pesanan, tanpa mengharuskan pengguna untuk memeriksa kotak masuk surel.
 - **Resolusi Sengketa (Dispute Mechanism):** Fasilitas formal bagi pihak pembeli untuk mengajukan eskalasi keluhan apabila terdapat indikasi ketidaksesuaian barang, kerusakan, atau kegagalan pengiriman pada pesanan yang sudah tercatat.
 
 ### 🏬 Modul Operasional Penjual (Seller) & Administratif
-- **Dasbor Manajemen Analitis (Powered by Filament):** Dasbor khusus bagi penjual untuk memonitor metrik performa toko. Hal ini mencakup agregasi statistik penjualan historis, visualisasi grafik pendapatan pada interval waktu tertentu, hingga identifikasi rasio penjualan produk terlaris melalui antarmuka pengguna (UI/UX) yang dirancang khusus untuk efisiensi analisis.
+- **Konsol Administratif & Analitik Terpusat (Stitch Dashboard):** Implementasi dasbor administratif tingkat lanjut (*Admin Console*) yang ditenagai oleh Filament. Fasilitas ini menyediakan analitik komprehensif yang mencakup pelacakan metrik *Gross Merchandise Value* (GMV), tren peningkatan penjual aktif dan pelanggan baru, serta kalkulasi akumulasi biaya platform (*Platform Fee*). Dilengkapi dengan visualisasi data melalui grafik *Donut Chart* untuk status pesanan dan grafik garis (*Line Chart*) untuk riwayat tren penjualan (mingguan, bulanan, tahunan).
 - **Manajemen Inventaris Lanjutan (CRUD Produk):** Formulasi pengelolaan katalog produk yang mendalam. Penjual diizinkan untuk mengonfigurasi visibilitas produk, mengunggah dokumentasi visual (gambar), menetapkan nominal harga beserta persentase **Diskon** spesifik, hingga menonaktifkan atau mengaktifkan ketersediaan metode pengiriman **COD** pada masing-masing item produk.
-- **Tahapan Pemrosesan Transaksi Pesanan:** Kemudahan operasional bagi penjual untuk melakukan transisi status pesanan dari pihak pembeli melalui empat fase validasi: `Pending` (Menunggu Pembayaran) ➔ `Paid` (Pembayaran Terverifikasi) ➔ `Shipped` (Barang dalam Pengiriman) ➔ `Completed` (Pesanan Selesai).
-- **Sistem Pemotongan Komisi Berbasis Transaksi (Commission System):** Mekanisme algoritmik yang diimplementasikan untuk secara otomatis melakukan ekstraksi margin atau persentase komisi bagi pihak platform atas setiap transaksi penjualan yang berhasil diselesaikan, demi menjaga keberlanjutan operasional aplikasi.
-- **Pengaturan Modul Platform Dinamis (Platform Settings):** Sebuah ruang kontrol eksklusif bagi pemegang hak administratif untuk menyesuaikan konfigurasi global platform (misalnya: mengubah besaran persentase komisi secara dinamis) tanpa intervensi langsung pada kode sumber (_ code_).
-- **Mekanisme Pencairan Dana (Withdrawal):** Sistem penarikan saldo terstruktur bagi entitas penjual untuk mencairkan saldo dompet internal yang terakumulasi dari hasil penjualan produk ke rekening perbankan eksternal.
+- **Tahapan Pemrosesan & Pencairan Dana Otomatis (Escrow-like Order Flow):** Kemudahan operasional bagi penjual untuk melakukan transisi status pesanan dari pihak pembeli melalui empat fase validasi: `Pending` (Menunggu Pembayaran) ➔ `Paid` (Pembayaran Terverifikasi) ➔ `Shipped` (Barang dalam Pengiriman) ➔ `Completed` (Pesanan Selesai). Pada sistem ini, pembayaran dari pembeli akan ditampung terlebih dahulu oleh Platform. Saat pesanan beralih ke status `Completed`, sistem secara otomatis akan mencairkan dan meneruskan dana penjualan ke saldo dompet (wallet) penjual terkait.
+- **Sistem Pemotongan Komisi Berbasis Transaksi (Commission System):** Mekanisme algoritmik yang bekerja selaras dengan proses penyelesaian pesanan di atas. Sistem secara otomatis melakukan ekstraksi persentase komisi bagi pihak platform secara *real-time* tepat sebelum dana diteruskan ke dompet penjual, memastikan keberlanjutan operasional aplikasi.
+- **Antarmuka Tabel Dinamis & Pengurutan Cerdas (Smart Data Sorting):** Menyajikan data operasional melalui tabel interaktif yang mendukung pengurutan (*sorting*) multi-kolom secara presisi (berdasarkan tanggal, harga, maupun stok). Pengalaman antarmuka (UI/UX) telah diselaraskan pada seluruh panel Seller dan Admin guna menampilkan indikator pengurutan yang sangat bersih dan rapi.
+- **Pengaturan Modul Platform Dinamis (Platform Settings):** Sebuah ruang kontrol eksklusif bagi pemegang hak administratif untuk menyesuaikan konfigurasi global platform (seperti modifikasi besaran persentase komisi hingga pembaruan informasi rekening bank operasional utama platform) secara dinamis tanpa intervensi langsung pada kode sumber (_source code_). Fitur ini telah dilengkapi validasi cerdas untuk memverifikasi kesesuaian panjang karakter nomor rekening terhadap bank yang dipilih dan desain *form* yang dioptimalkan secara visual.
+- **Mekanisme Pencairan Dana (Withdrawal):** Sistem penarikan saldo terstruktur bagi entitas penjual untuk mencairkan saldo dompet internal yang terakumulasi dari hasil penjualan produk ke rekening perbankan eksternal. Dasbor juga memungkinkan admin untuk memantau pengajuan penarikan dana terkini.
 - **Distribusi Notifikasi Otomatis (Email Automation):** Pengiriman pesan elektronik (email) yang dikendalikan oleh sistem latar belakang (berbasis antrean atau *queue worker*) guna memberi informasi terkait pembaruan transisi status pesanan secara instan kepada pihak terkait.
-- **Ekstraksi Data Transaksional (Export to Excel):** Fungsi khusus untuk mendukung rekapitulasi pembukuan dan audit finansial yang memungkinkan laporan data penjualan diunduh secara komprehensif ke dalam format *spreadsheet* Excel (.xlsx).
+- **Ekstraksi Data Transaksional Multi-Format (Export to Excel/CSV/HTML):** Fungsi khusus untuk mendukung rekapitulasi pembukuan dan audit finansial yang memungkinkan laporan data metrik dasbor serta riwayat penjualan diunduh secara komprehensif ke dalam berbagai format *spreadsheet* yang dirender sempurna melalui pustaka `Maatwebsite/Excel`.
 
 ### ⚙️ Infrastruktur Sistem & Protokol Keamanan
 - **Role-Based Access Control (RBAC):** Modul otorisasi berlapis dan pengelolaan kontrol akses yang ditenagai oleh paket *spatie/laravel-permission*. Protokol ini memberikan kepastian bahwa batas akses data dan fungsionalitas antara peran *Buyer*, *Seller*, serta *Admin* terisolasi secara aman.
 - **Validasi Mutasi Data via Pessimistic Locking:** Pendekatan sistem basis data (tingkat relasional) yang secara aktif mengunci (*lock*) baris data produk pada saat terjadi pembacaan pada proses *checkout*. Protokol keamanan ini dihadirkan untuk mengeleminasi insiden *race-condition* (misal: dua transaksi melakukan finalisasi pemesanan pada barang dengan sisa stok 1 secara tepat bersamaan).
 - **Proses Komputasi Asinkronus (Asynchronous Queues):** Pendelegasian rutinitas berintensitas tinggi, seperti inisiasi pengiriman email transaksional serta proses komputasi notifikasi massal, menuju instrumen latar belakang (*background job*). Hal ini memastikan halaman tidak mengalami proses *loading* yang berkepanjangan pada sisi pengguna.
 - **Arsitektur Dompet Terdistribusi (Wallet System):** Modul pendataan fluktuasi keuangan (*ledger*) yang sangat akurat, menggunakan teknologi implementasi *bavix/laravel-wallet*. Seluruh mutasi dana atas pembayaran pesanan, pemotongan komisi, hingga permohonan pencairan terjamin validitasnya.
+- **Perlindungan Sesi dan Rute Sensitif (Method Protection):** Penegakan aturan keamanan mutlak (termasuk perlindungan CSRF) pada *endpoint* krusial seperti proses Autentikasi Keluar (*Logout*), yang secara ketat hanya dapat dieksekusi melalui metode HTTP POST guna memitigasi kerentanan eksekusi rute yang tidak disengaja oleh *prefetch* peramban.
 
 ---
 
@@ -171,16 +186,13 @@ Arsitektur basis data relasional (*Entity-Relationship Diagram*) yang mendasari 
 
 ```mermaid
 erDiagram
-    USER ||--o| SHOP : "memiliki (Seller)"
+    USER ||--o{ PRODUCT : "menjual (Seller)"
     USER ||--o{ ORDER : "melakukan (Buyer)"
+    USER ||--o{ ORDER_ITEM : "menerima pesanan (Seller)"
     USER ||--o{ CART : "memiliki"
     USER ||--o{ REVIEW : "menulis"
     USER ||--o{ DISPUTE : "mengajukan"
     USER ||--o{ WITHDRAWAL : "mengajukan (Seller)"
-    
-    SHOP ||--o{ PRODUCT : "menjual"
-    SHOP ||--o{ ORDER : "menerima"
-    SHOP ||--o{ CART : "menyediakan"
     
     CATEGORY ||--o{ PRODUCT : "mengelompokkan"
     
@@ -220,7 +232,6 @@ erDiagram
     CART {
         bigint id PK
         bigint user_id FK
-        bigint shop_id FK
     }
     CART_ITEM {
         bigint id PK
@@ -231,7 +242,6 @@ erDiagram
     ORDER {
         bigint id PK
         bigint user_id FK
-        bigint shop_id FK
         string status
         decimal total_amount
     }
@@ -239,8 +249,11 @@ erDiagram
         bigint id PK
         bigint order_id FK
         bigint product_id FK
+        bigint seller_id FK
         integer quantity
-        decimal price
+        decimal price_at_order
+        decimal platform_fee
+        decimal seller_earnings
     }
     REVIEW {
         bigint id PK
@@ -285,7 +298,7 @@ Integritas spesifikasi operasional divalidasi secara mendalam menggunakan sekump
 
 Fokus skenario pengujian komprehensif mencakup namun tidak terbatas pada:
 - **Autentikasi & Otorisasi Kredensial**: Verifikasi isolasi hak akses berlapis yang mencegah kebocoran informasi antara instrumen *Admin*, *Seller*, dan *Buyer*.
-- **Restriksi Keranjang & Checkout**: Penegasan operasional atas implementasi aturan pembatasan penjual (*single-seller cart restriction*) pada satu waktu pesanan.
+- **Algoritma Multi-Seller Checkout & Validasi COD**: Penegasan operasional atas implementasi pemisahan pesanan otomatis (*split-order*) untuk keranjang berisikan produk dari penjual yang berbeda, serta keakuratan filtrasi algoritma pada saat pengguna menginisiasi metode pembayaran COD.
 - **Konsistensi Transaksi (Database Rollback & Locking)**: Evaluasi terhadap mekanisme pertahanan keamanan operasional, termasuk *Pessimistic Locking*, dalam menangani serta menahan eskalasi antrean permintaan pemesanan masif yang berpotensi menyebabkan ketidakakuratan saldo maupun inventaris stok.
 
 > [!TIP]

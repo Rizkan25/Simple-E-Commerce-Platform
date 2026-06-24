@@ -2,11 +2,14 @@
 
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CheckoutController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\Seller\DashboardController;
 use App\Http\Controllers\Seller\OrderController as SellerOrderController;
 use App\Http\Controllers\Seller\ProductController as SellerProductController;
+use App\Http\Controllers\Seller\WithdrawalController;
 use App\Http\Controllers\ShopController;
 use Illuminate\Support\Facades\Route;
 
@@ -23,12 +26,13 @@ Route::get('/api/products/search', \App\Http\Controllers\Api\ProductSearchContro
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::patch('/profile/bank-account', [ProfileController::class, 'updateBankAccount'])->name('profile.update-bank-account');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    Route::patch('/notifications/{id}/read', [\App\Http\Controllers\NotificationController::class, 'markAsRead'])->name('notifications.read');
-    Route::get('/notifications/{id}/click', [\App\Http\Controllers\NotificationController::class, 'click'])->name('notifications.click');
-    Route::post('/notifications/read-all', [\App\Http\Controllers\NotificationController::class, 'markAllAsRead'])->name('notifications.readAll');
-    Route::delete('/notifications/{id}', [\App\Http\Controllers\NotificationController::class, 'destroy'])->name('notifications.destroy');
+    Route::patch('/notifications/{id}/read', [NotificationController::class, 'markAsRead'])->name('notifications.read');
+    Route::get('/notifications/{id}/click', [NotificationController::class, 'click'])->name('notifications.click');
+    Route::post('/notifications/read-all', [NotificationController::class, 'markAllAsRead'])->name('notifications.readAll');
+    Route::delete('/notifications/{id}', [NotificationController::class, 'destroy'])->name('notifications.destroy');
 });
 
 // Buyer routes
@@ -46,8 +50,8 @@ Route::middleware(['auth', 'role:buyer'])->group(function () {
     Route::patch('/orders/{order}/cancel', [OrderController::class, 'cancel'])->name('orders.cancel');
     Route::patch('/orders/{order}/complete', [OrderController::class, 'complete'])->name('orders.complete');
 
-    Route::get('/orders/{order}/review', [\App\Http\Controllers\ReviewController::class, 'create'])->name('reviews.create');
-    Route::post('/orders/{order}/review', [\App\Http\Controllers\ReviewController::class, 'store'])->name('reviews.store');
+    Route::get('/orders/{order}/review', [ReviewController::class, 'create'])->name('reviews.create');
+    Route::post('/orders/{order}/review', [ReviewController::class, 'store'])->name('reviews.store');
 });
 
 
@@ -60,8 +64,8 @@ Route::middleware(['auth', 'role:seller'])->prefix('seller')->name('seller.')->g
     Route::get('/orders', [SellerOrderController::class, 'index'])->name('orders.index');
     Route::patch('/orders/{order}/status', [SellerOrderController::class, 'updateStatus'])->name('orders.updateStatus');
 
-    Route::get('/withdrawals', [\App\Http\Controllers\Seller\WithdrawalController::class, 'index'])->name('withdrawals.index');
-    Route::post('/withdrawals', [\App\Http\Controllers\Seller\WithdrawalController::class, 'store'])->name('withdrawals.store');
+    Route::get('/withdrawals', [WithdrawalController::class, 'index'])->name('withdrawals.index');
+    Route::post('/withdrawals', [WithdrawalController::class, 'store'])->name('withdrawals.store');
 });
 
 // Keep old dashboard route as redirect
@@ -74,5 +78,10 @@ Route::get('/dashboard', function () {
     }
     return redirect()->route('products.index');
 })->middleware(['auth'])->name('dashboard');
+
+// Catch-all for accidental GET requests to logout (e.g. refreshing an error page)
+Route::get('/logout', function () {
+    return redirect('/');
+})->name('logout.fallback');
 
 require __DIR__.'/auth.php';

@@ -62,7 +62,7 @@
 </div>
 </div>
 <!-- Top Section: KPI Cards -->
-<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
     <!-- KPI 1 -->
     <a href="{{ \App\Filament\Resources\Orders\OrderResource::getUrl('index') }}" class="block bg-gray-950 border border-white/10 p-4 rounded-xl hover:ring-1 hover:ring-amber-500 transition-all cursor-pointer group">
         <div class="flex justify-between items-start mb-2">
@@ -126,6 +126,22 @@
         <p class="text-2xl font-semibold tracking-tight mt-1">{{ $newCustomers }}</p>
         <p class="text-[10px] text-gray-400 mt-2">Vs bulan lalu: {{ number_format($lastMonthCustomers, 0, ",", ".") }}</p>
     </a>
+
+    <!-- KPI 5 -->
+    <div class="block bg-gray-950 border border-white/10 p-4 rounded-xl transition-all cursor-default group">
+        <div class="flex justify-between items-start mb-2">
+            <div class="w-10 h-10 flex items-center justify-center bg-indigo-900/50 rounded-lg text-indigo-300">
+                <span class="material-symbols-outlined" data-icon="account_balance">account_balance</span>
+            </div>
+            <span class="flex items-center gap-1 {{ $platformFeeTrend >= 0 ? 'text-emerald-400' : 'text-red-400' }} font-bold text-xs font-semibold">
+                {{ $platformFeeTrend >= 0 ? '+' : '' }}{{ $platformFeeTrend }}%
+                <span class="material-symbols-outlined text-[14px]" data-icon="{{ $platformFeeTrend >= 0 ? 'trending_up' : 'trending_down' }}">{{ $platformFeeTrend >= 0 ? 'trending_up' : 'trending_down' }}</span>
+            </span>
+        </div>
+        <p class="text-xs font-semibold text-gray-400">Komisi Platform</p>
+        <p class="text-2xl font-semibold tracking-tight mt-1">Rp {{ number_format($totalPlatformFee / 1000, 1, ",", ".") }}rb</p>
+        <p class="text-[10px] text-gray-400 mt-2">Vs bulan lalu: Rp {{ number_format($lastMonthPlatformFee / 1000, 1, ",", ".") }}rb</p>
+    </div>
 </div>
 <!-- Middle Section -->
 <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
@@ -182,7 +198,7 @@
 </div>
 </div>
 <!-- Order Status Donut -->
-<a href="{{ \App\Filament\Resources\Orders\OrderResource::getUrl('index') }}" class="block bg-gray-950 border border-white/10 p-6 rounded-xl flex flex-col hover:ring-1 hover:ring-amber-500 transition-all cursor-pointer">
+<div onclick="window.location.href='{{ \App\Filament\Resources\Orders\OrderResource::getUrl('index') }}'" class="block bg-gray-950 border border-white/10 p-6 rounded-xl flex flex-col hover:ring-1 hover:ring-amber-500 transition-all cursor-pointer">
 <h3 class="text-lg font-semibold tracking-tight text-amber-500 mb-8">Ringkasan Status Pesanan</h3>
 <div class="flex-1 flex items-center justify-center relative py-8">
 <!-- Simulated Donut Chart -->
@@ -225,7 +241,7 @@
 </div>
 </div>
 </div>
-</a>
+</div>
 </div>
 <!-- Bottom Section -->
 <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
@@ -272,6 +288,7 @@
 </table>
 </div>
 </div>
+
 <!-- Recent Withdrawal Activity -->
 <div class="bg-gray-950 border border-white/10 rounded-xl overflow-hidden flex flex-col">
 <div class="p-6 border-b border-white/10 flex justify-between items-center">

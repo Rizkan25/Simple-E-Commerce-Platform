@@ -32,7 +32,13 @@ class CheckoutController extends Controller
         $user = auth()->user();
         $hasNonCodItems = $cart->items->contains(fn($i) => !$i->product->is_cod_enabled);
 
-        return view('checkout.index', compact('cart', 'total', 'user', 'hasNonCodItems'));
+        $platformBank = [
+            'name' => \App\Models\PlatformSetting::where('key', 'platform_bank_name')->value('value') ?? 'BCA',
+            'account' => \App\Models\PlatformSetting::where('key', 'platform_bank_account')->value('value') ?? '1234567890',
+            'owner' => \App\Models\PlatformSetting::where('key', 'platform_bank_owner')->value('value') ?? 'PT Solusi Marketplace Digital',
+        ];
+
+        return view('checkout.index', compact('cart', 'total', 'user', 'hasNonCodItems', 'platformBank'));
     }
 
     /**

@@ -67,4 +67,25 @@ class ProfileController extends Controller
 
         return Redirect::to('/');
     }
+
+    /**
+     * Update the user's bank account details with password verification.
+     */
+    public function updateBankAccount(Request $request): RedirectResponse
+    {
+        $request->validateWithBag('updateBankAccount', [
+            'bank_name' => ['required', 'string', 'max:255'],
+            'bank_account_number' => ['required', 'string', new \App\Rules\ValidBankAccountLength()],
+            'bank_account_name' => ['required', 'string', 'max:255'],
+            'password' => ['required', 'current_password'],
+        ]);
+
+        $user = $request->user();
+        $user->bank_name = $request->bank_name;
+        $user->bank_account_number = $request->bank_account_number;
+        $user->bank_account_name = $request->bank_account_name;
+        $user->save();
+
+        return Redirect::route('profile.edit')->with('status', 'bank-account-updated');
+    }
 }

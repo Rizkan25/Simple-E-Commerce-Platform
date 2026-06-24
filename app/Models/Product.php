@@ -8,6 +8,7 @@ use Illuminate\Support\Str;
 
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Product extends Model
 {
@@ -34,7 +35,6 @@ class Product extends Model
         'is_cod_enabled' => 'boolean',
         'discount_amount' => 'decimal:2',
     ];
-
 
     protected static function booted(): void
     {
@@ -123,7 +123,7 @@ class Product extends Model
         return $this->belongsTo(Category::class);
     }
 
-    public function reviews()
+    public function reviews(): HasMany
     {
         return $this->hasMany(Review::class);
     }

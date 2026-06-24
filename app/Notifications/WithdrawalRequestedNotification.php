@@ -3,7 +3,6 @@
 namespace App\Notifications;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 use App\Models\Withdrawal;
@@ -45,8 +44,6 @@ class WithdrawalRequestedNotification extends Notification
                     ->action('Lihat Detail Penarikan', url('/admin/withdrawals'))
                     ->line('Harap segera memproses permintaan ini.');
     }
-
-
 
     /**
      * Get the array representation of the notification.

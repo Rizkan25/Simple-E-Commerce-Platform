@@ -11,7 +11,6 @@ class CartService
 {
     /**
      * Add an item to the cart.
-     * Enforces single-seller constraint per cart.
      */
     public function addItem(int $userId, int $productId, int $quantity = 1): CartItem
     {

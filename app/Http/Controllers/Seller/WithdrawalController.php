@@ -34,25 +34,31 @@ class WithdrawalController extends Controller
     {
         $request->validate([
             'amount' => 'required|numeric|min:10000',
-            'bank_account' => 'required|string|max:255',
         ]);
 
         $user = auth()->user();
+
+        // Check if the user has a saved bank account
+        if (empty($user->bank_name) || empty($user->bank_account_number) || empty($user->bank_account_name)) {
+            return back()->with('error', 'Silakan lengkapi data rekening bank Anda di halaman Profil terlebih dahulu sebelum melakukan penarikan.');
+        }
 
         // Check if the user has enough balance
         if ($user->balance < $request->amount) {
             return back()->with('error', 'Saldo Wallet tidak mencukupi untuk melakukan penarikan.');
         }
 
+        $bankAccountString = $user->bank_name . ' - ' . $user->bank_account_number . ' a/n ' . $user->bank_account_name;
+
         try {
             // Deduct from wallet immediately to prevent double spending
-            $user->withdraw($request->amount, ['description' => 'Penarikan dana ke rekening: ' . $request->bank_account]);
+            $user->withdraw($request->amount, ['description' => 'Penarikan dana ke rekening: ' . $bankAccountString]);
 
             // Create the withdrawal record
             $withdrawal = Withdrawal::create([
                 'user_id' => $user->id,
                 'amount' => $request->amount,
-                'bank_account' => $request->bank_account,
+                'bank_account' => $bankAccountString,
                 'status' => 'PENDING',
             ]);
 

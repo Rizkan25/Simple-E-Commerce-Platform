@@ -12,7 +12,33 @@
         <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <!-- Order Details -->
-                <div class="md:col-span-2">
+                <div class="md:col-span-2 space-y-6">
+                    @if($order->status === 'pending' && $order->payment_method === 'dummy_bank')
+                        <div class="bg-blue-50 border-l-4 border-blue-500 rounded-r-xl shadow-sm p-6">
+                            <div class="flex items-start gap-4">
+                                <div class="p-2 bg-blue-100 rounded-lg text-blue-600 shrink-0">
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
+                                </div>
+                                <div>
+                                    <h3 class="font-bold text-blue-900 text-lg">Menunggu Pembayaran</h3>
+                                    <p class="text-blue-800 mt-1">Silakan lakukan transfer sebesar <strong class="text-xl">Rp {{ number_format($order->total_amount, 0, ',', '.') }}</strong> ke rekening berikut:</p>
+                                    
+                                    <div class="mt-4 bg-white p-4 rounded-lg border border-blue-200 inline-block">
+                                        <p class="text-xs text-gray-500 uppercase tracking-wider font-semibold mb-1">Bank Tujuan</p>
+                                        <p class="text-lg font-bold text-gray-900">{{ $platformBank['name'] }}</p>
+                                        
+                                        <p class="text-xs text-gray-500 uppercase tracking-wider font-semibold mb-1 mt-3">Nomor Rekening</p>
+                                        <p class="text-2xl font-mono text-indigo-700 tracking-wider">{{ $platformBank['account'] }}</p>
+                                        
+                                        <p class="text-xs text-gray-500 uppercase tracking-wider font-semibold mb-1 mt-3">Atas Nama</p>
+                                        <p class="font-medium text-gray-900">{{ $platformBank['owner'] }}</p>
+                                    </div>
+                                    <p class="text-sm text-blue-700 mt-4 italic">Pesanan Anda akan otomatis dibatalkan jika tidak ada pembayaran dalam 24 jam.</p>
+                                </div>
+                            </div>
+                        </div>
+                    @endif
+
                     <div class="bg-white rounded-xl shadow-sm p-6">
                         <h3 class="font-semibold text-gray-800 mb-4">Item Pesanan</h3>
                         <div class="divide-y">

@@ -26,14 +26,14 @@
 
                                     <div class="flex items-center gap-3 mt-3">
                                         <!-- Quantity Controls -->
-                                        <div class="flex items-center border rounded-lg">
+                                        <div class="flex items-center border border-gray-300 rounded-lg overflow-hidden">
                                             <button @click="quantity = Math.max(1, quantity - 1); updateQuantity({{ $item->id }}, quantity)"
-                                                class="px-2.5 py-1.5 text-gray-600 hover:bg-gray-50 transition text-sm">−</button>
+                                                class="px-2.5 py-1.5 text-gray-600 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition text-sm">−</button>
                                             <input type="number" x-model.number="quantity" min="1" max="{{ $item->product->stock }}"
                                                 @change="updateQuantity({{ $item->id }}, quantity)"
-                                                class="w-12 text-center border-0 focus:ring-0 text-sm py-1.5">
+                                                class="w-12 text-center border-0 focus:ring-0 focus:outline-none text-sm py-1.5">
                                             <button @click="quantity = Math.min({{ $item->product->stock }}, quantity + 1); updateQuantity({{ $item->id }}, quantity)"
-                                                class="px-2.5 py-1.5 text-gray-600 hover:bg-gray-50 transition text-sm">+</button>
+                                                class="px-2.5 py-1.5 text-gray-600 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition text-sm">+</button>
                                         </div>
 
                                         <!-- Remove -->

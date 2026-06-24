@@ -17,6 +17,11 @@ class StitchDashboard extends BaseDashboard
     public string $salesFilter = 'month';
     public string $searchQuery = '';
 
+    public function getWidgets(): array
+    {
+        return [];
+    }
+
     protected function getViewData(): array
     {
         $now = now();
@@ -30,6 +35,10 @@ class StitchDashboard extends BaseDashboard
             ->whereMonth('created_at', $now->month)->whereYear('created_at', $now->year)->count();
         $newCustomers = User::where('role', 'buyer')
             ->whereMonth('created_at', $now->month)->whereYear('created_at', $now->year)->count();
+        $totalPlatformFee = \App\Models\OrderItem::whereHas('order', function ($query) use ($now) {
+            $query->whereNotIn('status', ['cancelled'])
+                ->whereMonth('created_at', $now->month)->whereYear('created_at', $now->year);
+        })->sum('platform_fee');
 
         // Last Month Metrics
         $lastMonthGmv = Order::whereNotIn('status', ['cancelled'])
@@ -39,12 +48,17 @@ class StitchDashboard extends BaseDashboard
             ->whereMonth('created_at', $lastMonth->month)->whereYear('created_at', $lastMonth->year)->count();
         $lastMonthCustomers = User::where('role', 'buyer')
             ->whereMonth('created_at', $lastMonth->month)->whereYear('created_at', $lastMonth->year)->count();
+        $lastMonthPlatformFee = \App\Models\OrderItem::whereHas('order', function ($query) use ($lastMonth) {
+            $query->whereNotIn('status', ['cancelled'])
+                ->whereMonth('created_at', $lastMonth->month)->whereYear('created_at', $lastMonth->year);
+        })->sum('platform_fee');
 
         // Trend Calculation
         $gmvTrend = $lastMonthGmv > 0 ? round((($totalGmv - $lastMonthGmv) / $lastMonthGmv) * 100, 1) : ($totalGmv > 0 ? 100 : 0);
         $ordersTrend = $lastMonthOrders > 0 ? round((($totalOrders - $lastMonthOrders) / $lastMonthOrders) * 100, 1) : ($totalOrders > 0 ? 100 : 0);
         $merchantsTrend = $lastMonthMerchants > 0 ? round((($activeMerchants - $lastMonthMerchants) / $lastMonthMerchants) * 100, 1) : ($activeMerchants > 0 ? 100 : 0);
         $customersTrend = $lastMonthCustomers > 0 ? round((($newCustomers - $lastMonthCustomers) / $lastMonthCustomers) * 100, 1) : ($newCustomers > 0 ? 100 : 0);
+        $platformFeeTrend = $lastMonthPlatformFee > 0 ? round((($totalPlatformFee - $lastMonthPlatformFee) / $lastMonthPlatformFee) * 100, 1) : ($totalPlatformFee > 0 ? 100 : 0);
 
         // Donut Chart - All Time (or keep as is)
         $ordersByStatus = Order::selectRaw('status, count(*) as count')->groupBy('status')->pluck('count', 'status')->toArray();
@@ -145,10 +159,13 @@ class StitchDashboard extends BaseDashboard
             'lastMonthOrders' => $lastMonthOrders,
             'lastMonthMerchants' => $lastMonthMerchants,
             'lastMonthCustomers' => $lastMonthCustomers,
+            'totalPlatformFee' => $totalPlatformFee,
+            'lastMonthPlatformFee' => $lastMonthPlatformFee,
             'gmvTrend' => $gmvTrend,
             'ordersTrend' => $ordersTrend,
             'merchantsTrend' => $merchantsTrend,
             'customersTrend' => $customersTrend,
+            'platformFeeTrend' => $platformFeeTrend,
             'totalActiveOrders' => $totalActiveOrders,
             'processingPct' => $processingPct,
             'shippedPct' => $shippedPct,

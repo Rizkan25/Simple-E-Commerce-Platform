@@ -64,9 +64,9 @@ class DisputeResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('order.order_number')->searchable(),
-                TextColumn::make('user.name')->searchable(),
-                TextColumn::make('status')->badge(),
+                TextColumn::make('order.order_number')->searchable()->sortable(),
+                TextColumn::make('user.name')->searchable()->sortable(),
+                TextColumn::make('status')->badge()->sortable(),
                 TextColumn::make('created_at')->dateTime()->sortable(),
             ])
             ->filters([

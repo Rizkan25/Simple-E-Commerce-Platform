@@ -47,7 +47,7 @@ class OrderController extends Controller
     public function updateStatus(Request $request, Order $order): RedirectResponse
     {
         $request->validate([
-            'status' => 'required|in:paid,shipped,completed',
+            'status' => 'required|in:paid,shipped',
         ]);
 
         try {

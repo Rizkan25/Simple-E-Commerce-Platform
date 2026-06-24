@@ -107,11 +107,11 @@
                                 @if(auth()->user()->isBuyer() && $product->stock > 0)
                                     <div class="flex items-center gap-3 mb-4">
                                         <label class="text-sm font-medium text-gray-700">Jumlah:</label>
-                                        <div class="flex items-center border rounded-lg">
-                                            <button @click="quantity = Math.max(1, quantity - 1)" class="px-3 py-2 text-gray-600 hover:bg-gray-50 transition">−</button>
+                                        <div class="flex items-center border border-gray-300 rounded-lg overflow-hidden">
+                                            <button @click="quantity = Math.max(1, quantity - 1)" class="px-3 py-2 text-gray-600 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition">−</button>
                                             <input type="number" x-model.number="quantity" min="1" max="{{ $product->stock }}"
-                                                class="w-16 text-center border-0 focus:ring-0 text-sm">
-                                            <button @click="quantity = Math.min({{ $product->stock }}, quantity + 1)" class="px-3 py-2 text-gray-600 hover:bg-gray-50 transition">+</button>
+                                                class="w-16 text-center border-0 focus:ring-0 focus:outline-none text-sm">
+                                            <button @click="quantity = Math.min({{ $product->stock }}, quantity + 1)" class="px-3 py-2 text-gray-600 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition">+</button>
                                         </div>
                                     </div>
                                     <button @click="

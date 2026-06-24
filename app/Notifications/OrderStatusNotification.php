@@ -3,8 +3,6 @@
 namespace App\Notifications;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 use App\Models\Order;
 
@@ -31,38 +29,19 @@ class OrderStatusNotification extends Notification
     }
 
     /**
-     * Get the mail representation of the notification.
-     */
-    public function toMail(object $notifiable): MailMessage
-    {
-        return (new MailMessage)
-            ->line('The introduction to the notification.')
-            ->action('Notification Action', url('/'))
-            ->line('Thank you for using our application!');
-    }
-
-    /**
      * Get the array representation of the notification.
      *
      * @return array<string, mixed>
      */
     public function toArray(object $notifiable): array
     {
-        $statusMessage = '';
-        switch ($this->order->status) {
-            case 'paid':
-                $statusMessage = 'sedang diproses';
-                break;
-            case 'shipped':
-                $statusMessage = 'telah dikirim';
-                break;
-            case 'completed':
-                $statusMessage = 'telah selesai';
-                break;
-            case 'cancelled':
-                $statusMessage = 'dibatalkan';
-                break;
-        }
+        $statusMessage = match ($this->order->status) {
+            'paid' => 'sedang diproses',
+            'shipped' => 'telah dikirim',
+            'completed' => 'telah selesai',
+            'cancelled' => 'dibatalkan',
+            default => 'diperbarui',
+        };
 
         return [
             'order_id' => $this->order->id,

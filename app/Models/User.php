@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -18,7 +19,7 @@ use Bavix\Wallet\Interfaces\Wallet;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Panel;
 
-#[Fillable(['name', 'email', 'password', 'role', 'store_name', 'store_description', 'shipping_address', 'avatar'])]
+#[Fillable(['name', 'email', 'password', 'role', 'store_name', 'store_description', 'shipping_address', 'avatar', 'bank_name', 'bank_account_number', 'bank_account_name'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable implements Wallet, FilamentUser
 {
@@ -60,15 +61,15 @@ class User extends Authenticatable implements Wallet, FilamentUser
 
     public function hasActiveSellerOrders(): bool
     {
-        return \App\Models\OrderItem::where('seller_id', $this->id)
-            ->whereHas('order', function($q) {
+        return OrderItem::where('seller_id', $this->id)
+            ->whereHas('order', function ($q) {
                 $q->whereNotIn('status', ['completed', 'cancelled']);
             })->exists();
     }
 
     public function hasActiveBuyerOrders(): bool
     {
-        return \App\Models\Order::where('user_id', $this->id)
+        return Order::where('user_id', $this->id)
             ->whereNotIn('status', ['completed', 'cancelled'])->exists();
     }
 
@@ -77,7 +78,7 @@ class User extends Authenticatable implements Wallet, FilamentUser
         return $this->hasMany(Product::class, 'seller_id');
     }
 
-    public function storeReviews()
+    public function storeReviews(): HasManyThrough
     {
         return $this->hasManyThrough(Review::class, Product::class, 'seller_id', 'product_id');
     }

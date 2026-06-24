@@ -14,15 +14,24 @@ class WithdrawalForm
             ->components([
                 TextInput::make('amount')
                     ->required()
-                    ->numeric(),
-                TextInput::make('status')
+                    ->numeric()
+                    ->disabled(),
+                Select::make('status')
                     ->required()
+                    ->options([
+                        'PENDING' => 'PENDING',
+                        'APPROVED' => 'APPROVED',
+                        'REJECTED' => 'REJECTED',
+                        'COMPLETED' => 'COMPLETED',
+                    ])
                     ->default('PENDING'),
                 TextInput::make('bank_account')
-                    ->required(),
+                    ->required()
+                    ->disabled(),
                 Select::make('user_id')
                     ->relationship('user', 'name')
-                    ->required(),
+                    ->required()
+                    ->disabled(),
             ]);
     }
 }

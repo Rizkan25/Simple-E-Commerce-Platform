@@ -47,7 +47,6 @@ class WithdrawalResource extends Resource
     {
         return [
             'index' => ListWithdrawals::route('/'),
-            'create' => CreateWithdrawal::route('/create'),
             'edit' => EditWithdrawal::route('/{record}/edit'),
         ];
     }

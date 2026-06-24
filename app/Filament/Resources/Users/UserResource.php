@@ -35,6 +35,11 @@ class UserResource extends Resource
     protected static string|\UnitEnum|null $navigationGroup = 'Manajemen Akun';
     protected static ?string $navigationLabel = 'Pengguna & Toko';
 
+    public static function canCreate(): bool
+    {
+        return false;
+    }
+
     public static function form(Schema $schema): Schema
     {
         return $schema
@@ -74,10 +79,10 @@ class UserResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('name')->searchable(),
-                TextColumn::make('email')->searchable(),
-                TextColumn::make('role')->badge(),
-                TextColumn::make('store_name')->searchable(),
+                TextColumn::make('name')->searchable()->sortable(),
+                TextColumn::make('email')->searchable()->sortable(),
+                TextColumn::make('role')->badge()->sortable(),
+                TextColumn::make('store_name')->searchable()->sortable(),
                 TextColumn::make('created_at')->dateTime()->sortable()->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([

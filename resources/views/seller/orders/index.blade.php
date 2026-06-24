@@ -72,9 +72,7 @@
                                             @if(in_array($order->status, ['pending', 'paid']))
                                                 <option value="shipped">Tandai Dikirim</option>
                                             @endif
-                                            @if($order->status === 'shipped')
-                                                <option value="completed">Tandai Selesai</option>
-                                            @endif
+
                                         </select>
                                         <button type="submit" class="px-4 py-2 bg-indigo-600 text-white text-sm rounded-lg hover:bg-indigo-700 transition">
                                             Update

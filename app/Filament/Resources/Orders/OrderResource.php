@@ -61,10 +61,10 @@ class OrderResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('order_number')->searchable(),
-                TextColumn::make('user.name')->searchable(),
-                TextColumn::make('total_amount')->money('idr', true),
-                TextColumn::make('status')->badge(),
+                TextColumn::make('order_number')->searchable()->sortable(),
+                TextColumn::make('user.name')->searchable()->sortable(),
+                TextColumn::make('total_amount')->money('idr', true)->sortable(),
+                TextColumn::make('status')->badge()->sortable(),
                 TextColumn::make('created_at')->dateTime()->sortable(),
             ])
             ->filters([

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Order;
+use App\Models\Review;
 use App\Models\User;
 use App\Notifications\OrderStatusNotification;
 use App\Services\OrderService;
@@ -43,13 +44,19 @@ class OrderController extends Controller
 
         $hasUnreviewedItems = false;
         if ($order->status === 'completed') {
-            $reviewedCount = \App\Models\Review::where('order_id', $order->id)->count();
+            $reviewedCount = Review::where('order_id', $order->id)->count();
             if ($reviewedCount < $order->items->count()) {
                 $hasUnreviewedItems = true;
             }
         }
 
-        return view('orders.show', compact('order', 'hasUnreviewedItems'));
+        $platformBank = [
+            'name' => \App\Models\PlatformSetting::where('key', 'platform_bank_name')->value('value') ?? 'BCA',
+            'account' => \App\Models\PlatformSetting::where('key', 'platform_bank_account')->value('value') ?? '1234567890',
+            'owner' => \App\Models\PlatformSetting::where('key', 'platform_bank_owner')->value('value') ?? 'PT Solusi Marketplace Digital',
+        ];
+
+        return view('orders.show', compact('order', 'hasUnreviewedItems', 'platformBank'));
     }
 
     /**
@@ -63,13 +70,7 @@ class OrderController extends Controller
 
         try {
             $this->orderService->updateOrderStatus($order->id, 'cancelled');
-            
-            // Notify sellers
-            $sellerIds = $order->items->pluck('product.seller_id')->unique();
-            $sellers = User::whereIn('id', $sellerIds)->get();
-            foreach ($sellers as $seller) {
-                $seller->notify(new OrderStatusNotification($order));
-            }
+            $this->notifySellers($order);
 
             return redirect()->route('orders.show', $order)
                 ->with('success', 'Pesanan berhasil dibatalkan.');
@@ -90,19 +91,26 @@ class OrderController extends Controller
 
         try {
             $this->orderService->updateOrderStatus($order->id, 'completed');
-            
-            // Notify sellers
-            $sellerIds = $order->items->pluck('product.seller_id')->unique();
-            $sellers = User::whereIn('id', $sellerIds)->get();
-            foreach ($sellers as $seller) {
-                $seller->notify(new OrderStatusNotification($order));
-            }
+            $this->notifySellers($order);
 
             return redirect()->route('reviews.create', $order)
                 ->with('success', 'Terima kasih telah mengonfirmasi penerimaan pesanan. Silakan berikan penilaian Anda.');
         } catch (Exception $e) {
             return redirect()->route('orders.show', $order)
                 ->with('error', $e->getMessage());
+        }
+    }
+
+    /**
+     * Notify all sellers associated with an order about a status change.
+     */
+    private function notifySellers(Order $order): void
+    {
+        $sellerIds = $order->items->pluck('product.seller_id')->unique();
+        $sellers = User::whereIn('id', $sellerIds)->get();
+
+        foreach ($sellers as $seller) {
+            $seller->notify(new OrderStatusNotification($order));
         }
     }
 }

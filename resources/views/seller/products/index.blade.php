@@ -21,11 +21,40 @@
                 <div class="bg-white rounded-xl shadow-sm overflow-hidden">
                     <table class="min-w-full divide-y divide-gray-200">
                         <thead class="bg-gray-50">
+                            @php
+                                $renderSortHeader = function($column, $label, $align = 'left') use ($sortBy, $sortOrder) {
+                                    $isCurrent = $sortBy === $column;
+                                    $newOrder = ($isCurrent && $sortOrder === 'asc') ? 'desc' : 'asc';
+                                    $url = request()->fullUrlWithQuery(['sort_by' => $column, 'sort_order' => $newOrder]);
+                                    
+                                    $justify = 'justify-start';
+                                    if ($align === 'right') $justify = 'justify-end';
+                                    if ($align === 'center') $justify = 'justify-center';
+
+                                    $html = '<th class="px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider group">';
+                                    $html .= '<a href="' . $url . '" class="flex items-center ' . $justify . ' hover:text-indigo-600 transition">';
+                                    $html .= $label;
+                                    
+                                    if ($isCurrent) {
+                                        if ($sortOrder === 'asc') {
+                                            $html .= '<svg class="w-4 h-4 ml-1 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 15l7-7 7 7"/></svg>';
+                                        } else {
+                                            $html .= '<svg class="w-4 h-4 ml-1 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/></svg>';
+                                        }
+                                    } else {
+                                        $html .= '<svg class="w-4 h-4 ml-1 text-gray-300 opacity-0 group-hover:opacity-100 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l4-4 4 4m0 6l-4 4-4-4"/></svg>';
+                                    }
+                                    
+                                    $html .= '</a></th>';
+                                    return $html;
+                                };
+                            @endphp
                             <tr>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Produk</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kategori</th>
-                                <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Harga</th>
-                                <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Stok</th>
+                                {!! $renderSortHeader('name', 'Produk', 'left') !!}
+                                {!! $renderSortHeader('category', 'Kategori', 'left') !!}
+                                {!! $renderSortHeader('price', 'Harga', 'right') !!}
+                                {!! $renderSortHeader('stock', 'Stok', 'center') !!}
+                                {!! $renderSortHeader('created_at', 'Ditambahkan Pada', 'center') !!}
                                 <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
                             </tr>
                         </thead>
@@ -46,6 +75,9 @@
                                         <span class="px-2 py-1 rounded-full text-xs font-medium {{ $product->stock > 0 ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">
                                             {{ $product->stock }}
                                         </span>
+                                    </td>
+                                    <td class="px-6 py-4 text-center text-sm text-gray-500 whitespace-nowrap">
+                                        {{ $product->created_at->format('d M Y H:i') }}
                                     </td>
                                     <td class="px-6 py-4 text-right">
                                         <div class="flex items-center justify-end gap-2">

@@ -213,7 +213,7 @@
                         </x-slot>
 
                         <x-slot name="content">
-                            <x-dropdown-link :href="route('profile.edit')">
+                            <x-dropdown-link :href="route('profile.edit')" wire:navigate>
                                 {{ __('Profil') }}
                             </x-dropdown-link>
 
@@ -250,31 +250,31 @@
     <!-- Responsive Navigation Menu -->
     <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
         <div class="pt-2 pb-3 space-y-1">
-            <x-responsive-nav-link :href="route('products.index')" :active="request()->routeIs('products.*')">
+            <x-responsive-nav-link :href="route('products.index')" :active="request()->routeIs('products.*')" wire:navigate>
                 {{ __('Katalog') }}
             </x-responsive-nav-link>
 
             @auth
                 @if(auth()->user()->isSeller())
-                    <x-responsive-nav-link :href="route('seller.dashboard')" :active="request()->routeIs('seller.dashboard')">
+                    <x-responsive-nav-link :href="route('seller.dashboard')" :active="request()->routeIs('seller.dashboard')" wire:navigate>
                         {{ __('Dashboard') }}
                     </x-responsive-nav-link>
-                    <x-responsive-nav-link :href="route('seller.products.index')" :active="request()->routeIs('seller.products.*')">
+                    <x-responsive-nav-link :href="route('seller.products.index')" :active="request()->routeIs('seller.products.*')" wire:navigate>
                         {{ __('Produk Saya') }}
                     </x-responsive-nav-link>
-                    <x-responsive-nav-link :href="route('seller.orders.index')" :active="request()->routeIs('seller.orders.*')">
+                    <x-responsive-nav-link :href="route('seller.orders.index')" :active="request()->routeIs('seller.orders.*')" wire:navigate>
                         {{ __('Pesanan') }}
                     </x-responsive-nav-link>
-                    <x-responsive-nav-link :href="route('seller.withdrawals.index')" :active="request()->routeIs('seller.withdrawals.*')">
+                    <x-responsive-nav-link :href="route('seller.withdrawals.index')" :active="request()->routeIs('seller.withdrawals.*')" wire:navigate>
                         {{ __('Penarikan Dana') }}
                     </x-responsive-nav-link>
                 @endif
 
                 @if(auth()->user()->isBuyer())
-                    <x-responsive-nav-link :href="route('cart.index')" :active="request()->routeIs('cart.*')">
+                    <x-responsive-nav-link :href="route('cart.index')" :active="request()->routeIs('cart.*')" wire:navigate>
                         {{ __('Keranjang') }}
                     </x-responsive-nav-link>
-                    <x-responsive-nav-link :href="route('orders.index')" :active="request()->routeIs('orders.*')">
+                    <x-responsive-nav-link :href="route('orders.index')" :active="request()->routeIs('orders.*')" wire:navigate>
                         {{ __('Pesanan Saya') }}
                     </x-responsive-nav-link>
                 @endif
@@ -295,7 +295,7 @@
             </div>
 
             <div class="mt-3 space-y-1">
-                <x-responsive-nav-link :href="route('profile.edit')">
+                <x-responsive-nav-link :href="route('profile.edit')" wire:navigate>
                     {{ __('Profil') }}
                 </x-responsive-nav-link>
 
