@@ -2,6 +2,24 @@
 <style>
         .material-symbols-outlined {
             font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            overflow: hidden;
+            font-size: 24px;
+            text-indent: -9999px; /* Menyembunyikan teks ikon sebelum font termuat */
+        }
+        .material-symbols-outlined::before {
+            text-indent: 0;
+            display: inline-block;
+        }
+        /* Ketika font Google Icon selesai dimuat */
+        @font-face {
+            font-family: 'Material Symbols Outlined';
+        }
+        .material-symbols-outlined {
+            font-family: 'Material Symbols Outlined';
+            text-indent: 0 !important;
         }
         .chart-gradient-purple {
             background: linear-gradient(180deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0) 100%);

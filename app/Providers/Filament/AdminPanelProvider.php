@@ -59,7 +59,7 @@ class AdminPanelProvider extends PanelProvider
             ->darkMode(true, true)
             ->renderHook(
                 PanelsRenderHook::HEAD_START,
-                fn (): string => new HtmlString('<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=block" rel="stylesheet" />')
+                fn (): string => new HtmlString('<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />')
             )
             ->renderHook(
                 PanelsRenderHook::HEAD_END,
