@@ -47,6 +47,10 @@ class UserResource extends Resource
                 TextInput::make('name')
                     ->required()
                     ->maxLength(255),
+                \Filament\Forms\Components\FileUpload::make('avatar')
+                    ->disk('cloudinary')
+                    ->directory('avatars')
+                    ->image(),
                 TextInput::make('email')
                     ->email()
                     ->required()
@@ -80,6 +84,7 @@ class UserResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('name')->searchable()->sortable(),
+                \Filament\Tables\Columns\ImageColumn::make('avatar')->disk('cloudinary'),
                 TextColumn::make('email')->searchable()->sortable(),
                 TextColumn::make('role')->badge()->sortable(),
                 TextColumn::make('store_name')->searchable()->sortable(),

@@ -1,0 +1,50 @@
+databases:
+  - name: simple-shop-db
+    databaseName: simple_shop
+    user: admin
+    plan: free
+
+services:
+  - type: web
+    name: simple-shop-web
+    env: php
+    plan: free
+    buildCommand: "./render-build.sh"
+    startCommand: "heroku-php-apache2 public/"
+    envVars:
+      - key: APP_NAME
+        value: "SimpleShop"
+      - key: APP_ENV
+        value: production
+      - key: APP_KEY
+        generateValue: true
+      - key: APP_DEBUG
+        value: "false"
+      - key: APP_URL
+        value: "https://simple-shop-web.onrender.com"
+      - key: DB_CONNECTION
+        value: pgsql
+      - key: DB_HOST
+        fromDatabase:
+          name: simple-shop-db
+          property: host
+      - key: DB_PORT
+        fromDatabase:
+          name: simple-shop-db
+          property: port
+      - key: DB_DATABASE
+        fromDatabase:
+          name: simple-shop-db
+          property: database
+      - key: DB_USERNAME
+        fromDatabase:
+          name: simple-shop-db
+          property: user
+      - key: DB_PASSWORD
+        fromDatabase:
+          name: simple-shop-db
+          property: password
+      - key: FILESYSTEM_DISK
+        value: cloudinary
+      - key: CLOUDINARY_URL
+        sync: false

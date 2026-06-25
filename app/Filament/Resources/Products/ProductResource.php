@@ -43,6 +43,10 @@ class ProductResource extends Resource
                 TextInput::make('name')
                     ->required()
                     ->maxLength(255),
+                \Filament\Forms\Components\FileUpload::make('image')
+                    ->disk('cloudinary')
+                    ->directory('products')
+                    ->image(),
                 TextInput::make('price')
                     ->required()
                     ->numeric(),
@@ -65,6 +69,7 @@ class ProductResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('name')->searchable()->sortable(),
+                \Filament\Tables\Columns\ImageColumn::make('image')->disk('cloudinary'),
                 TextColumn::make('seller.name')->searchable()->sortable(),
                 TextColumn::make('price')->money('idr', true)->sortable(),
                 TextColumn::make('stock')->numeric()->sortable(),
