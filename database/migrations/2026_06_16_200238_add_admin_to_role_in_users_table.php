@@ -11,9 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->enum('role', ['buyer', 'seller', 'admin'])->default('buyer')->change();
-        });
+        if (\Illuminate\Support\Facades\DB::getDriverName() === 'pgsql') {
+            \Illuminate\Support\Facades\DB::statement("ALTER TABLE users DROP CONSTRAINT IF EXISTS users_role_check");
+            \Illuminate\Support\Facades\DB::statement("ALTER TABLE users ADD CONSTRAINT users_role_check CHECK (role::text = ANY (ARRAY['buyer'::text, 'seller'::text, 'admin'::text]))");
+        } else {
+            Schema::table('users', function (Blueprint $table) {
+                $table->enum('role', ['buyer', 'seller', 'admin'])->default('buyer')->change();
+            });
+        }
     }
 
     /**
@@ -21,8 +26,13 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->enum('role', ['buyer', 'seller'])->default('buyer')->change();
-        });
+        if (\Illuminate\Support\Facades\DB::getDriverName() === 'pgsql') {
+            \Illuminate\Support\Facades\DB::statement("ALTER TABLE users DROP CONSTRAINT IF EXISTS users_role_check");
+            \Illuminate\Support\Facades\DB::statement("ALTER TABLE users ADD CONSTRAINT users_role_check CHECK (role::text = ANY (ARRAY['buyer'::text, 'seller'::text]))");
+        } else {
+            Schema::table('users', function (Blueprint $table) {
+                $table->enum('role', ['buyer', 'seller'])->default('buyer')->change();
+            });
+        }
     }
 };
