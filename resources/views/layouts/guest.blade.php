@@ -13,6 +13,10 @@
 
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
+        @livewireStyles
+        <style>
+            [x-cloak] { display: none !important; }
+        </style>
     </head>
     <body class="font-sans text-gray-900 antialiased relative min-h-screen overflow-hidden bg-slate-50">
         <!-- Background Decorative Blobs -->
@@ -43,5 +47,6 @@
                 &copy; {{ date('Y') }} SimpleShop. Crafted with precision.
             </div>
         </div>
+        @livewireScripts
     </body>
 </html>
