@@ -18,12 +18,11 @@
             [x-cloak] { display: none !important; }
         </style>
     </head>
-    <body class="font-sans text-gray-900 antialiased relative min-h-screen overflow-hidden bg-slate-50">
-        <!-- Background Decorative Blobs -->
-        <div class="absolute top-[-10%] left-[-10%] w-[40rem] h-[40rem] bg-purple-300 rounded-full mix-blend-multiply filter blur-3xl opacity-50 animate-blob"></div>
-        <div class="absolute top-[10%] right-[-5%] w-[35rem] h-[35rem] bg-indigo-300 rounded-full mix-blend-multiply filter blur-3xl opacity-50 animate-blob [animation-delay:4000ms]"></div>
-        <div class="absolute bottom-[-10%] left-[15%] w-[45rem] h-[45rem] bg-pink-200 rounded-full mix-blend-multiply filter blur-3xl opacity-50 animate-blob [animation-delay:8000ms]"></div>
-
+    <body class="font-sans text-gray-900 antialiased relative min-h-screen overflow-x-hidden bg-slate-50 selection:bg-indigo-500 selection:text-white">
+        <!-- Background Decorative Blobs (Hidden on Mobile for Performance) -->
+        <div class="hidden md:block absolute top-[-10%] left-[-10%] w-[40rem] h-[40rem] bg-purple-300 rounded-full mix-blend-multiply filter blur-3xl opacity-50 animate-blob"></div>
+        <div class="hidden md:block absolute top-[10%] right-[-5%] w-[35rem] h-[35rem] bg-indigo-300 rounded-full mix-blend-multiply filter blur-3xl opacity-50 animate-blob [animation-delay:4000ms]"></div>
+        <div class="hidden md:block absolute bottom-[-10%] left-[15%] w-[45rem] h-[45rem] bg-pink-200 rounded-full mix-blend-multiply filter blur-3xl opacity-50 animate-blob [animation-delay:8000ms]"></div>
         <div class="min-h-screen flex flex-col justify-center items-center pt-6 sm:pt-0 relative z-10 px-4">
             <div class="mb-10 text-center">
                 <a href="/" class="inline-flex flex-col items-center gap-4 group">

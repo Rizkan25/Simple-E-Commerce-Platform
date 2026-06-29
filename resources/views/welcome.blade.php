@@ -17,7 +17,7 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-20">
                 <a href="/" class="flex items-center gap-2 group flex-shrink-0">
-                    <svg viewBox="0 0 100 100" class="w-8 h-8 md:w-10 md:h-10" xmlns="http://www.w3.org/2000/svg">
+                    <svg viewBox="0 0 100 100" class="w-7 h-7 sm:w-8 sm:h-8 md:w-10 md:h-10" xmlns="http://www.w3.org/2000/svg">
                         <defs>
                             <linearGradient id="navLogoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
                                 <stop offset="0%" stop-color="#542d91" />
@@ -29,15 +29,15 @@
                         <path fill="url(#navLogoGradient)" d="M68,30H32c-1.1,0-2-0.9-2-2v-4c0-11,9-20,20-20s20,9,20,20v4C70,29.1,69.1,30,68,30z M34,26h32v-2 c0-8.8-7.2-16-16-16s-16,7.2-16,16V26z"/>
                         <path fill="white" d="M50,75c-15,0-15-12-15-12h8c0,0,1,6,7,6c5,0,7-3,7-6c0-4-3-5-10-8c-10-4-15-10-15-18c0-10,9-15,18-15 c13,0,16,10,16,10h-8c0,0-2-5-8-5c-4,0-8,2-8,6c0,4,4,5,10,7c11,3,15,9,15,18C67,69,59,75,50,75z"/>
                     </svg>
-                    <span class="font-heading font-extrabold text-2xl md:text-3xl tracking-tight text-transparent bg-clip-text bg-gradient-to-br from-[#542d91] to-purple-500">SimpleShop</span>
+                    <span class="font-heading font-extrabold text-xl sm:text-2xl md:text-3xl tracking-tight text-transparent bg-clip-text bg-gradient-to-br from-[#542d91] to-purple-500">SimpleShop</span>
                 </a>
-                <nav class="flex items-center gap-3 md:gap-6">
+                <nav class="flex items-center gap-2 sm:gap-4 md:gap-6 shrink-0">
                     @auth
                         <a href="{{ url('/dashboard') }}" class="text-sm font-semibold text-gray-700 hover:text-primary-600 transition whitespace-nowrap">Dashboard</a>
                     @else
-                        <a href="{{ route('login') }}" class="text-sm font-semibold text-gray-700 hover:text-primary-600 transition whitespace-nowrap">Log in</a>
+                        <a href="{{ route('login') }}" class="text-sm font-semibold text-gray-700 hover:text-primary-600 transition whitespace-nowrap">Login</a>
                         @if (Route::has('register'))
-                            <a href="{{ route('register', ['role' => 'buyer']) }}" class="px-4 py-2 md:px-5 md:py-2.5 text-sm font-semibold text-white bg-gray-900 rounded-xl hover:bg-gray-800 transition shadow-md hover:shadow-xl hover:-translate-y-0.5 duration-200 whitespace-nowrap">Register</a>
+                            <a href="{{ route('register', ['role' => 'buyer']) }}" class="px-3 py-1.5 sm:px-4 sm:py-2 md:px-5 md:py-2.5 text-sm font-semibold text-white bg-gray-900 rounded-xl hover:bg-gray-800 transition shadow-md hover:shadow-xl hover:-translate-y-0.5 duration-200 whitespace-nowrap">Register</a>
                         @endif
                     @endauth
                 </nav>

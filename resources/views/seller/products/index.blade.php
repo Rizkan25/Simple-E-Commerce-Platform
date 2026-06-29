@@ -3,10 +3,10 @@
 
     <x-slot name="header">
         <div class="flex items-center justify-between">
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">{{ __('Produk Saya') }}</h2>
+            <h2 class="font-semibold text-lg sm:text-xl text-gray-800 leading-tight">{{ __('Produk Saya') }}</h2>
             
-            <a href="{{ route('seller.products.create') }}" class="inline-flex items-center px-6 py-2.5 bg-gradient-to-r from-primary-600 to-secondary-500 rounded-xl font-bold text-sm text-white tracking-wide hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-all shadow-lg shadow-primary-500/25 hover:shadow-xl hover:-translate-y-0.5 duration-300">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 -ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+            <a href="{{ route('seller.products.create') }}" class="inline-flex items-center px-3 py-2 sm:px-6 sm:py-2.5 bg-gradient-to-r from-primary-600 to-secondary-500 rounded-xl font-bold text-xs sm:text-sm text-white tracking-wide hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-all shadow-lg shadow-primary-500/25 hover:shadow-xl hover:-translate-y-0.5 duration-300 whitespace-nowrap">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 sm:h-5 sm:w-5 mr-1.5 sm:mr-2 sm:-ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
                 </svg>
                 Tambah Produk
@@ -19,8 +19,9 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             @if($products->count() > 0)
                 <div class="bg-white rounded-xl shadow-sm overflow-hidden">
-                    <table class="min-w-full divide-y divide-gray-200">
-                        <thead class="bg-gray-50">
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
                             @php
                                 $renderSortHeader = function($column, $label, $align = 'left') use ($sortBy, $sortOrder) {
                                     $isCurrent = $sortBy === $column;
@@ -94,6 +95,7 @@
                             @endforeach
                         </tbody>
                     </table>
+                    </div>
                 </div>
 
                 <div class="mt-6">{{ $products->links() }}</div>
