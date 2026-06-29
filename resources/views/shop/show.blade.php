@@ -163,7 +163,7 @@
                                 <div class="p-3">
                                     <h3 class="text-sm font-medium text-gray-800 truncate">{{ $related->name }}</h3>
                                     @if($related->is_discounted)
-                                        <div class="mt-1 flex items-center gap-2">
+                                        <div class="mt-1 flex flex-wrap items-center gap-x-2 gap-y-0.5">
                                             <p class="text-xs text-gray-400 line-through whitespace-nowrap">Rp {{ number_format($related->price, 0, ',', '.') }}</p>
                                             <p class="text-sm font-bold text-red-600 whitespace-nowrap">Rp {{ number_format($related->effective_price, 0, ',', '.') }}</p>
                                         </div>

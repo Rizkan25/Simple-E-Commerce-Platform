@@ -71,7 +71,7 @@
                                         </div>
                                     </td>
                                     <td class="px-6 py-4 text-sm text-gray-500">{{ $product->category->name }}</td>
-                                    <td class="px-6 py-4 text-sm text-gray-900 text-right font-medium">Rp {{ number_format($product->price, 0, ',', '.') }}</td>
+                                    <td class="px-6 py-4 text-sm text-gray-900 text-right font-medium whitespace-nowrap">Rp {{ number_format($product->price, 0, ',', '.') }}</td>
                                     <td class="px-6 py-4 text-center">
                                         <span class="px-2 py-1 rounded-full text-xs font-medium {{ $product->stock > 0 ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">
                                             {{ $product->stock }}
